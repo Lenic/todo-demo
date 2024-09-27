@@ -1,1 +1,3 @@
-export const App = () => <div>Hello World!</div>;
+import { Button } from '@/components/ui/button';
+
+export const App = () => <Button variant="outline">Button</Button>;
