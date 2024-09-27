@@ -1,0 +1,10 @@
+# .prettierrc
+tabWidth: 2
+endOfLine: lf
+useTabs: false
+printWidth: 120
+singleQuote: true
+overrides:
+  - files: '*.less'
+    options:
+      singleQuote: false
