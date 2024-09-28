@@ -4,6 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ServiceLocator } from '@/lib/injector';
 import { useObservableState } from '@/hooks';
+import { ThemeProvider } from '@/components/theme-provider';
 
 import { IDataService, ETodoStatus } from './resources';
 
@@ -66,7 +67,7 @@ export const App = () => {
   }, [dataService]);
 
   return (
-    <>
+    <ThemeProvider>
       <Button variant="outline" onClick={handleAppend1}>
         add 2 pending items
       </Button>
@@ -79,6 +80,6 @@ export const App = () => {
       <div>pendingList: {pendingList.join(',')}</div>
       <div>overdueList: {overdueList.join(',')}</div>
       <div>archiveList: {archiveList.join(',')}</div>
-    </>
+    </ThemeProvider>
   );
 };
