@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ServiceLocator } from '@/lib/injector';
 import { useObservableState } from '@/hooks';
-import { ThemeProvider } from '@/components/theme-provider';
+import { ModeToggle, ThemeProvider } from '@/components/theme-provider';
 
 import { IDataService, ETodoStatus } from './resources';
 
@@ -68,6 +68,7 @@ export const App = () => {
 
   return (
     <ThemeProvider>
+      <ModeToggle />
       <Button variant="outline" onClick={handleAppend1}>
         add 2 pending items
       </Button>
