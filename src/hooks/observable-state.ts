@@ -1,12 +1,9 @@
 import type { Observable } from 'rxjs';
 
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
 
-export function useObservableState<T>(source$: Observable<T>, defaultValue: T): [T, Dispatch<SetStateAction<T>>];
-export function useObservableState<T>(
-  source$: Observable<T>,
-  defaultValueGetter: () => T,
-): [T, Dispatch<SetStateAction<T>>];
+export function useObservableState<T>(source$: Observable<T>, defaultValue: T): T;
+export function useObservableState<T>(source$: Observable<T>, defaultValueGetter: () => T): T;
 
 export function useObservableState<T>(source$: Observable<T>, valueOrGetter: T | (() => T)) {
   const [state, setState] = useState(valueOrGetter);
@@ -16,5 +13,5 @@ export function useObservableState<T>(source$: Observable<T>, valueOrGetter: T |
     return () => subscription.unsubscribe();
   }, [source$]);
 
-  return [state, setState] as const;
+  return state;
 }

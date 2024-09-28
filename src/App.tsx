@@ -3,24 +3,20 @@ import { useCallback, useMemo } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { ServiceLocator } from '@/lib/injector';
-import { useObservableState } from '@/hooks';
 import { ModeToggle, ThemeProvider } from '@/components/theme-provider';
 
 import { IDataService, ETodoStatus } from './resources';
+import { TodoPanel } from './todo';
 
 const tomorrowBeginTimeValue = dayjs().add(1, 'day').startOf('day').valueOf();
 
 export const App = () => {
   const dataService = useMemo(() => ServiceLocator.default.get(IDataService), []);
 
-  const [pendingList] = useObservableState(dataService.planningList$, []);
-  const [overdueList] = useObservableState(dataService.overdueList$, []);
-  const [archiveList] = useObservableState(dataService.archiveList$, []);
-
   const handleAppend1 = useCallback(() => {
     dataService.append([
-      { id: '1', createdAt: 1, status: ETodoStatus.PENDING, title: '111', updatedAt: 1 },
-      { id: '2', createdAt: 2, status: ETodoStatus.PENDING, title: '222', updatedAt: 2 },
+      { id: '1', createdAt: 1, status: ETodoStatus.PENDING, title: '1', updatedAt: 1 },
+      { id: '2', createdAt: 2, status: ETodoStatus.PENDING, title: '2', updatedAt: 2 },
     ]);
   }, [dataService]);
 
@@ -30,16 +26,16 @@ export const App = () => {
         id: '11',
         createdAt: 1,
         status: ETodoStatus.PENDING,
-        title: '111',
-        updatedAt: 1,
+        title: '11',
+        updatedAt: 2,
         overdueAt: tomorrowBeginTimeValue + 10,
       },
       {
         id: '21',
         createdAt: 2,
         status: ETodoStatus.PENDING,
-        title: '222',
-        updatedAt: 2,
+        title: '21',
+        updatedAt: 6,
         overdueAt: tomorrowBeginTimeValue + 20,
       },
     ]);
@@ -49,18 +45,18 @@ export const App = () => {
     dataService.append([
       {
         id: '31',
-        createdAt: 1,
+        createdAt: 8,
         status: ETodoStatus.DONE,
-        title: '111',
+        title: '31',
         updatedAt: 10,
         overdueAt: tomorrowBeginTimeValue + 10,
       },
       {
         id: '32',
-        createdAt: 2,
+        createdAt: 3,
         status: ETodoStatus.DONE,
-        title: '222',
-        updatedAt: 2,
+        title: '32',
+        updatedAt: 4,
         overdueAt: tomorrowBeginTimeValue + 20,
       },
     ]);
@@ -78,9 +74,7 @@ export const App = () => {
       <Button variant="outline" onClick={handleAppend3}>
         add 2 archive items
       </Button>
-      <div>pendingList: {pendingList.join(',')}</div>
-      <div>overdueList: {overdueList.join(',')}</div>
-      <div>archiveList: {archiveList.join(',')}</div>
+      <TodoPanel />
     </ThemeProvider>
   );
 };
