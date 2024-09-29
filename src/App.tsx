@@ -1,12 +1,13 @@
 import dayjs from 'dayjs';
 import { useCallback, useMemo } from 'react';
 
+import { Toaster } from '@/components/ui/toaster';
 import { Button } from '@/components/ui/button';
 import { ServiceLocator } from '@/lib/injector';
 import { ModeToggle, ThemeProvider } from '@/components/theme-provider';
 
 import { IDataService, ETodoStatus } from './resources';
-import { TodoPanel } from './todo';
+import { TodoPanel, CreateNewTask } from './todo';
 
 const tomorrowBeginTimeValue = dayjs().add(1, 'day').startOf('day').valueOf();
 
@@ -75,6 +76,8 @@ export const App = () => {
         add 2 archive items
       </Button>
       <TodoPanel />
+      <CreateNewTask />
+      <Toaster />
     </ThemeProvider>
   );
 };
