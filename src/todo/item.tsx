@@ -57,7 +57,8 @@ export const TodoItem: FC<ITodoItemProps> = ({ id, dateFormatString }) => {
       >
         {title}
       </label>
-      <RowDatePicker id={id} value={overdueAt} formatString={dateFormatString} />
+      <div className="flex-auto" />
+      <RowDatePicker className="flex-initial" id={id} value={overdueAt} formatString={dateFormatString} />
       <TodoItemEditor id={id} open={open} onOpenChange={setOpen} />
     </div>
   );

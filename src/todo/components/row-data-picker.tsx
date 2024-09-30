@@ -40,9 +40,9 @@ export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, f
       <PopoverTrigger asChild>
         <Button
           variant="link"
-          className={cn('w-[8.75rem] justify-start text-left font-normal text-muted-foreground px-0', className)}
+          className={cn('font-mono justify-start text-left font-normal text-muted-foreground px-0', className)}
         >
-          {value ? null : <CalendarIcon className="mr-2 h-4 w-4" />}
+          {value ? null : <CalendarIcon className="h-4 w-4" />}
           {value ? format(value, formatString) : null}
         </Button>
       </PopoverTrigger>
