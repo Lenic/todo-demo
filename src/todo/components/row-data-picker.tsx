@@ -1,4 +1,4 @@
-import { useCallback, useMemo, type FC } from 'react';
+import { useCallback, useMemo, useState, type FC } from 'react';
 
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
@@ -19,6 +19,7 @@ export interface IRowDatePickerProps {
 }
 
 export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, formatString }) => {
+  const [open, setOpen] = useState(false);
   const dataService = useMemo(() => ServiceLocator.default.get(IDataService), []);
 
   const handleChangeDate = useCallback(
@@ -29,6 +30,7 @@ export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, f
           take(1),
         )
         .subscribe((item) => {
+          setOpen(false);
           dataService.addOrUpdate({ ...item, overdueAt: value?.valueOf() });
         });
     },
@@ -36,7 +38,7 @@ export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, f
   );
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="link"
