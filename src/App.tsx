@@ -75,8 +75,8 @@ export const App = () => {
       <Button variant="outline" onClick={handleAppend3}>
         add 2 archive items
       </Button>
-      <TodoPanel />
       <CreateNewTask />
+      <TodoPanel />
       <Toaster />
     </ThemeProvider>
   );
