@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { TodoItem } from './item';
 import { ServiceLocator } from '@/lib/injector';
 import { IDataService } from '@/resources';
-import { count, distinct, filter, map, mergeMap } from 'rxjs/operators';
+import { distinct, filter, map, mergeMap, toArray } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { useObservableState } from '@/hooks';
 
@@ -23,10 +23,13 @@ export const TodoList: FC<ITodoListProps> = ({ ids }) => {
               filter((v) => !!v),
               map((date) => dayjs(date!).get('year')),
               distinct(),
-              count(),
+              toArray(),
+              map((list) => {
+                const thisYear = dayjs().get('year');
+                return list.filter((v) => v !== thisYear).length > 0 ? 'yyyy-MM-dd' : 'MM-dd';
+              }),
             ),
           ),
-          map((count) => (count > 1 ? 'yyyy-MM-dd' : 'MM-dd')),
         ),
       [ids],
     ),
