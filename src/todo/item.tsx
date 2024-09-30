@@ -1,13 +1,15 @@
 import type { FC } from 'react';
 import type { CheckedState } from '@radix-ui/react-checkbox';
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { map, take } from 'rxjs/operators';
 import { ServiceLocator } from '@/lib/injector';
 import { useObservableState } from '@/hooks';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { IDataService, ETodoStatus } from '../resources';
+
+import { TodoItemEditor } from './editor';
 
 export interface ITodoItemProps {
   id: string;
@@ -29,24 +31,26 @@ export const TodoItem: FC<ITodoItemProps> = ({ id }) => {
 
   const handleChangeChecked = useCallback(
     (e: CheckedState) => {
-      dataService.dataMapper$
-        .pipe(
-          map((mapper) => mapper[id]),
-          take(1),
-        )
-        .subscribe((item) => {
-          dataService.addOrUpdate({ ...item, status: e === true ? ETodoStatus.DONE : ETodoStatus.PENDING });
-        });
+      item$.pipe(take(1)).subscribe((item) => {
+        dataService.addOrUpdate({ ...item, status: e === true ? ETodoStatus.DONE : ETodoStatus.PENDING });
+      });
     },
-    [dataService, id],
+    [item$, dataService],
   );
+
+  const [open, setOpen] = useState(false);
+  const handleOpenEditor = useCallback(() => setOpen(true), []);
 
   return (
     <div className="flex items-center space-x-2">
       <Checkbox checked={checked} onCheckedChange={handleChangeChecked} />
-      <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+      <label
+        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+        onClick={handleOpenEditor}
+      >
         {title}
       </label>
+      <TodoItemEditor id={id} open={open} onOpenChange={setOpen} />
     </div>
   );
 };

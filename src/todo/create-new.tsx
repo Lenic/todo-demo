@@ -50,7 +50,7 @@ export const CreateNewTask: FC = () => {
           control={form.control}
           name="title"
           render={({ field }) => (
-            <FormItem id="task-title">
+            <FormItem>
               <FormControl>
                 <Input placeholder="Input your task title" {...field} />
               </FormControl>

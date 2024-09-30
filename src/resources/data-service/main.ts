@@ -65,7 +65,7 @@ export class DataService extends Disposable implements IDataService {
     const pageTimer$ = timer(0, 10_000).pipe(
       map(() => dayjs().date()),
       distinctUntilChanged(),
-      shareReplay(1),
+      share(),
     );
 
     this.planningList$ = pageTimer$.pipe(
