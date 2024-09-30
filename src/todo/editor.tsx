@@ -32,7 +32,11 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
   const item = dataService.dataMapper[id];
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: { ...item, checked: item.status === ETodoStatus.DONE },
+    values: {
+      title: item.title,
+      checked: item.status === ETodoStatus.DONE,
+      date: item.overdueAt ? new Date(item.overdueAt) : undefined,
+    },
   });
 
   const handleClose = useCallback(() => onOpenChange(false), [onOpenChange]);
