@@ -2,7 +2,7 @@ import type { Observable } from 'rxjs';
 
 import dayjs from 'dayjs';
 import { produce } from 'immer';
-import { interval, Subject, timer } from 'rxjs';
+import { Subject, timer } from 'rxjs';
 import { distinctUntilChanged, map, mergeWith, scan, share, shareReplay, switchMap } from 'rxjs/operators';
 
 import { Disposable, injectableWith } from '@/lib/injector';
@@ -59,6 +59,7 @@ export class DataService extends Disposable implements IDataService {
 
     this.dataMapper = {};
     this.disposeWithMe(this.dataMapper$.subscribe((mapper) => void (this.dataMapper = mapper)));
+    this.disposeWithMe(() => void (this.dataMapper = {}));
 
     // current date switcher
     const pageTimer$ = timer(0, 10_000).pipe(
