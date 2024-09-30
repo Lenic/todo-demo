@@ -45,7 +45,7 @@ export const TodoItem: FC<ITodoItemProps> = ({ id }) => {
     <div className="flex items-center space-x-2">
       <Checkbox checked={checked} onCheckedChange={handleChangeChecked} />
       <label
-        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+        className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
         onClick={handleOpenEditor}
       >
         {title}

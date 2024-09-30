@@ -50,7 +50,7 @@ export const CreateNewTask: FC = () => {
           control={form.control}
           name="title"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex-auto">
               <FormControl>
                 <Input placeholder="Input your task title" {...field} />
               </FormControl>
@@ -62,14 +62,16 @@ export const CreateNewTask: FC = () => {
           control={form.control}
           name="date"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex-initial">
               <FormControl>
                 <DatePicker value={field.value} onChange={field.onChange} />
               </FormControl>
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="flex-initial">
+          Submit
+        </Button>
       </form>
     </Form>
   );

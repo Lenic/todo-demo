@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 export interface IDatePickerProps {
   value?: Date;
+  className?: string;
   onChange?: (value: Date | undefined) => void;
 }
 
@@ -19,7 +20,11 @@ export const DatePicker: FC<IDatePickerProps> = (props) => {
       <PopoverTrigger asChild>
         <Button
           variant={'outline'}
-          className={cn('w-[8.75rem] justify-start text-left font-normal', !props.value && 'text-muted-foreground')}
+          className={cn(
+            'w-[8.75rem] justify-start text-left font-normal',
+            !props.value && 'text-muted-foreground',
+            props.className,
+          )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {props.value ? format(props.value, 'yyyy-MM-dd') : <span>Pick a date</span>}
