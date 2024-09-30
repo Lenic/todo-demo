@@ -10,12 +10,14 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { IDataService, ETodoStatus } from '../resources';
 
 import { TodoItemEditor } from './editor';
+import { RowDatePicker } from './components/row-data-picker';
 
 export interface ITodoItemProps {
   id: string;
+  dateFormatString: string;
 }
 
-export const TodoItem: FC<ITodoItemProps> = ({ id }) => {
+export const TodoItem: FC<ITodoItemProps> = ({ id, dateFormatString }) => {
   const dataService = useMemo(() => ServiceLocator.default.get(IDataService), []);
   const item$ = useMemo(() => dataService.dataMapper$.pipe(map((mapper) => mapper[id])), [dataService, id]);
 
@@ -38,6 +40,11 @@ export const TodoItem: FC<ITodoItemProps> = ({ id }) => {
     [item$, dataService],
   );
 
+  const overdueAt = useObservableState(
+    useMemo(() => item$.pipe(map((item) => (item.overdueAt ? new Date(item.overdueAt) : undefined))), [item$]),
+    undefined,
+  );
+
   const [open, setOpen] = useState(false);
   const handleOpenEditor = useCallback(() => setOpen(true), []);
 
@@ -50,6 +57,7 @@ export const TodoItem: FC<ITodoItemProps> = ({ id }) => {
       >
         {title}
       </label>
+      <RowDatePicker id={id} value={overdueAt} formatString={dateFormatString} />
       <TodoItemEditor id={id} open={open} onOpenChange={setOpen} />
     </div>
   );
