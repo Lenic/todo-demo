@@ -2,8 +2,8 @@ import type { Observable } from 'rxjs';
 
 import dayjs from 'dayjs';
 import { produce } from 'immer';
-import { Subject } from 'rxjs';
-import { distinctUntilChanged, map, mergeWith, scan, share, shareReplay } from 'rxjs/operators';
+import { interval, Subject, timer } from 'rxjs';
+import { distinctUntilChanged, map, mergeWith, scan, share, shareReplay, switchMap } from 'rxjs/operators';
 
 import { Disposable, injectableWith } from '@/lib/injector';
 
@@ -60,13 +60,22 @@ export class DataService extends Disposable implements IDataService {
     this.dataMapper = {};
     this.disposeWithMe(this.dataMapper$.subscribe((mapper) => void (this.dataMapper = mapper)));
 
-    this.planningList$ = this.dataMapper$.pipe(
+    // current date switcher
+    const pageTimer$ = timer(0, 10_000).pipe(
+      map(() => dayjs().date()),
+      distinctUntilChanged(),
+      shareReplay(1),
+    );
+
+    this.planningList$ = pageTimer$.pipe(
+      switchMap(() => this.dataMapper$),
       map((mapper) => {
-        const todayEndTimeValue = dayjs().endOf('day').valueOf();
+        const todayStartTimeValue = dayjs().startOf('day').valueOf();
         return Object.values(mapper)
           .filter(
             (v) =>
-              v.status === ETodoStatus.PENDING && (!v.overdueAt || (!!v.overdueAt && v.overdueAt <= todayEndTimeValue)),
+              v.status === ETodoStatus.PENDING &&
+              (!v.overdueAt || (!!v.overdueAt && v.overdueAt >= todayStartTimeValue)),
           )
           .sort((x, y) => y.createdAt - x.createdAt)
           .map((v) => v.id);
@@ -75,11 +84,12 @@ export class DataService extends Disposable implements IDataService {
       shareReplay(1),
     );
 
-    this.overdueList$ = this.dataMapper$.pipe(
+    this.overdueList$ = pageTimer$.pipe(
+      switchMap(() => this.dataMapper$),
       map((mapper) => {
-        const todayEndTimeValue = dayjs().endOf('day').valueOf();
+        const todayStartTimeValue = dayjs().startOf('day').valueOf();
         return Object.values(mapper)
-          .filter((v) => v.status === ETodoStatus.PENDING && !!v.overdueAt && v.overdueAt > todayEndTimeValue)
+          .filter((v) => v.status === ETodoStatus.PENDING && !!v.overdueAt && v.overdueAt < todayStartTimeValue)
           .sort((x, y) => y.createdAt - x.createdAt)
           .map((v) => v.id);
       }),
@@ -87,7 +97,8 @@ export class DataService extends Disposable implements IDataService {
       shareReplay(1),
     );
 
-    this.archiveList$ = this.dataMapper$.pipe(
+    this.archiveList$ = pageTimer$.pipe(
+      switchMap(() => this.dataMapper$),
       map((mapper) => {
         return Object.values(mapper)
           .filter((v) => v.status === ETodoStatus.DONE)
