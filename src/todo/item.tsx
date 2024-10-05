@@ -7,8 +7,8 @@ import { ServiceLocator } from '@/lib/injector';
 import { useObservableState } from '@/hooks';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { IDataService, ETodoStatus } from '../resources';
-
+import { IDataService } from '../resources';
+import { ETodoStatus } from '@/api';
 import { TodoItemEditor } from './editor';
 import { RowDatePicker } from './components/row-data-picker';
 
@@ -34,7 +34,7 @@ export const TodoItem: FC<ITodoItemProps> = ({ id, dateFormatString }) => {
   const handleChangeChecked = useCallback(
     (e: CheckedState) => {
       item$.pipe(take(1)).subscribe((item) => {
-        dataService.addOrUpdate({ ...item, status: e === true ? ETodoStatus.DONE : ETodoStatus.PENDING });
+        dataService.update({ ...item, status: e === true ? ETodoStatus.DONE : ETodoStatus.PENDING });
       });
     },
     [item$, dataService],

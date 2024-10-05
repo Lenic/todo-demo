@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 
-import { useMemo } from 'react';
+import { useCallback, useState } from 'react';
 import { ServiceLocator } from '@/lib/injector';
 import { useObservableState } from '@/hooks';
 
@@ -9,29 +9,33 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { IDataService } from '../resources';
 
 import { TodoList } from './list';
+import { ETodoListType } from '@/api';
+
+const dataService = ServiceLocator.default.get(IDataService);
 
 export const TodoPanel: FC = () => {
-  const dataService = useMemo(() => ServiceLocator.default.get(IDataService), []);
-
   const pendingList = useObservableState(dataService.planningList$, []);
   const overdueList = useObservableState(dataService.overdueList$, []);
   const archiveList = useObservableState(dataService.archiveList$, []);
 
+  const [activeTab, setActiveTab] = useState<ETodoListType>(ETodoListType.PENDING);
+  const handleChangeActiveTab = useCallback((value: string) => setActiveTab(value as ETodoListType), []);
+
   return (
-    <Tabs defaultValue="pending" className="w-full">
+    <Tabs value={activeTab} onValueChange={handleChangeActiveTab} className="w-full">
       <TabsList className="w-full grid grid-cols-3">
-        <TabsTrigger value="pending">Pending</TabsTrigger>
-        <TabsTrigger value="overdue">Overdue</TabsTrigger>
-        <TabsTrigger value="archive">Archive</TabsTrigger>
+        <TabsTrigger value="PENDING">Pending</TabsTrigger>
+        <TabsTrigger value="OVERDUE">Overdue</TabsTrigger>
+        <TabsTrigger value="ARCHIVE">Archive</TabsTrigger>
       </TabsList>
-      <TabsContent value="pending" className="px-2">
-        <TodoList ids={pendingList} />
+      <TabsContent value="PENDING" className="px-2">
+        <TodoList ids={pendingList} type={ETodoListType.PENDING} />
       </TabsContent>
-      <TabsContent value="overdue" className="px-2">
-        <TodoList ids={overdueList} />
+      <TabsContent value="OVERDUE" className="px-2">
+        <TodoList ids={overdueList} type={ETodoListType.OVERDUE} />
       </TabsContent>
-      <TabsContent value="archive" className="px-2">
-        <TodoList ids={archiveList} />
+      <TabsContent value="ARCHIVE" className="px-2">
+        <TodoList ids={archiveList} type={ETodoListType.ARCHIVE} />
       </TabsContent>
     </Tabs>
   );

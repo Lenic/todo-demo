@@ -11,7 +11,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { ServiceLocator } from '@/lib/injector';
-import { IDataService, ETodoStatus } from '@/resources';
+import { IDataService } from '@/resources';
+import { ETodoStatus } from '@/api';
 import { DatePicker } from './components/date-picker';
 import { map, take } from 'rxjs/operators';
 
@@ -48,10 +49,8 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
         take(1),
       )
       .subscribe((item) => {
-        const now = Date.now();
-        dataService.addOrUpdate({
+        dataService.update({
           ...item,
-          updatedAt: now,
           title: data.title,
           overdueAt: data.date?.valueOf(),
           status: data.checked ? ETodoStatus.DONE : ETodoStatus.PENDING,

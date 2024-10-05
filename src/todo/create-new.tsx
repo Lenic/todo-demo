@@ -3,7 +3,6 @@ import { useMemo, type FC } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { nanoid } from 'nanoid';
 
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,8 @@ import { Input } from '@/components/ui/input';
 
 import { DatePicker } from './components/date-picker';
 import { ServiceLocator } from '@/lib/injector';
-import { ETodoStatus, IDataService } from '@/resources';
+import { IDataService } from '@/resources';
+import { ETodoStatus } from '@/api';
 
 const FormSchema = z.object({
   title: z.string().min(2, { message: 'Task title must be at least 2 characters.' }),
@@ -29,13 +29,9 @@ export const CreateNewTask: FC = () => {
 
   const dataService = useMemo(() => ServiceLocator.default.get(IDataService), []);
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    const now = Date.now();
-    dataService.addOrUpdate({
-      id: nanoid(),
-      createdAt: now,
+    dataService.add({
       status: ETodoStatus.PENDING,
       title: data.title,
-      updatedAt: now,
       overdueAt: data.date?.valueOf(),
     });
 

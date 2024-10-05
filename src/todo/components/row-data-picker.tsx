@@ -31,7 +31,7 @@ export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, f
         )
         .subscribe((item) => {
           setOpen(false);
-          dataService.addOrUpdate({ ...item, overdueAt: value?.valueOf() });
+          dataService.update({ ...item, overdueAt: value?.valueOf() });
         });
     },
     [dataService, id],

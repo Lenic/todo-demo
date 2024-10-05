@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export function areArraysEqual<T>(arr1: T[], arr2: T[]): boolean {
   if (arr1.length !== arr2.length) {
     return false;
@@ -9,4 +11,8 @@ export function areArraysEqual<T>(arr1: T[], arr2: T[]): boolean {
     }
   }
   return true;
+}
+
+export function emptyObservable<T>() {
+  return new Observable<T>(() => {});
 }
