@@ -29,4 +29,4 @@ export interface IDataService {
   delete(id?: string): void;
 }
 
-export const IDataService = createIdentifier<IDataService>(Symbol.for('IDataService'));
+export const IDataService = createIdentifier<IDataService>(Symbol('IDataService'));
