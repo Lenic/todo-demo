@@ -4,7 +4,7 @@ import type { IIndexedDBService } from '@/lib/indexed-db';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { Observable, of } from 'rxjs';
-import { concatMap, filter, finalize, map, skip, take, toArray } from 'rxjs/operators';
+import { concatMap, delay, filter, finalize, map, skip, take, toArray } from 'rxjs/operators';
 
 import { connect$, fromDBRequest } from '@/lib/indexed-db';
 import { injectableWith } from '@/lib/injector';
@@ -77,6 +77,7 @@ export class IndexedDBDataStorageService implements IDataStorageService {
           );
         }),
       ),
+      delay(Math.floor(Math.random() * (2000 - 30 + 1)) + 30),
     );
   }
 

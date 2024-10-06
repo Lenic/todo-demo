@@ -28,13 +28,13 @@ export const TodoPanel: FC = () => {
         <TabsTrigger value="OVERDUE">Overdue</TabsTrigger>
         <TabsTrigger value="ARCHIVE">Archive</TabsTrigger>
       </TabsList>
-      <TabsContent value="PENDING" className="px-2">
+      <TabsContent value="PENDING" className="pl-2">
         <TodoList ids={pendingList} type={ETodoListType.PENDING} />
       </TabsContent>
-      <TabsContent value="OVERDUE" className="px-2">
+      <TabsContent value="OVERDUE" className="pl-2">
         <TodoList ids={overdueList} type={ETodoListType.OVERDUE} />
       </TabsContent>
-      <TabsContent value="ARCHIVE" className="px-2">
+      <TabsContent value="ARCHIVE" className="pl-2">
         <TodoList ids={archiveList} type={ETodoListType.ARCHIVE} />
       </TabsContent>
     </Tabs>

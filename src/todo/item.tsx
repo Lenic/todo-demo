@@ -1,5 +1,5 @@
 import type { CheckedState } from '@radix-ui/react-checkbox';
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 
 import { useCallback, useMemo, useState } from 'react';
 import { map, take } from 'rxjs/operators';
@@ -16,10 +16,11 @@ import { TodoItemEditor } from './editor';
 
 export interface ITodoItemProps {
   id: string;
+  style: CSSProperties;
   dateFormatString: string;
 }
 
-export const TodoItem: FC<ITodoItemProps> = ({ id, dateFormatString }) => {
+export const TodoItem: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
   const dataService = useMemo(() => ServiceLocator.default.get(IDataService), []);
   const item$ = useMemo(() => dataService.dataMapper$.pipe(map((mapper) => mapper[id])), [dataService, id]);
 
@@ -51,7 +52,7 @@ export const TodoItem: FC<ITodoItemProps> = ({ id, dateFormatString }) => {
   const handleOpenEditor = useCallback(() => setOpen(true), []);
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 pr-4" style={style}>
       <Checkbox checked={checked} onCheckedChange={handleChangeChecked} />
       <label
         className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
