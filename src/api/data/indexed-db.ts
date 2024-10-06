@@ -4,7 +4,7 @@ import type { IIndexedDBService } from '@/lib/indexed-db';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { Observable, of } from 'rxjs';
-import { concatMap, filter, finalize, map, take, toArray } from 'rxjs/operators';
+import { concatMap, filter, finalize, map, skip, take, toArray } from 'rxjs/operators';
 
 import { connect$, fromDBRequest } from '@/lib/indexed-db';
 import { injectableWith } from '@/lib/injector';
@@ -49,23 +49,17 @@ export class IndexedDBDataStorageService implements IDataStorageService {
         service.query(TABLE_NAME, (store) => {
           const indexKey = args.type !== ETodoListType.ARCHIVE ? 'createdAt' : 'updatedAt';
 
-          let isSkiped = false;
           const todayStartTimeValue = dayjs().startOf('day').valueOf();
           return fromDBRequest(store.index(indexKey).openCursor(null, 'prev'), false).pipe(
             concatMap(({ value: cursor, complete }) => {
               if (cursor === null) {
                 return of().pipe(finalize(complete));
-              }
-
-              if (!isSkiped && args.offset > 0) {
-                isSkiped = true;
-                cursor.advance(args.offset);
-                return of();
               } else {
                 cursor.continue();
                 return of(cursor.value as ITodoItem);
               }
             }),
+            skip(args.offset),
             filter((v) => {
               if (args.type === ETodoListType.PENDING) {
                 return (
