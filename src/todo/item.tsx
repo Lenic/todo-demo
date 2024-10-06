@@ -1,16 +1,18 @@
-import type { FC } from 'react';
 import type { CheckedState } from '@radix-ui/react-checkbox';
+import type { FC } from 'react';
 
 import { useCallback, useMemo, useState } from 'react';
 import { map, take } from 'rxjs/operators';
-import { ServiceLocator } from '@/lib/injector';
-import { useObservableState } from '@/hooks';
+
+import { ETodoStatus } from '@/api';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useObservableState } from '@/hooks';
+import { ServiceLocator } from '@/lib/injector';
 
 import { IDataService } from '../resources';
-import { ETodoStatus } from '@/api';
-import { TodoItemEditor } from './editor';
+
 import { RowDatePicker } from './components/row-data-picker';
+import { TodoItemEditor } from './editor';
 
 export interface ITodoItemProps {
   id: string;

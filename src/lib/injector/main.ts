@@ -1,5 +1,5 @@
-import type { interfaces } from 'inversify';
 import type { IContainerIdentifier } from './types';
+import type { interfaces } from 'inversify';
 
 import { Container, injectable } from 'inversify';
 

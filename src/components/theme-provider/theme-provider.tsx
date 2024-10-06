@@ -1,6 +1,6 @@
+import type { Theme, ThemeProviderProps } from './types';
 import type { FC } from 'react';
 import type { Subscription } from 'rxjs';
-import type { Theme, ThemeProviderProps } from './types';
 
 import { useEffect, useRef, useState } from 'react';
 

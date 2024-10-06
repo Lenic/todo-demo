@@ -1,3 +1,4 @@
+import type { ITodoItem, ITodoListQueryArgs } from '@/api';
 import type { Observable } from 'rxjs';
 
 import dayjs from 'dayjs';
@@ -17,12 +18,12 @@ import {
   take,
 } from 'rxjs/operators';
 
-import { ITodoListQueryArgs, ITodoItem, ETodoStatus, ETodoListType, IDataStorageService } from '@/api';
+import { ETodoListType, ETodoStatus, IDataStorageService } from '@/api';
 import { Disposable, injectableWith, ServiceLocator } from '@/lib/injector';
 
+import { TODO_LIST_PAGE_SIZE } from './constants';
 import { IDataService } from './types';
 import { areArraysEqual, emptyObservable } from './utils';
-import { TODO_LIST_PAGE_SIZE } from './constants';
 
 @injectableWith(IDataService)
 export class DataService extends Disposable implements IDataService {

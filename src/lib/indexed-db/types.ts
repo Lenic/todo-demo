@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
 
 export interface IIndexedDBService {
   query<T>(name: string, action: (store: IDBObjectStore) => Observable<T>): Observable<T>;

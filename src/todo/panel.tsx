@@ -1,15 +1,15 @@
 import type { FC } from 'react';
 
 import { useCallback, useState } from 'react';
-import { ServiceLocator } from '@/lib/injector';
-import { useObservableState } from '@/hooks';
 
+import { ETodoListType } from '@/api';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useObservableState } from '@/hooks';
+import { ServiceLocator } from '@/lib/injector';
 
 import { IDataService } from '../resources';
 
 import { TodoList } from './list';
-import { ETodoListType } from '@/api';
 
 const dataService = ServiceLocator.default.get(IDataService);
 

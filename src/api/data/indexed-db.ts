@@ -1,11 +1,15 @@
+import type { ITodoItem, ITodoListQueryArgs } from './types';
+import type { IIndexedDBService } from '@/lib/indexed-db';
+
+import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 import { Observable, of } from 'rxjs';
 import { concatMap, filter, finalize, map, take, toArray } from 'rxjs/operators';
-import { ETodoListType, ETodoStatus, IDataStorageService, ITodoItem, ITodoListQueryArgs } from './types';
-import { nanoid } from 'nanoid';
 
+import { connect$, fromDBRequest } from '@/lib/indexed-db';
 import { injectableWith } from '@/lib/injector';
-import { connect$, IIndexedDBService, fromDBRequest } from '@/lib/indexed-db';
-import dayjs from 'dayjs';
+
+import { ETodoListType, ETodoStatus, IDataStorageService } from './types';
 
 const TABLE_NAME = 'todo-list';
 

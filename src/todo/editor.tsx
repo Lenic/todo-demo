@@ -1,20 +1,23 @@
-import { useMemo, type FC, useId, useCallback } from 'react';
+import type { FC } from 'react';
 
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useCallback, useId, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { map, take } from 'rxjs/operators';
 import { z } from 'zod';
+
+import { ETodoStatus } from '@/api';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/hooks/use-toast';
 import { ServiceLocator } from '@/lib/injector';
 import { IDataService } from '@/resources';
-import { ETodoStatus } from '@/api';
+
 import { DatePicker } from './components/date-picker';
-import { map, take } from 'rxjs/operators';
 
 export interface ITodoItemEditorProps {
   id: string;

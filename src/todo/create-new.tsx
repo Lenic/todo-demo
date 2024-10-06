@@ -1,18 +1,19 @@
-import { useMemo, type FC } from 'react';
+import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { toast } from '@/hooks/use-toast';
+import { ETodoStatus } from '@/api';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-
-import { DatePicker } from './components/date-picker';
+import { toast } from '@/hooks/use-toast';
 import { ServiceLocator } from '@/lib/injector';
 import { IDataService } from '@/resources';
-import { ETodoStatus } from '@/api';
+
+import { DatePicker } from './components/date-picker';
 
 const FormSchema = z.object({
   title: z.string().min(2, { message: 'Task title must be at least 2 characters.' }),

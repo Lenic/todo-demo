@@ -1,7 +1,7 @@
+import type { IIndexedDBService } from './types';
+
 import { Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
-
-import type { IIndexedDBService } from './types';
 
 export class IndexedDBService implements IIndexedDBService {
   constructor(private db$: Observable<IDBDatabase | null>) {}

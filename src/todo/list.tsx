@@ -1,14 +1,17 @@
-import { useCallback, useMemo, FC } from 'react';
+import type { ETodoListType } from '@/api';
+import type { FC } from 'react';
 
 import dayjs from 'dayjs';
+import { useCallback, useMemo } from 'react';
+import { from } from 'rxjs';
+import { distinct, filter, map, mergeMap, take, toArray } from 'rxjs/operators';
+
 import { InfiniteScroll } from '@/components/ui/infinite-scroll';
-import { TodoItem } from './item';
+import { useObservableState } from '@/hooks';
 import { ServiceLocator } from '@/lib/injector';
 import { IDataService } from '@/resources';
-import { distinct, filter, map, mergeMap, take, toArray } from 'rxjs/operators';
-import { from } from 'rxjs';
-import { useObservableState } from '@/hooks';
-import { ETodoListType } from '@/api';
+
+import { TodoItem } from './item';
 
 export interface ITodoListProps {
   ids: string[];

@@ -1,5 +1,5 @@
+import type { ETodoListType, ITodoItem } from '@/api';
 import type { Observable } from 'rxjs';
-import type { ITodoItem, ETodoListType } from '@/api';
 
 import { createIdentifier } from '@/lib/injector';
 

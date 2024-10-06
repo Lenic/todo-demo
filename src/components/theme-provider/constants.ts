@@ -1,8 +1,8 @@
-import { Observable } from 'rxjs';
-import { createContext } from 'react';
-import { shareReplay } from 'rxjs/operators';
-
 import type { ThemeProviderState } from './types';
+
+import { createContext } from 'react';
+import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 const initialState: ThemeProviderState = {
   theme: 'system',
