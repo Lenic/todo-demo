@@ -7,6 +7,7 @@ import { from } from 'rxjs';
 import { distinct, filter, map, mergeMap, take, toArray } from 'rxjs/operators';
 
 import { InfiniteScroll } from '@/components/ui/infinite-scroll';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useObservableState } from '@/hooks';
 import { ServiceLocator } from '@/lib/injector';
 import { IDataService } from '@/resources';
@@ -56,12 +57,12 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
   }, [type]);
 
   return (
-    <div className="flex flex-col space-y-2">
+    <ScrollArea className="flex flex-col space-y-2 max-h-80">
       <InfiniteScroll hasMore={!isEnd} loadMore={handleLoadMore}>
         {ids.map((id) => (
           <TodoItem key={id} id={id} dateFormatString={dateFormatString} />
         ))}
       </InfiniteScroll>
-    </div>
+    </ScrollArea>
   );
 };
