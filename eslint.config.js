@@ -29,7 +29,9 @@ export default [
           'error',
           {
             groups: [
-              // type imports
+              // only import
+              ['^'],
+              // type import
               ['^.*\\u0000$'],
               // external
               ['^@?\\w'],
@@ -40,7 +42,7 @@ export default [
               // brother
               ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
               // style
-              ['^.+\\.less$'],
+              ['^.+\\.css$', '^.+\\.less$', '^.+\\.scss$', '^.+\\.postcss$', '^.+\\.sass$'],
             ],
           },
         ],
