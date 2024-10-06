@@ -59,7 +59,6 @@ export class IndexedDBDataStorageService implements IDataStorageService {
                 return of(cursor.value as ITodoItem);
               }
             }),
-            skip(args.offset),
             filter((v) => {
               if (args.type === ETodoListType.PENDING) {
                 return (
@@ -72,6 +71,7 @@ export class IndexedDBDataStorageService implements IDataStorageService {
                 return v.status === ETodoStatus.DONE;
               }
             }),
+            skip(args.offset),
             take(args.limit),
             toArray(),
           );
