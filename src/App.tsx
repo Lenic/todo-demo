@@ -6,7 +6,7 @@ import { CreateNewTask, TodoPanel } from './todo';
 export const App = () => {
   return (
     <ThemeProvider>
-      <div className="container w-full h-full relative mx-auto">
+      <div className="container fixed inset-0 mx-auto">
         <div className="header pt-4 pr-4 text-right">
           <ModeToggle />
         </div>
