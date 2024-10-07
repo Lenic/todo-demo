@@ -67,7 +67,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
   const checkboxKey = useId();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-md:w-full max-md:inset-0 max-md:top-[unset] max-md:transform-none">
         <DialogHeader>
           <DialogTitle>Todo Task Editor</DialogTitle>
         </DialogHeader>
