@@ -2,7 +2,7 @@ import type { ClassValue } from 'clsx';
 
 import { clsx } from 'clsx';
 import { fromEvent } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, shareReplay, startWith } from 'rxjs/operators';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -19,4 +19,5 @@ const getWindowSize = () => ({ width: window.innerWidth, height: window.innerHei
 export const windowResize$ = fromEvent(window, 'resize').pipe(
   map(() => getWindowSize()),
   startWith(getWindowSize()),
+  shareReplay(1),
 );
