@@ -59,7 +59,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
           status: data.checked ? ETodoStatus.DONE : ETodoStatus.PENDING,
         });
 
-        toast({ title: 'Update the task successfully.' });
+        toast({ title: 'Update the task successfully.', duration: 1_000 });
         handleClose();
       });
   }

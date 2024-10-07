@@ -36,7 +36,7 @@ export const CreateNewTask: FC = () => {
       overdueAt: data.date?.valueOf(),
     });
 
-    toast({ title: 'New task created.' });
+    toast({ title: 'New task created.', duration: 1_000 });
     form.reset();
   }
 
