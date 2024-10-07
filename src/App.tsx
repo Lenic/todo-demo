@@ -6,11 +6,11 @@ import { CreateNewTask, TodoPanel } from './todo';
 export const App = () => {
   return (
     <ThemeProvider>
-      <div className="container mx-auto">
+      <div className="container w-screen h-screen relative mx-auto">
         <div className="header pt-4 pr-4 text-right">
           <ModeToggle />
         </div>
-        <div className="content md:min-h-64 dark:shadow-white/20 mt-10 text-center max-w-lg mx-auto p-[0.375rem] rounded-lg shadow-2xl">
+        <div className="content md:min-h-64 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 dark:shadow-white/60 max-w-lg p-[0.375rem] rounded-lg shadow-2xl">
           <CreateNewTask />
           <TodoPanel />
         </div>
