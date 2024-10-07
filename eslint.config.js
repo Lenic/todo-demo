@@ -5,6 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import unusedImports from 'eslint-plugin-unused-imports';
 
 export default [
   ...tseslint.config(
@@ -20,11 +21,13 @@ export default [
       plugins: {
         'react-hooks': reactHooks,
         'react-refresh': reactRefresh,
+        'unused-imports': unusedImports,
         'simple-import-sort': simpleImportSort,
       },
       rules: {
         ...reactHooks.configs.recommended.rules,
         'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+        // sort imports and exports
         'simple-import-sort/imports': [
           'error',
           {
@@ -57,6 +60,18 @@ export default [
         'import/no-named-as-default': 'off',
         'import/no-named-as-default-member': 'off',
         'import/no-duplicates': 'off',
+        // autoremove unused imports
+        'no-unused-vars': 'off', // or "@typescript-eslint/no-unused-vars": "off",
+        'unused-imports/no-unused-imports': 'error',
+        'unused-imports/no-unused-vars': [
+          'warn',
+          {
+            vars: 'all',
+            varsIgnorePattern: '^_',
+            args: 'after-used',
+            argsIgnorePattern: '^_',
+          },
+        ],
       },
     },
   ),
