@@ -2,15 +2,16 @@ import type { ETodoListType } from '@/api';
 import type { CSSProperties, FC } from 'react';
 
 import dayjs from 'dayjs';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { from } from 'rxjs';
-import { distinct, filter, map, mergeMap, toArray } from 'rxjs/operators';
+import { auditTime, distinct, distinctUntilChanged, filter, map, mergeMap, toArray } from 'rxjs/operators';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useObservableState } from '@/hooks';
 import { ServiceLocator } from '@/lib/injector';
+import { windowResize$ } from '@/lib/utils';
 import { IDataService } from '@/resources';
 
 import { TodoItem } from './item';
@@ -67,16 +68,33 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
     }
   };
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listHeight = useObservableState(
+    useMemo(
+      () =>
+        windowResize$.pipe(
+          auditTime(60),
+          map((v) => {
+            if (v.width >= 768) return 240;
+            return v.height - (containerRef.current?.getBoundingClientRect().top ?? 218) - 6;
+          }),
+          distinctUntilChanged(),
+        ),
+      [],
+    ),
+    240,
+  );
+
   const itemCount = isEnd ? ids.length : ids.length + 1;
   return (
     <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemCount} loadMoreItems={handleLoadMore} threshold={3}>
       {({ onItemsRendered, ref }) => (
-        <ScrollArea>
+        <ScrollArea ref={containerRef}>
           <List
             ref={ref}
-            width={492}
-            height={240}
+            width="100%"
             itemSize={40}
+            height={listHeight}
             itemCount={itemCount}
             onItemsRendered={onItemsRendered}
           >
