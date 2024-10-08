@@ -204,12 +204,15 @@ class DataService extends Disposable implements IDataService {
     this.disposeWithMe(this.archiveList$.subscribe((list) => void (this.archiveList = list)));
     this.disposeWithMe(() => void (this.archiveList = []));
 
-    this.ends = { [ETodoListType.PENDING]: false, [ETodoListType.OVERDUE]: false, [ETodoListType.ARCHIVE]: false };
-    this.ends$ = this.endsSubject.pipe(scan((acc, x) => ({ ...acc, [x[0]]: x[1] }), this.ends));
+    this.ends$ = this.endsSubject.pipe(
+      scan((acc, x) => ({ ...acc, [x[0]]: x[1] }), this.ends),
+      shareReplay(1),
+    );
     this.disposeWithMe(this.ends$.subscribe((ends) => void (this.ends = ends)));
+    this.disposeWithMe(() => void (this.ends = {} as Record<ETodoListType, boolean>));
 
     this.loading$ = this.loadingSubject.pipe(
-      scan((acc, x) => (!x ? acc : { ...acc, [x]: !acc[x] }), {} as Record<ETodoListType, boolean>),
+      scan((acc, x) => (!x ? acc : { ...acc, [x]: !acc[x] }), this.loading),
       shareReplay(1),
     );
     this.disposeWithMe(this.loading$.subscribe((loading) => void (this.loading = loading)));
