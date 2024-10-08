@@ -150,7 +150,7 @@ export const languageFilesIntegrationPlugin = {
     /**
      * 检查输出文件夹是否存在，存在则删除后新建一个空的输出文件夹
      */
-    const outputDir = path.resolve(__dirname, '../../public/locales');
+    const outputDir = path.resolve(__dirname, 'dist');
     if (fs.existsSync(outputDir)) {
       fs.rmSync(outputDir, { recursive: true, force: true });
     }

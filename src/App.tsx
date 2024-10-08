@@ -1,7 +1,7 @@
 import { ModeToggle, ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 
-import { CreateNewTask, TodoPanel } from './todo';
+import { CreateNewTask, TodoPanel } from './modules/todo';
 
 const App = () => {
   return (

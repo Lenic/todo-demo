@@ -6,8 +6,7 @@ import { ETodoListType } from '@/api';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useObservableState } from '@/hooks';
 import { ServiceLocator } from '@/lib/injector';
-
-import { IDataService } from '../resources';
+import { IDataService } from '@/resources';
 
 import { TodoList } from './list';
 

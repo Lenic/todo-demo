@@ -8,8 +8,7 @@ import { ETodoStatus } from '@/api';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useObservableState } from '@/hooks';
 import { ServiceLocator } from '@/lib/injector';
-
-import { IDataService } from '../resources';
+import { IDataService } from '@/resources';
 
 import { RowDatePicker } from './components/row-data-picker';
 import { TodoItemEditor } from './editor';
