@@ -2,7 +2,6 @@ import type { FC } from 'react';
 
 import { Moon, Sun } from 'lucide-react';
 
-import { useTheme } from '@/components/theme-provider';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,6 +10,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useIntl } from '@/i18n';
+
+import { useTheme } from './hooks';
 
 export const ModeToggle: FC = () => {
   const { setTheme } = useTheme();

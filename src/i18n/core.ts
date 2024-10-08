@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
 
+import { LANGUAGE_LIST } from './constants';
+
 /**
  * LangConfig 转换完成的语言配置，用于输出成独立的语言配置 JSON 文件
  */
@@ -80,11 +82,6 @@ function refreshJSON(folderPath: string, parentResult: MixedLangConfig) {
 }
 
 /**
- * 定义了在 `MixedLangConfig` 中，配置项的值是数组时，各个语言的配置顺序
- */
-const sequence = ['en-US', 'zh-CN'];
-
-/**
  * 刷新 JSON 对象
  *
  * @param {LangConfig} singleLanguageConfig - 单语言配置
@@ -134,7 +131,7 @@ export const languageFilesIntegrationPlugin = {
     /**
      * 转换所有的 `MixedLangConfig` 类型的配置
      */
-    const allOfLanguage = sequence.reduce((acc, lang, i) => {
+    const allOfLanguage = LANGUAGE_LIST.reduce((acc, lang, i) => {
       let language = acc[lang];
       if (typeof language === 'string') {
         throw new Error(`data structure is error: ${lang}`);
@@ -157,9 +154,9 @@ export const languageFilesIntegrationPlugin = {
     fs.mkdirSync(outputDir, { recursive: true });
 
     /**
-     * 将 `sequence` 中指定输出的语言配置，写入到输出文件夹的独立文件中
+     * 将 `LANGUAGE_LIST` 中指定输出的语言配置，写入到输出文件夹的独立文件中
      */
-    sequence.forEach((lang) => {
+    LANGUAGE_LIST.forEach((lang) => {
       fs.writeFileSync(path.resolve(outputDir, `${lang}.json`), JSON.stringify(allOfLanguage[lang], null, 2), 'utf-8');
     });
   },

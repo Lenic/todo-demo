@@ -3,6 +3,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import resourcesToBackend from 'i18next-resources-to-backend';
 import { initReactI18next } from 'react-i18next';
 
+export * from './constants';
 export * from './hooks';
 
 export const intl = i18next
