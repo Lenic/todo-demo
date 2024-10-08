@@ -3,7 +3,7 @@ import { Toaster } from '@/components/ui/toaster';
 
 import { CreateNewTask, TodoPanel } from './todo';
 
-export const App = () => {
+const App = () => {
   return (
     <ThemeProvider>
       <div className="container fixed inset-0 mx-auto">
@@ -19,3 +19,5 @@ export const App = () => {
     </ThemeProvider>
   );
 };
+
+export default App;
