@@ -87,7 +87,7 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
       return (
         <div style={style}>
           <ContentLoader
-            speed={2}
+            speed={0.5}
             width={rowWidth[0]}
             height={40}
             viewBox={`0 0 ${rowWidth[0]} 40`}
@@ -132,6 +132,7 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
             itemSize={40}
             height={listHeight}
             itemCount={itemCount}
+            overscanCount={TODO_LIST_PAGE_SIZE}
             onItemsRendered={onItemsRendered}
           >
             {Row}
