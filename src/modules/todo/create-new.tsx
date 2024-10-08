@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
+import { useIntl } from '@/i18n';
 import { ServiceLocator } from '@/lib/injector';
 import { IDataService } from '@/resources';
 
@@ -28,6 +29,8 @@ export const CreateNewTask: FC = () => {
     },
   });
 
+  const { t } = useIntl('todo.create-new');
+
   const dataService = useMemo(() => ServiceLocator.default.get(IDataService), []);
   function onSubmit(data: z.infer<typeof FormSchema>) {
     dataService.add({
@@ -36,7 +39,7 @@ export const CreateNewTask: FC = () => {
       overdueAt: data.date?.valueOf(),
     });
 
-    toast({ title: 'New task created.', duration: 1_000 });
+    toast({ title: t('create-success'), duration: 1_000 });
     form.reset();
   }
 
@@ -49,7 +52,7 @@ export const CreateNewTask: FC = () => {
           render={({ field }) => (
             <FormItem className="flex-auto">
               <FormControl>
-                <Input placeholder="Input your task title" {...field} />
+                <Input placeholder={t('input-placeholder')} {...field} />
               </FormControl>
               <FormMessage className="absolute left-0 bottom-0" />
             </FormItem>
@@ -67,7 +70,7 @@ export const CreateNewTask: FC = () => {
           )}
         />
         <Button type="submit" className="flex-initial">
-          Submit
+          {t('submit-form')}
         </Button>
       </form>
     </Form>

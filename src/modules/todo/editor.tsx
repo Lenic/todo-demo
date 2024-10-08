@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
+import { useIntl } from '@/i18n';
 import { ServiceLocator } from '@/lib/injector';
 import { IDataService } from '@/resources';
 
@@ -45,6 +46,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
 
   const handleClose = useCallback(() => onOpenChange(false), [onOpenChange]);
 
+  const { t } = useIntl('todo.editor');
   function onSubmit(data: z.infer<typeof FormSchema>) {
     dataService.dataMapper$
       .pipe(
@@ -59,7 +61,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
           status: data.checked ? ETodoStatus.DONE : ETodoStatus.PENDING,
         });
 
-        toast({ title: 'Update the task successfully.', duration: 1_000 });
+        toast({ title: t('update-success'), duration: 1_000 });
         handleClose();
       });
   }
@@ -69,9 +71,9 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-md:w-full max-md:inset-0 max-md:top-[unset] max-md:transform-none">
         <DialogHeader>
-          <DialogTitle>Todo Task Editor</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
-        <DialogDescription>You can change all of your task infomation here.</DialogDescription>
+        <DialogDescription>{t('title')}</DialogDescription>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-2">
             <div className="flex flex-row space-x-2 justify-between items-center">
@@ -84,7 +86,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
                       <div className="flex items-center space-x-2">
                         <Checkbox id={checkboxKey} checked={value} onCheckedChange={onChange} {...rest} />
                         <Label htmlFor={checkboxKey} className="cursor-pointer">
-                          {value ? 'Done' : 'Pending'}
+                          {value ? t('status.done') : t('status.pending')}
                         </Label>
                       </div>
                     </FormControl>
@@ -109,7 +111,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea rows={6} placeholder="Input your task title" {...field} />
+                    <Textarea rows={6} placeholder={t('title-placeholder')} {...field} />
                   </FormControl>
                   <FormMessage className="absolute left-0 bottom-0" />
                 </FormItem>
@@ -117,9 +119,9 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
             />
             <div className="grid grid-cols-2 gap-2">
               <Button type="button" variant="secondary" onClick={handleClose}>
-                Close
+                {t('cancel')}
               </Button>
-              <Button type="submit">Submit</Button>
+              <Button type="submit">{t('submit')}</Button>
             </div>
           </form>
         </Form>

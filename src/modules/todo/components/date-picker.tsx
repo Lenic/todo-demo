@@ -7,6 +7,7 @@ import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useIntl } from '@/i18n';
 import { cn } from '@/lib/utils';
 
 export interface IDatePickerProps {
@@ -25,6 +26,7 @@ export const DatePicker: FC<IDatePickerProps> = ({ value, className, onChange })
     [onChange],
   );
 
+  const { t } = useIntl('todo.date-picker');
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -37,7 +39,7 @@ export const DatePicker: FC<IDatePickerProps> = ({ value, className, onChange })
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(value, 'yyyy-MM-dd') : <span>Pick a date</span>}
+          {value ? format(value, t('date-formatter')) : <span>{t('placeholder')}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

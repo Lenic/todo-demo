@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react';
 import { ETodoListType } from '@/api';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useObservableState } from '@/hooks';
+import { useIntl } from '@/i18n';
 import { ServiceLocator } from '@/lib/injector';
 import { IDataService } from '@/resources';
 
@@ -17,15 +18,17 @@ export const TodoPanel: FC = () => {
   const overdueList = useObservableState(dataService.overdueList$, []);
   const archiveList = useObservableState(dataService.archiveList$, []);
 
+  const { t } = useIntl('todo.panel');
+
   const [activeTab, setActiveTab] = useState<ETodoListType>(ETodoListType.PENDING);
   const handleChangeActiveTab = useCallback((value: string) => setActiveTab(value as ETodoListType), []);
 
   return (
     <Tabs value={activeTab} onValueChange={handleChangeActiveTab} className="w-full">
       <TabsList className="w-full grid grid-cols-3">
-        <TabsTrigger value="PENDING">Pending</TabsTrigger>
-        <TabsTrigger value="OVERDUE">Overdue</TabsTrigger>
-        <TabsTrigger value="ARCHIVE">Archive</TabsTrigger>
+        <TabsTrigger value="PENDING">{t('pending')}</TabsTrigger>
+        <TabsTrigger value="OVERDUE">{t('overdue')}</TabsTrigger>
+        <TabsTrigger value="ARCHIVE">{t('archive')}</TabsTrigger>
       </TabsList>
       <TabsContent value="PENDING" className="pl-2">
         <TodoList ids={pendingList} type={ETodoListType.PENDING} />
