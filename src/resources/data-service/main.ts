@@ -26,7 +26,7 @@ import { IDataService } from './types';
 import { areArraysEqual, emptyObservable } from './utils';
 
 @injectableWith(IDataService)
-export class DataService extends Disposable implements IDataService {
+class DataService extends Disposable implements IDataService {
   private appendSubject = new Subject<ITodoItem[]>();
   private updateSubject = new Subject<ITodoItem>();
   private addSubject = new Subject<Omit<ITodoItem, 'id' | 'createdAt' | 'updatedAt'>>();
@@ -226,3 +226,5 @@ export class DataService extends Disposable implements IDataService {
     return args;
   }
 }
+
+export { DataService };

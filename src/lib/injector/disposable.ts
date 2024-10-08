@@ -4,7 +4,7 @@ import type { SubscriptionLike } from 'rxjs';
 import { injectable } from 'inversify';
 
 @injectable()
-export class Disposable implements IDisposable {
+class Disposable implements IDisposable {
   private list: Array<(() => void) | SubscriptionLike> = [];
 
   dispose(): void {
@@ -15,3 +15,5 @@ export class Disposable implements IDisposable {
     this.list.push(subscription);
   }
 }
+
+export { Disposable };

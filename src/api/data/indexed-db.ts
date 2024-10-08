@@ -14,7 +14,7 @@ import { ETodoListType, ETodoStatus, IDataStorageService } from './types';
 const TABLE_NAME = 'todo-list';
 
 @injectableWith(IDataStorageService)
-export class IndexedDBDataStorageService implements IDataStorageService {
+class IndexedDBDataStorageService implements IDataStorageService {
   private storage$: Observable<IIndexedDBService>;
 
   constructor() {
@@ -131,3 +131,5 @@ export class IndexedDBDataStorageService implements IDataStorageService {
     );
   }
 }
+
+export { IndexedDBDataStorageService };
