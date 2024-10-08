@@ -31,8 +31,11 @@ class DataService extends Disposable implements IDataService {
   private updateSubject = new Subject<ITodoItem>();
   private addSubject = new Subject<Omit<ITodoItem, 'id' | 'createdAt' | 'updatedAt'>>();
   private clearSubject = new Subject<string | undefined>();
-  private loadingSubject = new BehaviorSubject<boolean>(false);
+  private loadingSubject = new BehaviorSubject<ETodoListType | null>(null);
   private endsSubject = new Subject<[ETodoListType, boolean]>();
+
+  loading$ = emptyObservable<Record<ETodoListType, boolean>>();
+  loading = {} as Record<ETodoListType, boolean>;
 
   dataMapper: Record<string, ITodoItem> = {};
   dataMapper$ = emptyObservable<Record<string, ITodoItem>>();
@@ -55,25 +58,28 @@ class DataService extends Disposable implements IDataService {
   }
 
   loadMore(type: ETodoListType): Observable<void> {
-    return this.loadingSubject.pipe(
+    return this.loading$.pipe(
+      map((mapper) => mapper[type]),
       take(1),
       switchMap((x) => {
         if (x) {
-          return this.loadingSubject.pipe(
+          return this.loading$.pipe(
+            map((mapper) => mapper[type]),
             filter((v) => !v),
             take(1),
             map(() => void 0),
           );
         } else {
-          this.loadingSubject.next(true);
+          this.loadingSubject.next(type);
 
           const args = this.getQueryArgs(type);
+          console.log(args);
           return this.storageService.query(args).pipe(
             map((list) => {
               this.endsSubject.next([type, list.length < TODO_LIST_PAGE_SIZE]);
               this.append(list);
             }),
-            finalize(() => this.loadingSubject.next(false)),
+            finalize(() => this.loadingSubject.next(type)),
           );
         }
       }),
@@ -201,6 +207,13 @@ class DataService extends Disposable implements IDataService {
     this.ends = { [ETodoListType.PENDING]: false, [ETodoListType.OVERDUE]: false, [ETodoListType.ARCHIVE]: false };
     this.ends$ = this.endsSubject.pipe(scan((acc, x) => ({ ...acc, [x[0]]: x[1] }), this.ends));
     this.disposeWithMe(this.ends$.subscribe((ends) => void (this.ends = ends)));
+
+    this.loading$ = this.loadingSubject.pipe(
+      scan((acc, x) => (!x ? acc : { ...acc, [x]: !acc[x] }), {} as Record<ETodoListType, boolean>),
+      shareReplay(1),
+    );
+    this.disposeWithMe(this.loading$.subscribe((loading) => void (this.loading = loading)));
+    this.disposeWithMe(() => void (this.loading = {} as Record<ETodoListType, boolean>));
   }
 
   private getQueryArgs(type: ETodoListType) {

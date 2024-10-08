@@ -18,6 +18,9 @@ export interface IDataService {
   ends: Record<ETodoListType, boolean>;
   ends$: Observable<Record<ETodoListType, boolean>>;
 
+  loading$: Observable<Record<ETodoListType, boolean>>;
+  loading: Record<ETodoListType, boolean>;
+
   loadMore(type: ETodoListType): Observable<void>;
 
   append(list: ITodoItem[]): void;
