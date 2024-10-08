@@ -19,7 +19,7 @@ import {
 } from 'rxjs/operators';
 
 import { ETodoListType, ETodoStatus, IDataStorageService } from '@/api';
-import { Disposable, injectableWith, ServiceLocator } from '@/lib/injector';
+import { Disposable, injectableWith, injectWith } from '@/lib/injector';
 
 import { TODO_LIST_PAGE_SIZE } from './constants';
 import { IDataService } from './types';
@@ -33,7 +33,6 @@ class DataService extends Disposable implements IDataService {
   private clearSubject = new Subject<string | undefined>();
   private loadingSubject = new BehaviorSubject<boolean>(false);
   private endsSubject = new Subject<[ETodoListType, boolean]>();
-  private storageService = ServiceLocator.default.get(IDataStorageService);
 
   dataMapper: Record<string, ITodoItem> = {};
   dataMapper$ = emptyObservable<Record<string, ITodoItem>>();
@@ -49,7 +48,7 @@ class DataService extends Disposable implements IDataService {
   ends = {} as Record<ETodoListType, boolean>;
   ends$ = emptyObservable<Record<ETodoListType, boolean>>();
 
-  constructor() {
+  constructor(@injectWith(IDataStorageService) private storageService: IDataStorageService) {
     super();
 
     this.build();
