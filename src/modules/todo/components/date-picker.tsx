@@ -12,11 +12,12 @@ import { cn } from '@/lib/utils';
 
 export interface IDatePickerProps {
   value?: Date;
+  disabled?: boolean;
   className?: string;
   onChange?: (value: Date | undefined) => void;
 }
 
-export const DatePicker: FC<IDatePickerProps> = ({ value, className, onChange }) => {
+export const DatePicker: FC<IDatePickerProps> = ({ value, className, disabled, onChange }) => {
   const [open, setOpen] = useState(false);
   const handleChangeDate = useCallback(
     (value: Date | undefined) => {
@@ -29,9 +30,10 @@ export const DatePicker: FC<IDatePickerProps> = ({ value, className, onChange })
   const { t } = useIntl('todo.date-picker');
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled={disabled}>
         <Button
-          variant={'outline'}
+          variant="outline"
+          disabled={disabled}
           className={cn(
             'w-[8.75rem] justify-start text-left font-normal',
             !value && 'text-muted-foreground',

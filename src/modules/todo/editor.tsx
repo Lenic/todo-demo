@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback, useId, useMemo } from 'react';
+import { useCallback, useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { map, take } from 'rxjs/operators';
 import { z } from 'zod';
@@ -32,9 +32,12 @@ const FormSchema = z.object({
   checked: z.boolean(),
 });
 
+const dataService = ServiceLocator.default.get(IDataService);
+
 export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChange }) => {
-  const dataService = useMemo(() => ServiceLocator.default.get(IDataService), []);
   const item = dataService.dataMapper[id];
+  const [disableEditing] = useState(() => item.status === ETodoStatus.DONE);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     values: {
@@ -99,7 +102,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <DatePicker value={field.value} onChange={field.onChange} />
+                      <DatePicker value={field.value} onChange={field.onChange} disabled={disableEditing} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -111,7 +114,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea rows={6} placeholder={t('title-placeholder')} {...field} />
+                    <Textarea rows={6} placeholder={t('title-placeholder')} {...field} disabled={disableEditing} />
                   </FormControl>
                   <FormMessage className="absolute left-0 bottom-0" />
                 </FormItem>
