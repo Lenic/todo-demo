@@ -1,17 +1,19 @@
 {
   "theme": {
-    "light": ["light", "明亮"],
-    "dark": ["dark", "暗黑"],
-    "system": ["system", "跟随系统"]
+    "light": ["light", "明亮", "明るい"],
+    "dark": ["dark", "暗黑", "暗黒の"],
+    "system": ["system", "跟随系统", "システムに従う"]
   },
   "language": {
     "icon": {
-      "zh-CN": ["中", "中"],
-      "en-US": ["En", "En"]
+      "zh-CN": ["中", "中", "中"],
+      "en-US": ["En", "En", "En"],
+      "ja-JP": ["JP", "JP", "JP"]
     },
     "menu": {
-      "zh-CN": ["简体中文", "简体中文"],
-      "en-US": ["English(US)", "English(US)"]
+      "zh-CN": ["简体中文", "简体中文", "简体中文"],
+      "en-US": ["English(US)", "English(US)", "English(US)"],
+      "ja-JP": ["日本語", "日本語", "日本語"]
     }
   }
 }

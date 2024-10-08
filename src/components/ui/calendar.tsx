@@ -18,6 +18,8 @@ const lang$ = languageChanged$.pipe(
         return from(import('date-fns/locale/en-US').then((v) => v.enUS));
       case ELocaleType.ZH_CN:
         return from(import('date-fns/locale/zh-CN').then((v) => v.zhCN));
+      case ELocaleType.JA_JP:
+        return from(import('date-fns/locale/ja').then((v) => v.ja));
       default:
         return of(undefined);
     }

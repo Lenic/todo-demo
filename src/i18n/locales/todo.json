@@ -1,28 +1,32 @@
 {
   "panel": {
-    "pending": ["Pending", "进行中"],
-    "overdue": ["Overdue", "逾期"],
-    "archive": ["Archive", "归档"]
+    "pending": ["Pending", "进行中", "進行中"],
+    "overdue": ["Overdue", "逾期", "期限超過"],
+    "archive": ["Archive", "归档", "ファイリングする"]
   },
   "create-new": {
-    "create-success": ["New task created.", "新任务创建完成！"],
-    "input-placeholder": ["Input your task title", "键入新任务标题"],
-    "submit-form": ["Submit", "确认"]
+    "create-success": ["New task created.", "新任务创建完成！", "新しいタスクが作成されました！"],
+    "input-placeholder": ["Input your task title", "键入新任务标题", "新しいタスクのタイトルを入力してください"],
+    "submit-form": ["Submit", "确认", "確認"]
   },
   "date-picker": {
-    "date-formatter": ["yyyy-MM-dd", "yyyy-MM-dd"],
-    "placeholder": ["Pick a date", "选择日期"]
+    "date-formatter": ["yyyy-MM-dd", "yyyy-MM-dd", "yyyy-MM-dd"],
+    "placeholder": ["Pick a date", "选择日期", "日付選択"]
   },
   "editor": {
-    "update-success": ["Update the task successfully.", "任务信息更新完成！"],
-    "title": ["Todo Task Editor", "编辑任务详情"],
-    "description": ["You can change all of your task infomation here.", "您可以在这里编辑任务的所有信息。"],
+    "update-success": ["Update the task successfully.", "任务信息更新完成！", "タスク情報が更新されました！"],
+    "title": ["Todo Task Editor", "编辑任务详情", "タスクの詳細を編集してください"],
+    "description": [
+      "You can change all of your task infomation here.",
+      "您可以在这里编辑任务的所有信息。",
+      "ここでタスクの全ての情報を編集することができます。"
+    ],
     "status": {
-      "done": ["Done", "已完成"],
-      "pending": ["Pending", "进行中"]
+      "done": ["Done", "已完成", "完了"],
+      "pending": ["Pending", "进行中", "進行中"]
     },
-    "title-placeholder": ["Input your task title", "键入任务的标题"],
-    "cancel": ["Cancel", "取消"],
-    "submit": ["Submit", "提交"]
+    "title-placeholder": ["Input your task title", "键入任务的标题", "タスクのタイトルを入力してください"],
+    "cancel": ["Cancel", "取消", "キャンセル"],
+    "submit": ["Submit", "提交", "提出"]
   }
 }
