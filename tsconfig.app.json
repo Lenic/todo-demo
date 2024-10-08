@@ -23,7 +23,7 @@
     /* Inversify */
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["reflect-metadata"],
+    "types": ["node","reflect-metadata"],
 
     /* TailwindCSS */
     "baseUrl": ".",

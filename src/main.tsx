@@ -3,10 +3,12 @@ import 'reflect-metadata';
 import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { intl } from './i18n';
+
 import './index.css';
 
 // eslint-disable-next-line react-refresh/only-export-components -- this is the entrance
-const App = lazy(() => import('./App'));
+const App = lazy(() => Promise.all([import('./App'), intl]).then(([App]) => App));
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

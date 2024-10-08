@@ -10,9 +10,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useIntl } from '@/i18n';
 
 export const ModeToggle: FC = () => {
   const { setTheme } = useTheme();
+  const { t } = useIntl('settings.theme');
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -23,9 +26,9 @@ export const ModeToggle: FC = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>System</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('light')}>{t('light')}</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('dark')}>{t('dark')}</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('system')}>{t('system')}</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

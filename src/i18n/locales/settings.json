@@ -1,0 +1,7 @@
+{
+  "theme": {
+    "light": ["light", "明亮"],
+    "dark": ["dark", "暗黑"],
+    "system": ["system", "跟随系统"]
+  }
+}
