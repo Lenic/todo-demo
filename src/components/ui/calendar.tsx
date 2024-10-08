@@ -1,5 +1,6 @@
+import type { ComponentProps } from 'react';
+
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import * as React from 'react';
 import { DayPicker } from 'react-day-picker';
 import { from, of } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
@@ -9,7 +10,7 @@ import { useObservableState } from '@/hooks';
 import { ELocaleType, languageChanged$ } from '@/i18n';
 import { cn } from '@/lib/utils';
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+export type CalendarProps = ComponentProps<typeof DayPicker>;
 
 const lang$ = languageChanged$.pipe(
   concatMap((lang) => {

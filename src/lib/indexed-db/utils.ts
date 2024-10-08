@@ -6,8 +6,7 @@ export function fromDBRequest<T>(dbRequest: IDBRequest<T>): Observable<T>;
 export function fromDBRequest<T>(dbRequest: IDBRequest<T>, autoComplete: false): Observable<IDBRequestResult<T>>;
 
 export function fromDBRequest<T>(dbRequest: IDBRequest<T>, autoComplete = true) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- adapt multiple return types
-  return new Observable<any>((observer) => {
+  return new Observable<IDBRequestResult<T> | T>((observer) => {
     const errorAction = (error: Event) => {
       observer.error(error);
       observer.complete();
@@ -19,7 +18,10 @@ export function fromDBRequest<T>(dbRequest: IDBRequest<T>, autoComplete = true) 
       } else {
         observer.next({
           value: dbRequest.result,
-          complete: () => void Promise.resolve().then(() => observer.complete()),
+          complete: () =>
+            void Promise.resolve().then(() => {
+              observer.complete();
+            }),
         } as IDBRequestResult<T>);
       }
     };

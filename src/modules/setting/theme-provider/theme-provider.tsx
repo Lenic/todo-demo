@@ -1,4 +1,4 @@
-import type { Theme, ThemeProviderProps } from './types';
+import type { IThemeProviderProps, Theme } from './types';
 import type { FC } from 'react';
 import type { Subscription } from 'rxjs';
 
@@ -6,9 +6,9 @@ import { useEffect, useRef, useState } from 'react';
 
 import { preferColorScheme$, ThemeProviderContext } from './constants';
 
-export const ThemeProvider: FC<ThemeProviderProps> = (props) => {
+export const ThemeProvider: FC<IThemeProviderProps> = (props) => {
   const { children, defaultTheme = 'system', storageKey = 'vite-ui-theme', ...rest } = props;
-  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem(storageKey) as Theme) || defaultTheme);
+  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem(storageKey) as Theme | null) ?? defaultTheme);
 
   const subscriptionRef = useRef<Subscription | null>(null);
 

@@ -27,9 +27,27 @@ export const ModeToggle: FC = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>{t('light')}</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>{t('dark')}</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>{t('system')}</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            setTheme('light');
+          }}
+        >
+          {t('light')}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            setTheme('dark');
+          }}
+        >
+          {t('dark')}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            setTheme('system');
+          }}
+        >
+          {t('system')}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

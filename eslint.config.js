@@ -6,26 +6,47 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import unusedImports from 'eslint-plugin-unused-imports';
+import react from 'eslint-plugin-react';
 
 export default [
   ...tseslint.config(
     { ignores: ['dist'] },
     {
-      extends: [js.configs.recommended, ...tseslint.configs.recommended, importPlugin.flatConfigs.recommended],
+      extends: [
+        js.configs.recommended,
+        ...tseslint.configs.strictTypeChecked,
+        ...tseslint.configs.stylisticTypeChecked,
+        importPlugin.flatConfigs.recommended,
+      ],
       files: ['**/*.{ts,tsx}'],
       languageOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
         globals: globals.browser,
+        parserOptions: {
+          project: ['./tsconfig.node.json', './tsconfig.app.json'],
+          tsconfigRootDir: import.meta.dirname,
+          ecmaFeatures: {
+            jsx: true,
+          },
+        },
       },
       plugins: {
+        react,
         'react-hooks': reactHooks,
         'react-refresh': reactRefresh,
         'unused-imports': unusedImports,
         'simple-import-sort': simpleImportSort,
       },
+      settings: {
+        react: {
+          version: 'detect',
+        },
+      },
       rules: {
         ...reactHooks.configs.recommended.rules,
+        ...react.configs.recommended.rules,
+        ...react.configs['jsx-runtime'].rules,
         'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
         // sort imports and exports
         'simple-import-sort/imports': [

@@ -45,7 +45,10 @@ export const CreateNewTask: FC = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="h-[4.25rem] relative flex flex-row space-x-2">
+      <form
+        onSubmit={(e) => void form.handleSubmit(onSubmit)(e)}
+        className="h-[4.25rem] relative flex flex-row space-x-2"
+      >
         <FormField
           control={form.control}
           name="title"

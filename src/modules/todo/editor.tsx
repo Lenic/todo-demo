@@ -47,7 +47,9 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
     },
   });
 
-  const handleClose = useCallback(() => onOpenChange(false), [onOpenChange]);
+  const handleClose = useCallback(() => {
+    onOpenChange(false);
+  }, [onOpenChange]);
 
   const { t } = useIntl('todo.editor');
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -78,7 +80,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
         </DialogHeader>
         <DialogDescription>{t('title')}</DialogDescription>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-2">
+          <form onSubmit={(e) => void form.handleSubmit(onSubmit)(e)} className="flex flex-col space-y-2">
             <div className="flex flex-row space-x-2 justify-between items-center">
               <FormField
                 control={form.control}

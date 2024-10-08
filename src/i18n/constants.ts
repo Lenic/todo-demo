@@ -8,7 +8,9 @@ import { ELocaleType } from './types';
 export const LANGUAGE_LIST = [ELocaleType.EN_US, ELocaleType.ZH_CN, ELocaleType.JA_JP];
 
 const language$ = new Observable<ELocaleType>((observer) => {
-  const action = (lang: ELocaleType) => observer.next(lang);
+  const action = (lang: ELocaleType) => {
+    observer.next(lang);
+  };
 
   i18next.on('languageChanged', action);
   observer.next(i18next.language as ELocaleType);

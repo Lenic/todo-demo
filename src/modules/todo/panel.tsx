@@ -21,7 +21,9 @@ export const TodoPanel: FC = () => {
   const { t } = useIntl('todo.panel');
 
   const [activeTab, setActiveTab] = useState<ETodoListType>(ETodoListType.PENDING);
-  const handleChangeActiveTab = useCallback((value: string) => setActiveTab(value as ETodoListType), []);
+  const handleChangeActiveTab = useCallback((value: string) => {
+    setActiveTab(value as ETodoListType);
+  }, []);
 
   return (
     <Tabs value={activeTab} onValueChange={handleChangeActiveTab} className="w-full">

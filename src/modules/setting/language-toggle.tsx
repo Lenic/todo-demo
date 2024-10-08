@@ -24,7 +24,7 @@ export const LanguageToggle: FC = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {LANGUAGE_LIST.map((lang) => (
-          <DropdownMenuItem key={lang} onClick={() => i18n.changeLanguage(lang)}>
+          <DropdownMenuItem key={lang} onClick={() => void i18n.changeLanguage(lang)}>
             {t(`menu.${lang}`)}
           </DropdownMenuItem>
         ))}

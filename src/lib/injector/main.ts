@@ -33,23 +33,19 @@ export function createIdentifier<T>(key: string | symbol) {
 export class ServiceLocator {
   static default = new ServiceLocator();
 
-  get<T>(identifier: IContainerIdentifier<T>): T;
-  get<T>(identifier: IContainerIdentifier<T>, name: string | number | symbol): T;
   get<T>(identifier: IContainerIdentifier<T>, name?: string | number | symbol) {
-    if (name === null || name === undefined) {
+    if (name === undefined) {
       return container.get<T>(identifier.getIdentifier());
     } else {
-      return container.getNamed(identifier.getIdentifier(), name);
+      return container.getNamed<T>(identifier.getIdentifier(), name);
     }
   }
 
-  getAll<T>(identifier: IContainerIdentifier<T>): T;
-  getAll<T>(identifier: IContainerIdentifier<T>, name: string | number | symbol): T;
   getAll<T>(identifier: IContainerIdentifier<T>, name?: string | number | symbol) {
-    if (name === null || name === undefined) {
+    if (name === undefined) {
       return container.getAll<T>(identifier.getIdentifier());
     } else {
-      return container.getAllNamed(identifier.getIdentifier(), name);
+      return container.getAllNamed<T>(identifier.getIdentifier(), name);
     }
   }
 }

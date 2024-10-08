@@ -14,5 +14,5 @@ export function areArraysEqual<T>(arr1: T[], arr2: T[]): boolean {
 }
 
 export function emptyObservable<T>() {
-  return new Observable<T>(() => {});
+  return new Observable<T>(() => void 0);
 }

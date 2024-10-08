@@ -49,17 +49,27 @@ export class IndexedDBService implements IIndexedDBService {
           const result = isMultiple ? action(stores) : action(stores[0]);
 
           const subscription = result.subscribe({
-            error: (e) => observer.error(e),
-            next: (v) => observer.next(v),
+            error: (e) => {
+              observer.error(e);
+            },
+            next: (v) => {
+              observer.next(v);
+            },
             complete: () => {
               subscription.unsubscribe();
               transaction.commit();
             },
           });
 
-          transaction.onabort = (e) => observer.error(e);
-          transaction.onerror = (e) => observer.error(e);
-          transaction.oncomplete = () => observer.complete();
+          transaction.onabort = (e) => {
+            observer.error(e);
+          };
+          transaction.onerror = (e) => {
+            observer.error(e);
+          };
+          transaction.oncomplete = () => {
+            observer.complete();
+          };
         });
       }),
     );

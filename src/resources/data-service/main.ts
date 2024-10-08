@@ -79,7 +79,9 @@ class DataService extends Disposable implements IDataService {
               this.endsSubject.next([type, list.length < TODO_LIST_PAGE_SIZE]);
               this.append(list);
             }),
-            finalize(() => this.loadingSubject.next(type)),
+            finalize(() => {
+              this.loadingSubject.next(type);
+            }),
           );
         }
       }),
@@ -134,6 +136,7 @@ class DataService extends Disposable implements IDataService {
             case 'update':
               return { ...acc, [x.item.id]: x.item };
             case 'delete':
+              // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- simple code
               return produce(acc, (draft) => void delete draft[x.id]);
             case 'clear':
               return {};

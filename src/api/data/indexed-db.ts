@@ -51,9 +51,15 @@ class IndexedDBDataStorageService implements IDataStorageService {
 
           const todayStartTimeValue = dayjs().startOf('day').valueOf();
           return fromDBRequest(store.index(indexKey).openCursor(null, 'prev'), false).pipe(
-            concatMap(({ value: cursor, complete }) => {
+            concatMap((res) => {
+              const { value: cursor } = res;
+
               if (cursor === null) {
-                return of().pipe(finalize(complete));
+                return of().pipe(
+                  finalize(() => {
+                    res.complete();
+                  }),
+                );
               } else {
                 cursor.continue();
                 return of(cursor.value as ITodoItem);

@@ -33,7 +33,7 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
             from(ids).pipe(
               map((id) => mapper[id].overdueAt),
               filter((v) => !!v),
-              map((date) => dayjs(date!).get('year')),
+              map((date) => dayjs(date).get('year')),
               distinct(),
               toArray(),
               map((list) => {
@@ -90,7 +90,7 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
             speed={0.5}
             width={rowWidth[0]}
             height={40}
-            viewBox={`0 0 ${rowWidth[0]} 40`}
+            viewBox={`0 0 ${String(rowWidth[0])} 40`}
             backgroundColor="#d9d9d9"
             foregroundColor="#ededed"
           >

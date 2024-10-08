@@ -48,7 +48,9 @@ export const TodoItem: FC<ITodoItemProps> = ({ id, dateFormatString, style }) =>
   );
 
   const [open, setOpen] = useState(false);
-  const handleOpenEditor = useCallback(() => setOpen(true), []);
+  const handleOpenEditor = useCallback(() => {
+    setOpen(true);
+  }, []);
 
   return (
     <div className="flex items-center space-x-2 pr-4" style={style}>

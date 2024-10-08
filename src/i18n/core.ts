@@ -27,11 +27,11 @@ const getDirectoryInfo = (folderPath: string) => {
   /**
    * 当前文件夹下的所有直属子文件夹数组
    */
-  const directories: Array<[string, string]> = [];
+  const directories: [string, string][] = [];
   /**
    * 当前文件夹下的所有直属文件数组
    */
-  const filePaths: Array<[string, string]> = [];
+  const filePaths: [string, string][] = [];
 
   fs.readdirSync(folderPath).forEach((item) => {
     const itemPath = path.join(folderPath, item);
@@ -59,13 +59,13 @@ function refreshJSON(folderPath: string, parentResult: MixedLangConfig) {
     if (path.extname(currentFilePath) !== '.json') return;
 
     const key = currentFilePath.slice(0, currentFilePath.length - 5);
-    const fileContent = JSON.parse(fs.readFileSync(fullFilePath, 'utf-8'));
+    const fileContent = JSON.parse(fs.readFileSync(fullFilePath, 'utf-8')) as MixedLangConfig;
 
     parentResult[key] = fileContent;
   });
 
   directories.forEach(([fullDirectory, currentDirectory]) => {
-    let currentResult = parentResult[currentDirectory];
+    let currentResult = parentResult[currentDirectory] as MixedLangConfig | undefined;
     if (typeof currentResult === 'string') {
       throw new Error(`parent directory value is string: ${fullDirectory} - ${currentDirectory}`);
     } else if (Array.isArray(currentResult)) {
@@ -94,13 +94,13 @@ const refreshConfig = (singleLanguageConfig: LangConfig, partialMixedConfig: Mix
       throw new Error(`has the same key: ${key}`);
     }
 
-    const currentConfig = partialMixedConfig[key];
+    const currentConfig = partialMixedConfig[key] as string | string[] | MixedLangConfig | undefined;
     if (typeof currentConfig === 'string') {
       if (index === 0) {
         singleLanguageConfig[key] = currentConfig;
       }
     } else if (Array.isArray(currentConfig)) {
-      const currentConfigValue = currentConfig[index];
+      const currentConfigValue = currentConfig[index] as string | undefined | null;
       if (currentConfigValue !== null && currentConfigValue !== undefined) {
         singleLanguageConfig[key] = currentConfigValue;
       }
@@ -115,7 +115,7 @@ const refreshConfig = (singleLanguageConfig: LangConfig, partialMixedConfig: Mix
 
 export const languageFilesIntegrationPlugin = {
   name: 'language-files-integration',
-  async buildStart() {
+  buildStart() {
     const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
     const rootPath = path.resolve(__dirname, 'locales');
 
@@ -131,8 +131,8 @@ export const languageFilesIntegrationPlugin = {
     /**
      * 转换所有的 `MixedLangConfig` 类型的配置
      */
-    const allOfLanguage = LANGUAGE_LIST.reduce((acc, lang, i) => {
-      let language = acc[lang];
+    const allOfLanguage = LANGUAGE_LIST.reduce<LangConfig>((acc, lang, i) => {
+      let language = acc[lang] as string | LangConfig | null | undefined;
       if (typeof language === 'string') {
         throw new Error(`data structure is error: ${lang}`);
       } else if (language === null || language === undefined) {
@@ -142,7 +142,7 @@ export const languageFilesIntegrationPlugin = {
       refreshConfig(language, result, i);
 
       return acc;
-    }, {} as LangConfig);
+    }, {});
 
     /**
      * 检查输出文件夹是否存在，存在则删除后新建一个空的输出文件夹

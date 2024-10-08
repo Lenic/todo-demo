@@ -8,8 +8,12 @@ export function connect$(name: string, version: number) {
   return new Observable<TIndexedDBConnectEvent>((observer) => {
     const request = indexedDB.open(name, version);
 
-    request.onerror = () => observer.error('Failed to open database');
-    request.onupgradeneeded = (event) => observer.next({ type: 'upgrade-version', event });
+    request.onerror = () => {
+      observer.error('Failed to open database');
+    };
+    request.onupgradeneeded = (event) => {
+      observer.next({ type: 'upgrade-version', event });
+    };
 
     const subject = new BehaviorSubject<IDBDatabase | null>(null);
     request.onsuccess = () => {

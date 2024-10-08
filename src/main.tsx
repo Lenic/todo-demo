@@ -10,10 +10,13 @@ import './index.css';
 // eslint-disable-next-line react-refresh/only-export-components -- this is the entrance
 const App = lazy(() => Promise.all([import('./App'), intl]).then(([App]) => App));
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Suspense fallback={<div>Loading</div>}>
-      <App />
-    </Suspense>
-  </StrictMode>,
-);
+const el = document.getElementById('root');
+if (el) {
+  createRoot(el).render(
+    <StrictMode>
+      <Suspense fallback={<div>Loading</div>}>
+        <App />
+      </Suspense>
+    </StrictMode>,
+  );
+}
