@@ -63,7 +63,12 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground w-screen h-screen;
     overflow: hidden;
+    background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
+  }
+
+  .dark body {
+    background-image: linear-gradient(to top, #29323c 0%, #243949 100%);
   }
 }
