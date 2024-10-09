@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 
 import i18n from 'i18next';
+import { Languages } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -19,7 +20,8 @@ export const LanguageToggle: FC = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
-          {t(`icon.${i18n.language}`)}
+          <Languages className="h-[1.2rem] w-[1.2rem]" />
+          <span className="sr-only">{t(`icon.${i18n.language}`)}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

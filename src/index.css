@@ -65,10 +65,10 @@
   body {
     @apply text-foreground w-screen h-screen;
     overflow: hidden;
-    @apply bg-gradient-to-t from-violet-200 to-pink-200;
+    @apply bg-gradient-to-t from-pink-200 to-violet-200;
   }
 
   .dark body {
-    @apply bg-gradient-to-t from-slate-800 to-slate-500;
+    @apply bg-gradient-to-t from-slate-900 to-slate-700;
   }
 }
