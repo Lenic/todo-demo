@@ -65,10 +65,10 @@
   body {
     @apply text-foreground w-screen h-screen;
     overflow: hidden;
-    background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
+    @apply bg-gradient-to-t from-violet-200 to-pink-200;
   }
 
   .dark body {
-    background-image: linear-gradient(to top, #29323c 0%, #243949 100%);
+    @apply bg-gradient-to-t from-slate-800 to-slate-500;
   }
 }
