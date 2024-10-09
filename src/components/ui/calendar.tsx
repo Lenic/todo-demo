@@ -1,8 +1,10 @@
+import type { Locale } from 'date-fns';
 import type { ComponentProps } from 'react';
+import type { Observable } from 'rxjs';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
-import { from, of } from 'rxjs';
+import { from } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
 import { buttonVariants } from '@/components/ui/button';
@@ -12,20 +14,12 @@ import { cn } from '@/lib/utils';
 
 export type CalendarProps = ComponentProps<typeof DayPicker>;
 
-const lang$ = languageChanged$.pipe(
-  concatMap((lang) => {
-    switch (lang) {
-      case ELocaleType.EN_US:
-        return from(import('date-fns/locale/en-US').then((v) => v.enUS));
-      case ELocaleType.ZH_CN:
-        return from(import('date-fns/locale/zh-CN').then((v) => v.zhCN));
-      case ELocaleType.JA_JP:
-        return from(import('date-fns/locale/ja').then((v) => v.ja));
-      default:
-        return of(undefined);
-    }
-  }),
-);
+const languageLoader: Record<ELocaleType, () => Observable<Locale>> = {
+  [ELocaleType.EN_US]: () => from(import('date-fns/locale/en-US').then((v) => v.enUS)),
+  [ELocaleType.ZH_CN]: () => from(import('date-fns/locale/zh-CN').then((v) => v.zhCN)),
+  [ELocaleType.JA_JP]: () => from(import('date-fns/locale/ja').then((v) => v.ja)),
+};
+const lang$ = languageChanged$.pipe(concatMap((lang) => languageLoader[lang]()));
 
 function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
   const lng = useObservableState(lang$);
