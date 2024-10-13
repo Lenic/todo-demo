@@ -75,7 +75,7 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
 
             return [rowWidth, contentWidth, dateIconLeft] as const;
           }),
-          distinctUntilChanged(),
+          distinctUntilChanged((prev, curr) => prev.every((v, i) => v === curr[i])),
         ),
       [],
     ),
