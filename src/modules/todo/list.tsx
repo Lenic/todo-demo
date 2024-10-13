@@ -68,14 +68,14 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
       () =>
         windowResize$.pipe(
           auditTime(60),
-          map(() => {
-            const rowWidth = containerRef.current?.clientWidth ?? 364;
+          map(() => containerRef.current?.clientWidth ?? 364),
+          distinctUntilChanged(),
+          map((rowWidth) => {
             const contentWidth = rowWidth - 16 - (16 + 8) * 2;
             const dateIconLeft = rowWidth - 16 - 16;
 
             return [rowWidth, contentWidth, dateIconLeft] as const;
           }),
-          distinctUntilChanged((prev, curr) => prev.every((v, i) => v === curr[i])),
         ),
       [],
     ),
