@@ -10,6 +10,7 @@ import { useObservableState } from '@/hooks';
 import { ServiceLocator } from '@/lib/injector';
 import { IDataService } from '@/resources';
 
+import { AutoTooltip } from './components/auto-tooltip';
 import { RowDatePicker } from './components/row-data-picker';
 import { TodoItemEditor } from './editor';
 
@@ -55,12 +56,13 @@ export const TodoItem: FC<ITodoItemProps> = ({ id, dateFormatString, style }) =>
   return (
     <div className="flex items-center space-x-2 pr-4" style={style}>
       <Checkbox checked={checked} onCheckedChange={handleChangeChecked} />
-      <label
+      <AutoTooltip
+        title={title}
         className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
         onClick={handleOpenEditor}
       >
-        {title}
-      </label>
+        <div className="max-w-lg">{title}</div>
+      </AutoTooltip>
       <div className="flex-auto" />
       <RowDatePicker className="flex-initial" id={id} value={overdueAt} formatString={dateFormatString} />
       <TodoItemEditor id={id} open={open} onOpenChange={setOpen} />
