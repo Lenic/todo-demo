@@ -1,4 +1,4 @@
-import type { FC, ReactNode } from 'react';
+import type { FC } from 'react';
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -7,20 +7,12 @@ import { Tooltip, TooltipContent, TooltipPortal, TooltipProvider, TooltipTrigger
 export interface IAutoTooltipWithDescriptionProps {
   title: string;
   description: string;
-}
-
-export interface IAutoTooltipWithChildrenProps {
-  title: string;
-  children: ReactNode;
-}
-
-export type TAutoTooltipProps = (IAutoTooltipWithChildrenProps | IAutoTooltipWithDescriptionProps) & {
   className?: string;
   onClick: () => void;
-};
+}
 
-export const AutoTooltip: FC<TAutoTooltipProps> = (props) => {
-  const { className, onClick } = props;
+export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
+  const { className, onClick, description, title } = props;
 
   const [disabled, setDisabled] = useState(true);
 
@@ -31,29 +23,33 @@ export const AutoTooltip: FC<TAutoTooltipProps> = (props) => {
     const targetElement = realElementRef.current;
     if (!targetElement) return;
 
-    const observer = new ResizeObserver((entries) => {
-      if (!entries.length) return;
+    if (title !== description) {
+      setDisabled(false);
+    } else {
+      const observer = new ResizeObserver((entries) => {
+        if (!entries.length) return;
 
-      const entry = entries[0];
-      const containerElement = containerRef.current;
-      setDisabled(
-        containerElement ? entry.contentRect.height <= containerElement.getBoundingClientRect().height : false,
-      );
-    });
-    observer.observe(targetElement);
+        const entry = entries[0];
+        const containerElement = containerRef.current;
+        setDisabled(
+          containerElement ? entry.contentRect.height <= containerElement.getBoundingClientRect().height : false,
+        );
+      });
+      observer.observe(targetElement);
 
-    return () => {
-      observer.unobserve(targetElement);
-      observer.disconnect();
-    };
-  }, [disabled]); // fire effect after changed disabled variable
+      return () => {
+        observer.unobserve(targetElement);
+        observer.disconnect();
+      };
+    }
+  }, [title, description, disabled]); // fire effect after changed disabled variable
 
   const containerClassName = ['relative overflow-hidden', className ?? ''].join(' ');
   const trigger = (
     <div ref={containerRef} className={disabled ? containerClassName : ''} onClick={onClick}>
-      <div className="truncate">{props.title}</div>
+      <div className="truncate">{title}</div>
       <div ref={realElementRef} className="absolute invisible top-0 left-0 text-wrap">
-        {props.title}
+        {title}
       </div>
     </div>
   );
@@ -64,7 +60,9 @@ export const AutoTooltip: FC<TAutoTooltipProps> = (props) => {
       <Tooltip>
         <TooltipTrigger className={containerClassName}>{trigger}</TooltipTrigger>
         <TooltipPortal>
-          <TooltipContent>{'description' in props ? props.description : props.children}</TooltipContent>
+          <TooltipContent>
+            <div className="max-w-lg">{description}</div>
+          </TooltipContent>
         </TooltipPortal>
       </Tooltip>
     </TooltipProvider>

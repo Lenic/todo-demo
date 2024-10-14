@@ -34,6 +34,11 @@ export const TodoItem: FC<ITodoItemProps> = ({ id, dateFormatString, style }) =>
     '',
   );
 
+  const description = useObservableState(
+    useMemo(() => item$.pipe(map((item) => item.description ?? item.title)), [item$]),
+    '',
+  );
+
   const handleChangeChecked = useCallback(
     (e: CheckedState) => {
       item$.pipe(take(1)).subscribe((item) => {
@@ -58,11 +63,10 @@ export const TodoItem: FC<ITodoItemProps> = ({ id, dateFormatString, style }) =>
       <Checkbox checked={checked} onCheckedChange={handleChangeChecked} />
       <AutoTooltip
         title={title}
+        description={description}
         className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
         onClick={handleOpenEditor}
-      >
-        <div className="max-w-lg">{title}</div>
-      </AutoTooltip>
+      />
       <div className="flex-auto" />
       <RowDatePicker className="flex-initial" id={id} value={overdueAt} formatString={dateFormatString} />
       <TodoItemEditor id={id} open={open} onOpenChange={setOpen} />

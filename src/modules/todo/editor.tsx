@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
@@ -28,6 +29,7 @@ export interface ITodoItemEditorProps {
 
 const FormSchema = z.object({
   title: z.string().min(2, { message: 'Task title must be at least 2 characters.' }),
+  description: z.string(),
   date: z.date().optional(),
   checked: z.boolean(),
 });
@@ -42,6 +44,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
     resolver: zodResolver(FormSchema),
     values: {
       title: item.title,
+      description: item.description ?? '',
       checked: item.status === ETodoStatus.DONE,
       date: item.overdueAt ? new Date(item.overdueAt) : undefined,
     },
@@ -62,6 +65,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
         dataService.update({
           ...item,
           title: data.title,
+          description: data.description,
           overdueAt: data.date?.valueOf(),
           status: data.checked ? ETodoStatus.DONE : ETodoStatus.PENDING,
         });
@@ -116,7 +120,24 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea rows={6} placeholder={t('title-placeholder')} {...field} disabled={disableEditing} />
+                    <Input placeholder={t('title-placeholder')} {...field} disabled={disableEditing} />
+                  </FormControl>
+                  <FormMessage className="absolute left-0 bottom-0" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      rows={6}
+                      placeholder={t('description-placeholder')}
+                      {...field}
+                      disabled={disableEditing}
+                    />
                   </FormControl>
                   <FormMessage className="absolute left-0 bottom-0" />
                 </FormItem>

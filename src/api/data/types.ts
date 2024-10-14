@@ -10,6 +10,7 @@ export enum ETodoStatus {
 export interface ITodoItem {
   id: string;
   title: string;
+  description?: string;
   overdueAt?: number;
   createdAt: number;
   status: ETodoStatus;
