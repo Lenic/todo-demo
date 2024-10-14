@@ -6,7 +6,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import ContentLoader from 'react-content-loader';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 import { auditTime, distinct, distinctUntilChanged, filter, map, mergeMap, toArray } from 'rxjs/operators';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -23,6 +23,8 @@ export interface ITodoListProps {
 }
 
 const dataService = ServiceLocator.default.get(IDataService);
+
+const defaultRowWidth = [364, 300, 332] as const;
 
 export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
   const dateFormatString = useObservableState(
@@ -66,20 +68,22 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
   const rowWidth = useObservableState(
     useMemo(
       () =>
-        windowResize$.pipe(
-          auditTime(60),
-          map(() => containerRef.current?.clientWidth ?? 364),
-          distinctUntilChanged(),
-          map((rowWidth) => {
-            const contentWidth = rowWidth - 16 - (16 + 8) * 2;
-            const dateIconLeft = rowWidth - 16 - 16;
+        isEnd
+          ? of(defaultRowWidth)
+          : windowResize$.pipe(
+              auditTime(300),
+              map(() => containerRef.current?.clientWidth ?? 364),
+              distinctUntilChanged(),
+              map((rowWidth) => {
+                const contentWidth = rowWidth - 16 - (16 + 8) * 2;
+                const dateIconLeft = rowWidth - 16 - 16;
 
-            return [rowWidth, contentWidth, dateIconLeft] as const;
-          }),
-        ),
+                return [rowWidth, contentWidth, dateIconLeft] as const;
+              }),
+            ),
       [],
     ),
-    [364, 300, 332],
+    defaultRowWidth,
   );
 
   const Row = ({ index, style }: { index: number; style: CSSProperties }) => {
