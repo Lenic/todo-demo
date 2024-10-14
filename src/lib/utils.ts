@@ -1,7 +1,7 @@
 import type { ClassValue } from 'clsx';
 
 import { clsx } from 'clsx';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 import { map, shareReplay, startWith } from 'rxjs/operators';
 import { twMerge } from 'tailwind-merge';
 
@@ -21,3 +21,21 @@ export const windowResize$ = fromEvent(window, 'resize').pipe(
   startWith(getWindowSize()),
   shareReplay(1),
 );
+
+export const getElementResize$ = <TElement extends HTMLElement, TResult>(
+  el: TElement,
+  selector: (value: TElement) => TResult,
+) =>
+  new Observable<TResult>((observer) => {
+    const listener = new ResizeObserver(() => {
+      observer.next(selector(el));
+    });
+
+    listener.observe(el);
+    observer.next(selector(el));
+
+    return () => {
+      listener.unobserve(el);
+      listener.disconnect();
+    };
+  });

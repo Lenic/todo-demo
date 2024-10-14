@@ -7,12 +7,24 @@ import ContentLoader from 'react-content-loader';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { from, of } from 'rxjs';
-import { auditTime, distinct, distinctUntilChanged, filter, map, mergeMap, toArray } from 'rxjs/operators';
+import {
+  auditTime,
+  delay,
+  distinct,
+  distinctUntilChanged,
+  filter,
+  map,
+  mergeMap,
+  pairwise,
+  startWith,
+  switchMap,
+  toArray,
+} from 'rxjs/operators';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useObservableState } from '@/hooks';
 import { ServiceLocator } from '@/lib/injector';
-import { windowResize$ } from '@/lib/utils';
+import { getElementResize$, windowResize$ } from '@/lib/utils';
 import { IDataService, TODO_LIST_PAGE_SIZE } from '@/resources';
 
 import { TodoItem } from './item';
@@ -68,11 +80,16 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
   const rowWidth = useObservableState(
     useMemo(
       () =>
-        isEnd
+        isEnd || !containerRef.current
           ? of(defaultRowWidth)
-          : windowResize$.pipe(
-              auditTime(300),
-              map(() => containerRef.current?.clientWidth ?? 364),
+          : getElementResize$(containerRef.current, (v) => [v.clientWidth, v.clientHeight] as const).pipe(
+              distinctUntilChanged((prev, curr) => prev[0] === curr[0] && prev[1] === curr[1]),
+              startWith([0, 0] as const),
+              pairwise(),
+              switchMap((val) => {
+                const next$ = of(val[1][0]);
+                return val[0][1] !== val[1][1] ? next$ : next$.pipe(delay(2000));
+              }),
               distinctUntilChanged(),
               map((rowWidth) => {
                 const contentWidth = rowWidth - 16 - (16 + 8) * 2;
@@ -81,7 +98,7 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
                 return [rowWidth, contentWidth, dateIconLeft] as const;
               }),
             ),
-      [],
+      [containerRef.current], // fire change after the `containerRef.current` changes
     ),
     defaultRowWidth,
   );
