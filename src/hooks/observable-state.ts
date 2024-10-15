@@ -33,7 +33,8 @@ export function useObservableStore<T>(
   valueOrGetter: T | (() => T),
   comparer: (prev: T | undefined, next: T | undefined) => boolean = defaultEqualComparer,
 ) {
-  const valueRef = useRef<T>(typeof valueOrGetter === 'function' ? (valueOrGetter as () => T)() : valueOrGetter);
+  const [initialValue] = useState(valueOrGetter);
+  const valueRef = useRef<T>(initialValue);
   const getSnapshot = useCallback(() => valueRef.current, []);
 
   const subscribe = useCallback(
