@@ -1,70 +1,76 @@
 import type { ETodoListType } from '@/api';
-import type { CSSProperties, FC } from 'react';
+import type { FC } from 'react';
 
 import dayjs from 'dayjs';
 import { useCallback, useMemo, useRef } from 'react';
-import ContentLoader from 'react-content-loader';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import { from, of } from 'rxjs';
+import { from } from 'rxjs';
 import {
   auditTime,
-  delay,
   distinct,
   distinctUntilChanged,
   filter,
   map,
   mergeMap,
-  pairwise,
-  startWith,
-  switchMap,
+  shareReplay,
   toArray,
+  withLatestFrom,
 } from 'rxjs/operators';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useObservableState } from '@/hooks';
+import { useObservableState, useObservableStore } from '@/hooks';
 import { ServiceLocator } from '@/lib/injector';
-import { getElementResize$, windowResize$ } from '@/lib/utils';
-import { IDataService, TODO_LIST_PAGE_SIZE } from '@/resources';
+import { windowResize$ } from '@/lib/utils';
+import { areArraysEqual, IDataService } from '@/resources';
 
+import { LoadingSketch } from './components/loading-sketch';
 import { TodoItem } from './item';
 
 export interface ITodoListProps {
-  ids: string[];
   type: ETodoListType;
 }
 
 const dataService = ServiceLocator.default.get(IDataService);
 
-const defaultRowWidth = [364, 300, 332] as const;
+export const TodoList: FC<ITodoListProps> = ({ type }) => {
+  const ids$ = useMemo(
+    () =>
+      dataService.ids$.pipe(
+        map((mapper) => mapper[type]),
+        distinctUntilChanged(areArraysEqual),
+        shareReplay(1),
+      ),
+    [type],
+  );
+  const ids = useObservableStore(ids$, dataService.ids[type]);
 
-export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
   const dateFormatString = useObservableState(
     useMemo(
       () =>
         dataService.dataMapper$.pipe(
-          mergeMap((mapper) =>
-            from(ids).pipe(
-              map((id) => mapper[id].overdueAt),
-              filter((v) => !!v),
-              map((date) => dayjs(date).get('year')),
+          withLatestFrom(ids$, (mapper, ids) =>
+            ids
+              .map((id) => mapper[id].overdueAt)
+              .filter((v) => !!v)
+              .map((date) => dayjs(date).get('year')),
+          ),
+          filter((v) => !!v.length),
+          mergeMap((list) =>
+            from(list).pipe(
               distinct(),
               toArray(),
-              map((list) => {
+              map((innerList) => {
                 const thisYear = dayjs().get('year');
-                return list.filter((v) => v !== thisYear).length > 0 ? 'yyyy-MM-dd' : 'MM-dd';
+                return innerList.filter((v) => v !== thisYear).length > 0 ? 'yyyy-MM-dd' : 'MM-dd';
               }),
             ),
           ),
+          distinctUntilChanged(),
         ),
-      [ids],
+      [ids$],
     ),
     'MM-dd',
-  );
-
-  const isEnd = useObservableState(
-    useMemo(() => dataService.ends$.pipe(map((ends) => ends[type])), [type]),
-    dataService.ends[type],
   );
 
   const handleLoadMore = useCallback(() => {
@@ -73,59 +79,20 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
     });
   }, [type]);
 
+  const isEnd$ = useMemo(
+    () =>
+      dataService.ends$.pipe(
+        map((ends) => ends[type]),
+        distinctUntilChanged(),
+        shareReplay(1),
+      ),
+    [type],
+  );
+  const isEnd = useObservableStore(isEnd$, dataService.ends[type]);
+
   const isItemLoaded = useCallback((index: number) => ids.length > index, [ids.length]);
 
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const rowWidth = useObservableState(
-    useMemo(
-      () =>
-        isEnd || !containerRef.current
-          ? of(defaultRowWidth)
-          : getElementResize$(containerRef.current, (v) => [v.clientWidth, v.clientHeight] as const).pipe(
-              distinctUntilChanged((prev, curr) => prev[0] === curr[0] && prev[1] === curr[1]),
-              startWith([0, 0] as const),
-              pairwise(),
-              switchMap((val) => {
-                const next$ = of(val[1][0]);
-                return val[0][1] !== val[1][1] ? next$ : next$.pipe(delay(2000));
-              }),
-              distinctUntilChanged(),
-              map((rowWidth) => {
-                const contentWidth = rowWidth - 16 - (16 + 8) * 2;
-                const dateIconLeft = rowWidth - 16 - 16;
-
-                return [rowWidth, contentWidth, dateIconLeft] as const;
-              }),
-            ),
-      [containerRef.current], // fire change after the `containerRef.current` changes
-    ),
-    defaultRowWidth,
-  );
-
-  const Row = ({ index, style }: { index: number; style: CSSProperties }) => {
-    if (!isItemLoaded(index)) {
-      return (
-        <div style={style}>
-          <ContentLoader
-            speed={0.5}
-            width={rowWidth[0]}
-            height={40}
-            viewBox={`0 0 ${String(rowWidth[0])} 40`}
-            backgroundColor="#d9d9d9"
-            foregroundColor="#ededed"
-          >
-            <rect x="0" y="12" rx="1" ry="1" width="16" height="16" />
-            <rect x="24" y="10" rx="4" ry="4" width={rowWidth[1]} height="20" />
-            <rect x={rowWidth[2]} y="12" rx="1" ry="1" width="16" height="16" />
-          </ContentLoader>
-        </div>
-      );
-    } else {
-      return <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />;
-    }
-  };
-
   const listHeight = useObservableState(
     useMemo(
       () =>
@@ -142,7 +109,7 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
     240,
   );
 
-  const itemCount = isEnd ? ids.length : ids.length + TODO_LIST_PAGE_SIZE;
+  const itemCount = isEnd ? ids.length : ids.length + 1;
   return (
     <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemCount} loadMoreItems={handleLoadMore} threshold={3}>
       {({ onItemsRendered, ref }) => (
@@ -153,10 +120,19 @@ export const TodoList: FC<ITodoListProps> = ({ ids, type }) => {
             itemSize={40}
             height={listHeight}
             itemCount={itemCount}
-            overscanCount={TODO_LIST_PAGE_SIZE}
             onItemsRendered={onItemsRendered}
           >
-            {Row}
+            {({ index, style }) => {
+              if (!isItemLoaded(index)) {
+                return (
+                  <div key={index} style={style}>
+                    <LoadingSketch type={type} />
+                  </div>
+                );
+              } else {
+                return <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />;
+              }
+            }}
           </List>
         </ScrollArea>
       )}

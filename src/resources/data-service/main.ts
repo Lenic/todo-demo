@@ -3,7 +3,7 @@ import type { Observable } from 'rxjs';
 
 import dayjs from 'dayjs';
 import { produce } from 'immer';
-import { BehaviorSubject, of, Subject, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, of, Subject, timer } from 'rxjs';
 import {
   concatMap,
   distinctUntilChanged,
@@ -14,6 +14,7 @@ import {
   scan,
   share,
   shareReplay,
+  startWith,
   switchMap,
   take,
 } from 'rxjs/operators';
@@ -34,21 +35,28 @@ class DataService extends Disposable implements IDataService {
   private loadingSubject = new BehaviorSubject<ETodoListType | null>(null);
   private endsSubject = new Subject<[ETodoListType, boolean]>();
 
+  loading: Record<ETodoListType, boolean> = {
+    [ETodoListType.PENDING]: false,
+    [ETodoListType.OVERDUE]: false,
+    [ETodoListType.ARCHIVE]: false,
+  };
   loading$ = emptyObservable<Record<ETodoListType, boolean>>();
-  loading = {} as Record<ETodoListType, boolean>;
 
   dataMapper: Record<string, ITodoItem> = {};
   dataMapper$ = emptyObservable<Record<string, ITodoItem>>();
 
-  planningList: string[] = [];
-  overdueList: string[] = [];
-  archiveList: string[] = [];
+  ids: Record<ETodoListType, string[]> = {
+    [ETodoListType.PENDING]: [],
+    [ETodoListType.OVERDUE]: [],
+    [ETodoListType.ARCHIVE]: [],
+  };
+  ids$ = emptyObservable<Record<ETodoListType, string[]>>();
 
-  planningList$ = emptyObservable<string[]>();
-  overdueList$ = emptyObservable<string[]>();
-  archiveList$ = emptyObservable<string[]>();
-
-  ends = {} as Record<ETodoListType, boolean>;
+  ends: Record<ETodoListType, boolean> = {
+    [ETodoListType.PENDING]: false,
+    [ETodoListType.OVERDUE]: false,
+    [ETodoListType.ARCHIVE]: false,
+  };
   ends$ = emptyObservable<Record<ETodoListType, boolean>>();
 
   constructor(@injectWith(IDataStorageService) private storageService: IDataStorageService) {
@@ -58,34 +66,28 @@ class DataService extends Disposable implements IDataService {
   }
 
   loadMore(type: ETodoListType): Observable<void> {
-    return this.loading$.pipe(
-      map((mapper) => mapper[type]),
-      take(1),
-      switchMap((x) => {
-        if (x) {
-          return this.loading$.pipe(
-            map((mapper) => mapper[type]),
-            filter((v) => !v),
-            take(1),
-            map(() => void 0),
-          );
-        } else {
-          this.loadingSubject.next(type);
+    if (this.loading[type]) {
+      return this.loading$.pipe(
+        map((mapper) => mapper[type]),
+        filter((v) => !v),
+        take(1),
+        map(() => void 0),
+      );
+    } else {
+      this.loadingSubject.next(type);
 
-          const args = this.getQueryArgs(type);
-          console.log(args);
-          return this.storageService.query(args).pipe(
-            map((list) => {
-              this.endsSubject.next([type, list.length < TODO_LIST_PAGE_SIZE]);
-              this.append(list);
-            }),
-            finalize(() => {
-              this.loadingSubject.next(type);
-            }),
-          );
-        }
-      }),
-    );
+      const args: ITodoListQueryArgs = { type, limit: TODO_LIST_PAGE_SIZE, offset: this.ids[type].length };
+      console.log(args);
+      return this.storageService.query(args).pipe(
+        map((list) => {
+          this.endsSubject.next([type, list.length < TODO_LIST_PAGE_SIZE]);
+          this.append(list);
+        }),
+        finalize(() => {
+          this.loadingSubject.next(type);
+        }),
+      );
+    }
   }
 
   append(list: ITodoItem[]): void {
@@ -153,59 +155,62 @@ class DataService extends Disposable implements IDataService {
     this.disposeWithMe(() => void (this.dataMapper = {}));
 
     // current date switcher
-    const pageTimer$ = timer(0, 10_000).pipe(
+    const pageTimer$ = timer(10_000, 10_000).pipe(
+      startWith(0),
       map(() => dayjs().date()),
       distinctUntilChanged(),
-      share(),
-    );
-
-    this.planningList$ = pageTimer$.pipe(
       switchMap(() => this.dataMapper$),
-      map((mapper) => {
-        const todayStartTimeValue = dayjs().startOf('day').valueOf();
-        return Object.values(mapper)
-          .filter(
-            (v) =>
-              v.status === ETodoStatus.PENDING &&
-              (!v.overdueAt || (!!v.overdueAt && v.overdueAt >= todayStartTimeValue)),
-          )
-          .sort((x, y) => y.createdAt - x.createdAt)
-          .map((v) => v.id);
-      }),
-      distinctUntilChanged(areArraysEqual),
+      map((mapper) => Object.values(mapper)),
       shareReplay(1),
     );
-    this.disposeWithMe(this.planningList$.subscribe((list) => void (this.planningList = list)));
-    this.disposeWithMe(() => void (this.planningList = []));
 
-    this.overdueList$ = pageTimer$.pipe(
-      switchMap(() => this.dataMapper$),
-      map((mapper) => {
-        const todayStartTimeValue = dayjs().startOf('day').valueOf();
-        return Object.values(mapper)
-          .filter((v) => v.status === ETodoStatus.PENDING && !!v.overdueAt && v.overdueAt < todayStartTimeValue)
-          .sort((x, y) => y.createdAt - x.createdAt)
-          .map((v) => v.id);
-      }),
-      distinctUntilChanged(areArraysEqual),
+    this.ids$ = combineLatest([
+      pageTimer$.pipe(
+        map((list) => {
+          const todayStartTimeValue = dayjs().startOf('day').valueOf();
+          return list
+            .filter(
+              (v) =>
+                v.status === ETodoStatus.PENDING &&
+                (!v.overdueAt || (!!v.overdueAt && v.overdueAt >= todayStartTimeValue)),
+            )
+            .sort((x, y) => y.createdAt - x.createdAt)
+            .map((v) => v.id);
+        }),
+        distinctUntilChanged(areArraysEqual),
+        map((list) => [ETodoListType.PENDING, list] as const),
+      ),
+      pageTimer$.pipe(
+        map((list) => {
+          const todayStartTimeValue = dayjs().startOf('day').valueOf();
+          return list
+            .filter((v) => v.status === ETodoStatus.PENDING && !!v.overdueAt && v.overdueAt < todayStartTimeValue)
+            .sort((x, y) => y.createdAt - x.createdAt)
+            .map((v) => v.id);
+        }),
+        distinctUntilChanged(areArraysEqual),
+        map((list) => [ETodoListType.OVERDUE, list] as const),
+      ),
+      pageTimer$.pipe(
+        map((list) => {
+          return list
+            .filter((v) => v.status === ETodoStatus.DONE)
+            .sort((x, y) => y.updatedAt - x.updatedAt)
+            .map((v) => v.id);
+        }),
+        distinctUntilChanged(areArraysEqual),
+        map((list) => [ETodoListType.ARCHIVE, list] as const),
+      ),
+    ]).pipe(
+      map(([pending, overdue, archive]) => ({
+        [pending[0]]: pending[1],
+        [overdue[0]]: overdue[1],
+        [archive[0]]: archive[1],
+      })),
       shareReplay(1),
     );
-    this.disposeWithMe(this.overdueList$.subscribe((list) => void (this.overdueList = list)));
-    this.disposeWithMe(() => void (this.overdueList = []));
-
-    this.archiveList$ = pageTimer$.pipe(
-      switchMap(() => this.dataMapper$),
-      map((mapper) => {
-        return Object.values(mapper)
-          .filter((v) => v.status === ETodoStatus.DONE)
-          .sort((x, y) => y.updatedAt - x.updatedAt)
-          .map((v) => v.id);
-      }),
-      distinctUntilChanged(areArraysEqual),
-      shareReplay(1),
-    );
-    this.disposeWithMe(this.archiveList$.subscribe((list) => void (this.archiveList = list)));
-    this.disposeWithMe(() => void (this.archiveList = []));
+    this.disposeWithMe(this.ids$.subscribe((ids) => void (this.ids = ids)));
+    this.disposeWithMe(() => void (this.ids = {} as Record<ETodoListType, string[]>));
 
     this.ends$ = this.endsSubject.pipe(
       scan((acc, x) => ({ ...acc, [x[0]]: x[1] }), this.ends),
@@ -220,28 +225,6 @@ class DataService extends Disposable implements IDataService {
     );
     this.disposeWithMe(this.loading$.subscribe((loading) => void (this.loading = loading)));
     this.disposeWithMe(() => void (this.loading = {} as Record<ETodoListType, boolean>));
-  }
-
-  private getQueryArgs(type: ETodoListType) {
-    let offset = 0;
-    switch (type) {
-      case ETodoListType.PENDING:
-        offset = this.planningList.length;
-        break;
-      case ETodoListType.OVERDUE:
-        offset = this.overdueList.length;
-        break;
-      default:
-        offset = this.archiveList.length;
-        break;
-    }
-
-    const args: ITodoListQueryArgs = {
-      type,
-      offset,
-      limit: TODO_LIST_PAGE_SIZE,
-    };
-    return args;
   }
 }
 

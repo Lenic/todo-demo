@@ -7,13 +7,8 @@ export interface IDataService {
   dataMapper: Record<string, ITodoItem>;
   dataMapper$: Observable<Record<string, ITodoItem>>;
 
-  planningList: string[];
-  overdueList: string[];
-  archiveList: string[];
-
-  planningList$: Observable<string[]>;
-  overdueList$: Observable<string[]>;
-  archiveList$: Observable<string[]>;
+  ids: Record<ETodoListType, string[]>;
+  ids$: Observable<Record<ETodoListType, string[]>>;
 
   ends: Record<ETodoListType, boolean>;
   ends$: Observable<Record<ETodoListType, boolean>>;

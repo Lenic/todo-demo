@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { lazy, StrictMode, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { intl } from './i18n';
@@ -13,10 +13,8 @@ const App = lazy(() => Promise.all([import('./App'), intl]).then(([App]) => App)
 const el = document.getElementById('root');
 if (el) {
   createRoot(el).render(
-    <StrictMode>
-      <Suspense fallback={<div>Loading</div>}>
-        <App />
-      </Suspense>
-    </StrictMode>,
+    <Suspense fallback={<div>Loading</div>}>
+      <App />
+    </Suspense>,
   );
 }

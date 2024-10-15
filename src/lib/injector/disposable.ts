@@ -5,10 +5,10 @@ import { injectable } from 'inversify';
 
 @injectable()
 class Disposable implements IDisposable {
-  private list: ((() => void) | SubscriptionLike)[] = [];
+  private subscriptionList: ((() => void) | SubscriptionLike)[] = [];
 
   dispose(): void {
-    this.list.forEach((action) => {
+    this.subscriptionList.forEach((action) => {
       if (typeof action === 'function') {
         action();
       } else {
@@ -18,7 +18,7 @@ class Disposable implements IDisposable {
   }
 
   protected disposeWithMe(subscription: (() => void) | SubscriptionLike) {
-    this.list.push(subscription);
+    this.subscriptionList.push(subscription);
   }
 }
 
