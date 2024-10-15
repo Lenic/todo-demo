@@ -20,6 +20,7 @@ import {
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useObservableState, useObservableStore } from '@/hooks';
+import { useIntl } from '@/i18n';
 import { ServiceLocator } from '@/lib/injector';
 import { windowResize$ } from '@/lib/utils';
 import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@/resources';
@@ -45,6 +46,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
   );
   const ids = useObservableStore(ids$, dataService.ids[type]);
 
+  const { t } = useIntl('todo.list');
   const dateFormatString = useObservableState(
     useMemo(
       () =>
@@ -62,7 +64,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
               toArray(),
               map((innerList) => {
                 const thisYear = dayjs().get('year');
-                return innerList.filter((v) => v !== thisYear).length > 0 ? 'yyyy-MM-dd' : 'MM-dd';
+                return innerList.filter((v) => v !== thisYear).length > 0 ? t('full-date') : t('short-date');
               }),
             ),
           ),
@@ -70,7 +72,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
         ),
       [ids$],
     ),
-    'MM-dd',
+    t('short-date'),
   );
 
   const handleLoadMore = useCallback(() => {

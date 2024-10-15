@@ -4,6 +4,10 @@
     "overdue": ["Overdue", "逾期", "期限超過"],
     "archive": ["Archive", "归档", "ファイリングする"]
   },
+  "list": {
+    "full-date": "yyyy-MM-dd",
+    "short-date": "MM-dd"
+  },
   "create-new": {
     "create-success": ["New task created.", "新任务创建完成！", "新しいタスクが作成されました！"],
     "input-placeholder": ["Input your task title", "键入新任务标题", "新しいタスクのタイトルを入力してください"],
