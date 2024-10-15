@@ -24,7 +24,7 @@ import { Disposable, injectableWith, injectWith } from '@/lib/injector';
 
 import { TODO_LIST_PAGE_SIZE } from './constants';
 import { IDataService } from './types';
-import { areArraysEqual, emptyObservable } from './utils';
+import { areArraysEqual, emptyObservable, getInitialStatus } from './utils';
 
 @injectableWith(IDataService)
 class DataService extends Disposable implements IDataService {
@@ -35,28 +35,16 @@ class DataService extends Disposable implements IDataService {
   private loadingSubject = new BehaviorSubject<ETodoListType | null>(null);
   private endsSubject = new Subject<[ETodoListType, boolean]>();
 
-  loading: Record<ETodoListType, boolean> = {
-    [ETodoListType.PENDING]: false,
-    [ETodoListType.OVERDUE]: false,
-    [ETodoListType.ARCHIVE]: false,
-  };
+  loading = getInitialStatus(false);
   loading$ = emptyObservable<Record<ETodoListType, boolean>>();
 
   dataMapper: Record<string, ITodoItem> = {};
   dataMapper$ = emptyObservable<Record<string, ITodoItem>>();
 
-  ids: Record<ETodoListType, string[]> = {
-    [ETodoListType.PENDING]: [],
-    [ETodoListType.OVERDUE]: [],
-    [ETodoListType.ARCHIVE]: [],
-  };
+  ids = getInitialStatus<string[]>([]);
   ids$ = emptyObservable<Record<ETodoListType, string[]>>();
 
-  ends: Record<ETodoListType, boolean> = {
-    [ETodoListType.PENDING]: false,
-    [ETodoListType.OVERDUE]: false,
-    [ETodoListType.ARCHIVE]: false,
-  };
+  ends = getInitialStatus(false);
   ends$ = emptyObservable<Record<ETodoListType, boolean>>();
 
   constructor(@injectWith(IDataStorageService) private storageService: IDataStorageService) {
@@ -214,6 +202,7 @@ class DataService extends Disposable implements IDataService {
 
     this.ends$ = this.endsSubject.pipe(
       scan((acc, x) => ({ ...acc, [x[0]]: x[1] }), this.ends),
+      startWith(this.ends),
       shareReplay(1),
     );
     this.disposeWithMe(this.ends$.subscribe((ends) => void (this.ends = ends)));

@@ -57,7 +57,7 @@ const LoadingSketchCore: FC<ILoadingSketcProps> = ({ type }) => {
   );
 
   return (
-    <div>
+    <div ref={containerRef}>
       <ContentLoader
         speed={0.5}
         width={rowWidth[0]}

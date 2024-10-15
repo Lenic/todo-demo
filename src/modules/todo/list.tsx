@@ -22,7 +22,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useObservableState, useObservableStore } from '@/hooks';
 import { ServiceLocator } from '@/lib/injector';
 import { windowResize$ } from '@/lib/utils';
-import { areArraysEqual, IDataService } from '@/resources';
+import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@/resources';
 
 import { LoadingSketch } from './components/loading-sketch';
 import { TodoItem } from './item';
@@ -109,7 +109,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
     240,
   );
 
-  const itemCount = isEnd ? ids.length : ids.length + 1;
+  const itemCount = isEnd ? ids.length : ids.length + TODO_LIST_PAGE_SIZE;
   return (
     <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemCount} loadMoreItems={handleLoadMore} threshold={3}>
       {({ onItemsRendered, ref }) => (
@@ -120,6 +120,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
             itemSize={40}
             height={listHeight}
             itemCount={itemCount}
+            overscanCount={TODO_LIST_PAGE_SIZE}
             onItemsRendered={onItemsRendered}
           >
             {({ index, style }) => {
