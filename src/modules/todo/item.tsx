@@ -35,7 +35,7 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
     dataService.dataMapper[id],
   );
 
-  const description = item.description ?? item.title;
+  const description = item.description ? item.description : item.title;
 
   const handleChangeChecked = useCallback(
     (e: CheckedState) => {
