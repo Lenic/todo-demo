@@ -70,7 +70,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
           ),
           distinctUntilChanged(),
         ),
-      [ids$],
+      [ids$, t],
     ),
     t('short-date'),
   );
