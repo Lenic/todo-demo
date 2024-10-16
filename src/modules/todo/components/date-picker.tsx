@@ -11,10 +11,10 @@ import { useIntl } from '@/i18n';
 import { cn } from '@/lib/utils';
 
 export interface IDatePickerProps {
-  value?: Date;
+  value: Date | null;
   disabled?: boolean;
   className?: string;
-  onChange?: (value: Date | undefined) => void;
+  onChange?: (value: Date | null) => void;
 }
 
 export const DatePicker: FC<IDatePickerProps> = ({ value, className, disabled, onChange }) => {
@@ -22,7 +22,7 @@ export const DatePicker: FC<IDatePickerProps> = ({ value, className, disabled, o
   const handleChangeDate = useCallback(
     (value: Date | undefined) => {
       setOpen(false);
-      onChange?.(value);
+      onChange?.(value ?? null);
     },
     [onChange],
   );
@@ -45,7 +45,7 @@ export const DatePicker: FC<IDatePickerProps> = ({ value, className, disabled, o
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar mode="single" selected={value} onSelect={handleChangeDate} initialFocus />
+        <Calendar mode="single" selected={value ?? undefined} onSelect={handleChangeDate} initialFocus />
       </PopoverContent>
     </Popover>
   );

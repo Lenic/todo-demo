@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback, useId, useState } from 'react';
+import { useCallback, useId, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { map, take } from 'rxjs/operators';
 import { z } from 'zod';
@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useObservableEffect } from '@/hooks';
 import { toast } from '@/hooks/use-toast';
 import { useIntl } from '@/i18n';
 import { ServiceLocator } from '@/lib/injector';
@@ -27,35 +28,47 @@ export interface ITodoItemEditorProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const FormSchema = z.object({
+const formSchema = z.object({
   title: z.string().min(2, { message: 'Task title must be at least 2 characters.' }),
   description: z.string(),
-  date: z.date().optional(),
+  date: z.date().nullable(),
   checked: z.boolean(),
 });
+type TFormSchema = z.infer<typeof formSchema>;
+
+const formProps = {
+  resolver: zodResolver(formSchema),
+  defaultValues: { title: '', description: '', checked: false, date: null },
+};
 
 const dataService = ServiceLocator.default.get(IDataService);
 
 export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChange }) => {
-  const item = dataService.dataMapper[id];
-  const [disableEditing] = useState(() => item.status === ETodoStatus.DONE);
+  const form = useForm<TFormSchema>(formProps);
+  const [disableEditing] = useState(() => dataService.dataMapper[id].status === ETodoStatus.DONE);
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    values: {
-      title: item.title,
-      description: item.description ?? '',
-      checked: item.status === ETodoStatus.DONE,
-      date: item.overdueAt ? new Date(item.overdueAt) : undefined,
-    },
-  });
+  const { reset } = form;
+  useObservableEffect(
+    useMemo(() => dataService.dataMapper$.pipe(map((mapper) => mapper[id])), [id]),
+    useCallback(
+      (item) => {
+        reset({
+          title: item.title,
+          description: item.description ?? '',
+          checked: item.status === ETodoStatus.DONE,
+          date: item.overdueAt ? new Date(item.overdueAt) : null,
+        });
+      },
+      [reset],
+    ),
+  );
 
   const handleClose = useCallback(() => {
     onOpenChange(false);
   }, [onOpenChange]);
 
   const { t } = useIntl('todo.editor');
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: TFormSchema) {
     dataService.dataMapper$
       .pipe(
         map((mapper) => mapper[id]),
