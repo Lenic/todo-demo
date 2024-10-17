@@ -61,7 +61,7 @@ export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
         <TooltipTrigger className={containerClassName}>{trigger}</TooltipTrigger>
         <TooltipPortal>
           <TooltipContent>
-            <div className="max-w-lg">{description}</div>
+            <div className="max-w-lg whitespace-break-spaces">{description}</div>
           </TooltipContent>
         </TooltipPortal>
       </Tooltip>
