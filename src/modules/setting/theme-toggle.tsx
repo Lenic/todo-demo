@@ -10,11 +10,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useIntl } from '@/i18n';
+import { ServiceLocator } from '@/lib/injector';
+import { ETheme } from '@/resources';
+import { IThemeService } from '@/resources';
 
-import { useTheme } from './hooks';
+const themeService = ServiceLocator.default.get(IThemeService);
 
-export const ModeToggle: FC = () => {
-  const { setTheme } = useTheme();
+export const ThemeToggle: FC = () => {
   const { t } = useIntl('settings.theme');
 
   return (
@@ -29,21 +31,21 @@ export const ModeToggle: FC = () => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onClick={() => {
-            setTheme('light');
+            themeService.setTheme(ETheme.LIGHT);
           }}
         >
           {t('light')}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
-            setTheme('dark');
+            themeService.setTheme(ETheme.DARK);
           }}
         >
           {t('dark')}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
-            setTheme('system');
+            themeService.setTheme(ETheme.SYSTEM);
           }}
         >
           {t('system')}

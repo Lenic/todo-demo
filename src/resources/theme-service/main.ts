@@ -21,8 +21,9 @@ class ThemeService extends Disposable implements IThemeService {
       this.themeSubject.complete();
     });
     this.disposeWithMe(() => this.subscription?.unsubscribe());
+  }
 
-    // initialize from local storage or default theme by author
+  initialize() {
     this.setTheme((localStorage.getItem(THEME_STORAGE_KEY) as ETheme | null) ?? DEFAULT_THEME);
   }
 

@@ -22,7 +22,7 @@ const languageLoader: Record<ELocaleType, () => Observable<Locale>> = {
 const lang$ = languageChanged$.pipe(concatMap((lang) => languageLoader[lang]()));
 
 function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
-  const lng = useObservableState(lang$);
+  const lng = useObservableState<Locale | undefined>(lang$, undefined);
 
   return (
     <DayPicker
