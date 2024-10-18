@@ -1,11 +1,9 @@
 import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { ETodoStatus } from '@/api';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -16,39 +14,37 @@ import { IDataService } from '@/resources';
 
 import { DatePicker } from './components/date-picker';
 
-const FormSchema = z.object({
+const formSchema = z.object({
   title: z.string().min(2, { message: 'Task title must be at least 2 characters.' }),
-  date: z.date().optional(),
+  date: z.date().nullable(),
 });
+type TFormSchema = z.infer<typeof formSchema>;
+
+const formProps = {
+  resolver: zodResolver(formSchema),
+  defaultValues: { title: '', date: null },
+};
+
+const dataService = ServiceLocator.default.get(IDataService);
 
 export const CreateNewTask: FC = () => {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      title: '',
-    },
-  });
-
   const { t } = useIntl('todo.create-new');
+  const form = useForm<TFormSchema>(formProps);
 
-  const dataService = useMemo(() => ServiceLocator.default.get(IDataService), []);
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  const { handleSubmit, reset } = form;
+  const handleSubmitForm = handleSubmit((data: TFormSchema) => {
     dataService.add({
-      status: ETodoStatus.PENDING,
       title: data.title,
       overdueAt: data.date?.valueOf(),
     });
 
     toast({ title: t('create-success'), duration: 1_000 });
-    form.reset();
-  }
+    reset();
+  });
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={(e) => void form.handleSubmit(onSubmit)(e)}
-        className="h-[4.25rem] relative flex flex-row space-x-2"
-      >
+      <form className="h-[4.25rem] relative flex flex-row space-x-2" onSubmit={(e) => void handleSubmitForm(e)}>
         <FormField
           control={form.control}
           name="title"

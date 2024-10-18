@@ -87,7 +87,7 @@ class IndexedDBDataStorageService implements IDataStorageService {
     );
   }
 
-  add(item: Omit<ITodoItem, 'id' | 'createdAt' | 'updatedAt'>): Observable<ITodoItem> {
+  add(item: Pick<ITodoItem, 'title' | 'overdueAt'>): Observable<ITodoItem> {
     return this.storage$.pipe(
       concatMap((service) =>
         service.exec(TABLE_NAME, (store) => {
@@ -109,7 +109,13 @@ class IndexedDBDataStorageService implements IDataStorageService {
             take(1),
             concatMap((id) => {
               const now = Date.now();
-              const convertedItem = { ...item, id, createdAt: now, updatedAt: now } as ITodoItem;
+              const convertedItem = {
+                ...item,
+                id,
+                createdAt: now,
+                updatedAt: now,
+                status: ETodoStatus.PENDING,
+              } as ITodoItem;
 
               return fromDBRequest(store.add(convertedItem)).pipe(map(() => convertedItem));
             }),

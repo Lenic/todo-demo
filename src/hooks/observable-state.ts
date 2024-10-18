@@ -34,18 +34,16 @@ export function useObservableStore<T>(
   comparer: (prev: T | undefined, next: T | undefined) => boolean = defaultEqualComparer,
 ) {
   const [initialValue] = useState(valueOrGetter);
-  const valueRef = useRef<T>(initialValue);
-  const getSnapshot = useCallback(() => valueRef.current, []);
+  const currentValueRef = useRef<T>(initialValue);
+  const getSnapshot = useCallback(() => currentValueRef.current, []);
 
   const subscribe = useCallback(
     (onStoreChange: () => void) => {
       const subscription = source$.subscribe((value) => {
-        const original = valueRef.current;
-        valueRef.current = value;
+        if (comparer(currentValueRef.current, value)) return;
 
-        if (!comparer(original, value)) {
-          onStoreChange();
-        }
+        currentValueRef.current = value;
+        onStoreChange();
       });
       return () => {
         subscription.unsubscribe();

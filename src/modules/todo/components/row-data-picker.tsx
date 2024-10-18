@@ -2,7 +2,7 @@ import type { FC } from 'react';
 
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { map, take } from 'rxjs/operators';
 
 import { Button } from '@/components/ui/button';
@@ -19,9 +19,10 @@ export interface IRowDatePickerProps {
   formatString: string;
 }
 
+const dataService = ServiceLocator.default.get(IDataService);
+
 export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, formatString }) => {
   const [open, setOpen] = useState(false);
-  const dataService = useMemo(() => ServiceLocator.default.get(IDataService), []);
 
   const handleChangeDate = useCallback(
     (value: Date | undefined) => {
@@ -35,7 +36,7 @@ export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, f
           dataService.update({ ...item, overdueAt: value?.valueOf() });
         });
     },
-    [dataService, id],
+    [id],
   );
 
   return (

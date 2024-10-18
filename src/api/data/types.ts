@@ -32,7 +32,7 @@ export interface ITodoListQueryArgs {
 export interface IDataStorageService {
   query(args: ITodoListQueryArgs): Observable<ITodoItem[]>;
 
-  add(item: Omit<ITodoItem, 'id' | 'createdAt' | 'updatedAt'>): Observable<ITodoItem>;
+  add(item: Pick<ITodoItem, 'title' | 'overdueAt'>): Observable<ITodoItem>;
   update(item: ITodoItem): Observable<ITodoItem>;
   delete(id: string): Observable<void>;
 }

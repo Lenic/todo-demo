@@ -67,7 +67,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
   }, [onOpenChange]);
 
   const { t } = useIntl('todo.editor');
-  function onSubmit(data: TFormSchema) {
+  const handleSubmitForm = form.handleSubmit((data) => {
     dataService.dataMapper$
       .pipe(
         map((mapper) => mapper[id]),
@@ -85,7 +85,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
         toast({ title: t('update-success'), duration: 1_000 });
         handleClose();
       });
-  }
+  });
 
   const checkboxKey = useId();
   return (
@@ -96,7 +96,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
         </DialogHeader>
         <DialogDescription>{t('title')}</DialogDescription>
         <Form {...form}>
-          <form onSubmit={(e) => void form.handleSubmit(onSubmit)(e)} className="flex flex-col space-y-2">
+          <form className="flex flex-col space-y-2" onSubmit={(e) => void handleSubmitForm(e)}>
             <div className="flex flex-row space-x-2 justify-between items-center">
               <FormField
                 control={form.control}

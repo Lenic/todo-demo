@@ -30,7 +30,7 @@ import { areArraysEqual, emptyObservable, getInitialStatus } from './utils';
 class DataService extends Disposable implements IDataService {
   private appendSubject = new Subject<ITodoItem[]>();
   private updateSubject = new Subject<ITodoItem>();
-  private addSubject = new Subject<Omit<ITodoItem, 'id' | 'createdAt' | 'updatedAt'>>();
+  private addSubject = new Subject<Pick<ITodoItem, 'title' | 'overdueAt'>>();
   private clearSubject = new Subject<string | undefined>();
   private loadingSubject = new BehaviorSubject<ETodoListType | null>(null);
   private endsSubject = new Subject<[ETodoListType, boolean]>();
@@ -82,7 +82,7 @@ class DataService extends Disposable implements IDataService {
     this.appendSubject.next(list);
   }
 
-  add(item: Omit<ITodoItem, 'id' | 'createdAt' | 'updatedAt'>): void {
+  add(item: Pick<ITodoItem, 'title' | 'overdueAt'>): void {
     this.addSubject.next(item);
   }
 

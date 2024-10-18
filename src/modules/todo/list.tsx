@@ -68,7 +68,6 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
               }),
             ),
           ),
-          distinctUntilChanged(),
         ),
       [ids$, t],
     ),
@@ -81,16 +80,10 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
     });
   }, [type]);
 
-  const isEnd$ = useMemo(
-    () =>
-      dataService.ends$.pipe(
-        map((ends) => ends[type]),
-        distinctUntilChanged(),
-        shareReplay(1),
-      ),
-    [type],
+  const isEnd = useObservableStore(
+    useMemo(() => dataService.ends$.pipe(map((ends) => ends[type])), [type]),
+    dataService.ends[type],
   );
-  const isEnd = useObservableStore(isEnd$, dataService.ends[type]);
 
   const isItemLoaded = useCallback((index: number) => ids.length > index, [ids.length]);
 
@@ -104,7 +97,6 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
             if (v.width >= 768) return 240;
             return v.height - (containerRef.current?.getBoundingClientRect().top ?? 218) - 6;
           }),
-          distinctUntilChanged(),
         ),
       [],
     ),

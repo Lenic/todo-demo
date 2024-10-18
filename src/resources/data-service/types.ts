@@ -19,7 +19,7 @@ export interface IDataService {
   loadMore(type: ETodoListType): Observable<void>;
 
   append(list: ITodoItem[]): void;
-  add(item: Omit<ITodoItem, 'id' | 'createdAt' | 'updatedAt'>): void;
+  add(item: Pick<ITodoItem, 'title' | 'overdueAt'>): void;
   update(item: ITodoItem): void;
   delete(id?: string): void;
 }

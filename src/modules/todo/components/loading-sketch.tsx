@@ -48,7 +48,6 @@ const LoadingSketchCore: FC<ILoadingSketcProps> = ({ type }) => {
                   }),
                 ),
           ),
-          distinctUntilChanged(areArraysEqual),
         ),
       [type],
     ),
