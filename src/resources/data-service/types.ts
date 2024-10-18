@@ -1,4 +1,4 @@
-import type { ETodoListType, ITodoItem } from '@/api';
+import type { ETodoListType, ICreatedTodoItem, ITodoItem } from '@/api';
 import type { Observable } from 'rxjs';
 
 import { createIdentifier } from '@/lib/injector';
@@ -19,7 +19,7 @@ export interface IDataService {
   loadMore(type: ETodoListType): Observable<void>;
 
   append(list: ITodoItem[]): void;
-  add(item: Pick<ITodoItem, 'title' | 'overdueAt'>): void;
+  add(item: ICreatedTodoItem): void;
   update(item: ITodoItem): void;
   delete(id?: string): void;
 }

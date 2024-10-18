@@ -1,4 +1,4 @@
-import type { ITodoItem, ITodoListQueryArgs } from './types';
+import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from './types';
 import type { IIndexedDBService } from '@/lib/indexed-db';
 
 import dayjs from 'dayjs';
@@ -87,7 +87,7 @@ class IndexedDBDataStorageService implements IDataStorageService {
     );
   }
 
-  add(item: Pick<ITodoItem, 'title' | 'overdueAt'>): Observable<ITodoItem> {
+  add(item: ICreatedTodoItem): Observable<ITodoItem> {
     return this.storage$.pipe(
       concatMap((service) =>
         service.exec(TABLE_NAME, (store) => {

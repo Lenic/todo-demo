@@ -7,11 +7,14 @@ export enum ETodoStatus {
   DONE = 'DONE',
 }
 
-export interface ITodoItem {
-  id: string;
+export interface ICreatedTodoItem {
   title: string;
-  description?: string;
   overdueAt?: number;
+}
+
+export interface ITodoItem extends ICreatedTodoItem {
+  id: string;
+  description?: string;
   createdAt: number;
   status: ETodoStatus;
   updatedAt: number;
@@ -32,7 +35,7 @@ export interface ITodoListQueryArgs {
 export interface IDataStorageService {
   query(args: ITodoListQueryArgs): Observable<ITodoItem[]>;
 
-  add(item: Pick<ITodoItem, 'title' | 'overdueAt'>): Observable<ITodoItem>;
+  add(item: ICreatedTodoItem): Observable<ITodoItem>;
   update(item: ITodoItem): Observable<ITodoItem>;
   delete(id: string): Observable<void>;
 }
