@@ -17,9 +17,6 @@ class ThemeService extends Disposable implements IThemeService {
     super();
 
     this.disposeWithMe(this.theme$.subscribe((theme) => void (this.theme = theme)));
-    this.disposeWithMe(() => {
-      this.themeSubject.complete();
-    });
     this.disposeWithMe(() => this.subscription?.unsubscribe());
   }
 
