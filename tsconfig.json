@@ -5,12 +5,6 @@
     /* Inversify */
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["reflect-metadata"],
-
-    /* TailwindCSS */
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "types": ["reflect-metadata"]
   }
 }

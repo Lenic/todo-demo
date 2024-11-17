@@ -1,0 +1,31 @@
+{
+  "name": "@todo/controllers",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src",
+  "scripts": {
+    "build": "vite build && tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "@todo/container": "workspace:*",
+    "@todo/indexed-db": "workspace:*",
+    "dayjs": "^1.11.13",
+    "immer": "^10.1.1",
+    "inversify": "^6.1.4",
+    "nanoid": "^5.0.7",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "vite": "^5.4.1"
+  }
+}

@@ -1,12 +1,9 @@
 import js from '@eslint/js';
 import importPlugin from 'eslint-plugin-import';
-import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import unusedImports from 'eslint-plugin-unused-imports';
-import react from 'eslint-plugin-react';
 
 export default [
   ...tseslint.config(
@@ -32,22 +29,10 @@ export default [
         },
       },
       plugins: {
-        react,
-        'react-hooks': reactHooks,
-        'react-refresh': reactRefresh,
         'unused-imports': unusedImports,
         'simple-import-sort': simpleImportSort,
       },
-      settings: {
-        react: {
-          version: 'detect',
-        },
-      },
       rules: {
-        ...reactHooks.configs.recommended.rules,
-        ...react.configs.recommended.rules,
-        ...react.configs['jsx-runtime'].rules,
-        'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
         // sort imports and exports
         'simple-import-sort/imports': [
           'error',
