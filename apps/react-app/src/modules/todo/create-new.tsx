@@ -79,7 +79,7 @@ export const CreateNewTask: FC = () => {
           )}
         />
         <Button type="submit" className="flex-initial" disabled={loading}>
-          {loading && <Loader2 className="animate-spin" />}
+          {loading && <Loader2 className="animate-spin mr-2" width={18} height={18} />}
           {t('submit-form')}
         </Button>
       </form>
