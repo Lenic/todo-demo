@@ -1,13 +1,12 @@
-import type { IIndexedDBService } from '@todo/indexed-db';
 import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from './types';
+import type { IIndexedDBService } from '@todo/indexed-db';
 
+import { injectableWith } from '@todo/container';
+import { connect$, fromDBRequest } from '@todo/indexed-db';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { Observable, of } from 'rxjs';
 import { concatMap, delay, filter, finalize, map, skip, take, toArray } from 'rxjs/operators';
-
-import { injectableWith } from '@todo/container';
-import { connect$, fromDBRequest } from '@todo/indexed-db';
 
 import { ETodoListType, ETodoStatus, IDataStorageService } from './types';
 
@@ -89,6 +88,7 @@ class IndexedDBDataStorageService implements IDataStorageService {
 
   add(item: ICreatedTodoItem): Observable<ITodoItem> {
     return this.storage$.pipe(
+      delay(Math.floor(Math.random() * (2000 - 30 + 1)) + 30),
       concatMap((service) =>
         service.exec(TABLE_NAME, (store) => {
           const id$ = new Observable<string>((observer) => {
@@ -127,6 +127,7 @@ class IndexedDBDataStorageService implements IDataStorageService {
   }
   update(item: ITodoItem): Observable<ITodoItem> {
     return this.storage$.pipe(
+      delay(Math.floor(Math.random() * (2000 - 30 + 1)) + 30),
       concatMap((service) =>
         service.exec(TABLE_NAME, (store) => {
           const convertedItem = { ...item, updatedAt: Date.now() } as ITodoItem;
@@ -138,6 +139,7 @@ class IndexedDBDataStorageService implements IDataStorageService {
   }
   delete(id: string): Observable<void> {
     return this.storage$.pipe(
+      delay(Math.floor(Math.random() * (2000 - 30 + 1)) + 30),
       concatMap((service) => service.exec(TABLE_NAME, (store) => fromDBRequest(store.delete(id)))),
       take(1),
     );

@@ -1,11 +1,11 @@
+import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '@/api';
 import type { Observable } from 'rxjs';
-import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '../../api';
 
+import { Disposable, injectableWith, injectWith } from '@todo/container';
 import dayjs from 'dayjs';
 import { produce } from 'immer';
-import { BehaviorSubject, combineLatest, of, Subject, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, Subject, timer } from 'rxjs';
 import {
-  concatMap,
   distinctUntilChanged,
   filter,
   finalize,
@@ -17,10 +17,10 @@ import {
   startWith,
   switchMap,
   take,
+  tap,
 } from 'rxjs/operators';
 
-import { Disposable, injectableWith, injectWith } from '@todo/container';
-import { ETodoListType, ETodoStatus, IDataStorageService } from '../../api';
+import { ETodoListType, ETodoStatus, IDataStorageService } from '@/api';
 
 import { TODO_LIST_PAGE_SIZE } from './constants';
 import { IDataService } from './types';
@@ -30,7 +30,7 @@ import { areArraysEqual, emptyObservable, getInitialStatus } from './utils';
 class DataService extends Disposable implements IDataService {
   private appendSubject = new Subject<ITodoItem[]>();
   private updateSubject = new Subject<ITodoItem>();
-  private addSubject = new Subject<ICreatedTodoItem>();
+  private addSubject = new Subject<ITodoItem>();
   private clearSubject = new Subject<string | undefined>();
   private loadingSubject = new BehaviorSubject<ETodoListType | null>(null);
   private endsSubject = new Subject<[ETodoListType, boolean]>();
@@ -82,16 +82,39 @@ class DataService extends Disposable implements IDataService {
     this.appendSubject.next(list);
   }
 
-  add(item: ICreatedTodoItem): void {
-    this.addSubject.next(item);
+  add(item: ICreatedTodoItem): Promise<ITodoItem> {
+    return firstValueFrom(
+      this.storageService.add(item).pipe(
+        tap((value) => {
+          this.addSubject.next(value);
+        }),
+      ),
+    );
   }
 
-  update(item: ITodoItem): void {
-    this.updateSubject.next(item);
+  update(item: ITodoItem): Promise<ITodoItem> {
+    return firstValueFrom(
+      this.storageService.update(item).pipe(
+        tap((value) => {
+          this.updateSubject.next(value);
+        }),
+      ),
+    );
   }
 
-  delete(id?: string): void {
-    this.clearSubject.next(id);
+  delete(id?: string): Promise<void> {
+    if (!id) {
+      this.clearSubject.next(void 0);
+      return Promise.resolve();
+    } else {
+      return firstValueFrom(
+        this.storageService.delete(id).pipe(
+          tap(() => {
+            this.clearSubject.next(id);
+          }),
+        ),
+      );
+    }
   }
 
   private build() {
@@ -102,18 +125,6 @@ class DataService extends Disposable implements IDataService {
       mergeWith(
         this.clearSubject.pipe(map((id) => (id ? ({ type: 'delete', id } as const) : ({ type: 'clear' } as const)))),
       ),
-      concatMap((obj) => {
-        switch (obj.type) {
-          case 'delete':
-            return this.storageService.delete(obj.id).pipe(map(() => obj));
-          case 'add':
-            return this.storageService.add(obj.item).pipe(map((item) => ({ type: 'update', item }) as const));
-          case 'update':
-            return this.storageService.update(obj.item).pipe(map((item) => ({ type: 'update', item }) as const));
-          default:
-            return of(obj);
-        }
-      }),
       share(),
     );
 
@@ -123,6 +134,7 @@ class DataService extends Disposable implements IDataService {
           switch (x.type) {
             case 'append':
               return x.list.reduce((x, y) => ({ ...x, [y.id]: y }), acc);
+            case 'add':
             case 'update':
               return { ...acc, [x.item.id]: x.item };
             case 'delete':

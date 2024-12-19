@@ -1,6 +1,8 @@
 import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ServiceLocator } from '@todo/container';
+import { ETodoStatus, IDataService } from '@todo/controllers';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { map, take } from 'rxjs/operators';
@@ -15,8 +17,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
 import { useIntl } from '@/i18n';
-import { ServiceLocator } from '@todo/container';
-import { ETodoStatus, IDataService } from '@todo/controllers';
 
 import { DatePicker } from './components/date-picker';
 

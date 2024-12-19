@@ -1,6 +1,8 @@
 import type { ETodoListType } from '@todo/controllers';
 import type { FC } from 'react';
 
+import { ServiceLocator } from '@todo/container';
+import { areArraysEqual, IDataService } from '@todo/controllers';
 import { memo, useMemo, useRef } from 'react';
 import ContentLoader from 'react-content-loader';
 import { of } from 'rxjs';
@@ -8,8 +10,6 @@ import { delay, distinctUntilChanged, map, pairwise, startWith, switchMap } from
 
 import { useObservableState } from '@/hooks';
 import { getElementResize$ } from '@/lib/utils';
-import { ServiceLocator } from '@todo/container';
-import { areArraysEqual, IDataService } from '@todo/controllers';
 
 export interface ILoadingSketcProps {
   type: ETodoListType;

@@ -10,8 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LANGUAGE_LIST } from '@/i18n';
-import { useIntl } from '@/i18n';
+import { LANGUAGE_LIST, useIntl } from '@/i18n';
 
 export const LanguageToggle: FC = () => {
   const { t } = useIntl('settings.language');

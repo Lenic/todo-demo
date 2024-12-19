@@ -1,6 +1,5 @@
-import { ReplaySubject, Subscription } from 'rxjs';
-
 import { Disposable, injectableWith } from '@todo/container';
+import { ReplaySubject, Subscription } from 'rxjs';
 
 import { DEFAULT_THEME, preferColorScheme$, THEME_STORAGE_KEY } from './constants';
 import { ETheme, IThemeService } from './types';

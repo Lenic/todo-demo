@@ -1,13 +1,13 @@
 import type { CheckedState } from '@radix-ui/react-checkbox';
 import type { CSSProperties, FC } from 'react';
 
+import { ServiceLocator } from '@todo/container';
+import { ETodoStatus, IDataService } from '@todo/controllers';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { useObservableStore } from '@/hooks';
-import { ServiceLocator } from '@todo/container';
-import { ETodoStatus, IDataService } from '@todo/controllers';
 
 import { AutoTooltip } from './components/auto-tooltip';
 import { RowDatePicker } from './components/row-data-picker';

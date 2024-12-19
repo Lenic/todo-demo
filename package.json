@@ -1,8 +1,14 @@
 {
   "private": true,
+  "type": "module",
   "name": "todo-demo",
   "version": "3.5.12",
   "packageManager": "pnpm@9.12.3",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "dev": "pnpm -r --filter ./apps/react-app dev",
+    "build": "pnpm -r --filter ./apps/react-app build"
+  },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "eslint": "^9.9.0",

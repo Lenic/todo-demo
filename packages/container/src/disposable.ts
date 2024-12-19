@@ -1,5 +1,4 @@
-import type { IDisposable } from './types';
-import type { SubscriptionLike } from 'rxjs';
+import type { IDisposable, SubscriptionLike } from './types';
 
 import { injectable } from 'inversify';
 

@@ -1,11 +1,11 @@
+import { ServiceLocator } from '@todo/container';
+import { IThemeService } from '@todo/controllers';
 import { useEffect } from 'react';
 
 import { Toaster } from '@/components/ui/toaster';
 import { LanguageToggle } from '@/modules/setting/language-toggle';
 import { ThemeToggle } from '@/modules/setting/theme-toggle';
 import { CreateNewTask, TodoPanel } from '@/modules/todo';
-import { ServiceLocator } from '@todo/container';
-import { IThemeService } from '@todo/controllers';
 
 const App = () => {
   useEffect(() => {

@@ -1,6 +1,8 @@
 import type { ETodoListType } from '@todo/controllers';
 import type { FC } from 'react';
 
+import { ServiceLocator } from '@todo/container';
+import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/controllers';
 import dayjs from 'dayjs';
 import { useCallback, useMemo, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';
@@ -22,8 +24,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useObservableState, useObservableStore } from '@/hooks';
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
-import { ServiceLocator } from '@todo/container';
-import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/controllers';
 
 import { LoadingSketch } from './components/loading-sketch';
 import { TodoItem } from './item';

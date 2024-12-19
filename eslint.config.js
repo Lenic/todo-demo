@@ -1,9 +1,9 @@
 import js from '@eslint/js';
 import importPlugin from 'eslint-plugin-import';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import unusedImports from 'eslint-plugin-unused-imports';
 
 export default [
   ...tseslint.config(
@@ -21,7 +21,7 @@ export default [
         sourceType: 'module',
         globals: globals.browser,
         parserOptions: {
-          project: ['./tsconfig.node.json', './tsconfig.app.json'],
+          project: ['./tsconfig.json'],
           tsconfigRootDir: import.meta.dirname,
           ecmaFeatures: {
             jsx: true,
@@ -78,6 +78,12 @@ export default [
             argsIgnorePattern: '^_',
           },
         ],
+        '@typescript-eslint/no-redundant-type-constituents': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
       },
     },
   ),

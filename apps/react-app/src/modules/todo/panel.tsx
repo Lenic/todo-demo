@@ -1,8 +1,9 @@
 import type { FC } from 'react';
 
+import { ETodoListType } from '@todo/controllers';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIntl } from '@/i18n';
-import { ETodoListType } from '@todo/controllers';
 
 import { TodoList } from './list';
 

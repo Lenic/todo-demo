@@ -1,5 +1,7 @@
 import type { FC } from 'react';
 
+import { ServiceLocator } from '@todo/container';
+import { ETheme, IThemeService } from '@todo/controllers';
 import { Moon, Sun } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -10,8 +12,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useIntl } from '@/i18n';
-import { ServiceLocator } from '@todo/container';
-import { ETheme, IThemeService } from '@todo/controllers';
 
 const themeService = ServiceLocator.default.get(IThemeService);
 

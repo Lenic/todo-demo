@@ -1,5 +1,7 @@
 import type { FC } from 'react';
 
+import { ServiceLocator } from '@todo/container';
+import { IDataService } from '@todo/controllers';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
@@ -9,8 +11,6 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
 
 export interface IRowDatePickerProps {
   id: string;

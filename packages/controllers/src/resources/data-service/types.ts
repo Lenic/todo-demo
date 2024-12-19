@@ -1,5 +1,5 @@
+import type { ETodoListType, ICreatedTodoItem, ITodoItem } from '@/api';
 import type { Observable } from 'rxjs';
-import type { ETodoListType, ICreatedTodoItem, ITodoItem } from '../../api';
 
 import { createIdentifier } from '@todo/container';
 
@@ -19,9 +19,9 @@ export interface IDataService {
   loadMore(type: ETodoListType): Observable<void>;
 
   append(list: ITodoItem[]): void;
-  add(item: ICreatedTodoItem): void;
-  update(item: ITodoItem): void;
-  delete(id?: string): void;
+  add(item: ICreatedTodoItem): Promise<ITodoItem>;
+  update(item: ITodoItem): Promise<ITodoItem>;
+  delete(id?: string): Promise<void>;
 }
 
 export const IDataService = createIdentifier<IDataService>(Symbol('IDataService'));

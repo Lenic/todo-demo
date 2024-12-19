@@ -1,4 +1,6 @@
 packages:
   - '!**/test/**'
   - 'packages/*'
-  - 'app/*'
+  - 'apps/*'
+catalog:
+  rxjs: ^7.8.1

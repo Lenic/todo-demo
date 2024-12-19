@@ -1,5 +1,5 @@
+import type { IContainerIdentifier, TInjectedParameter } from './types';
 import type { interfaces } from 'inversify';
-import type { IContainerIdentifier } from './types';
 
 import { Container, inject, injectable } from 'inversify';
 
@@ -7,7 +7,8 @@ import { CONTAINER_IDENTIFIER_KEY } from './constants';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
-export const injectWith = <T>(identifier: IContainerIdentifier<T>) => inject(identifier.getIdentifier());
+export const injectWith = <T>(identifier: IContainerIdentifier<T>) =>
+  inject(identifier.getIdentifier()) as TInjectedParameter<T>;
 
 export const injectableWith =
   <T>(identifier: IContainerIdentifier<T>) =>
@@ -34,7 +35,6 @@ export class ServiceLocator {
   static default = new ServiceLocator();
 
   get<T>(identifier: IContainerIdentifier<T>, name?: string | number | symbol) {
-    debugger;
     if (name === undefined) {
       return container.get<T>(identifier.getIdentifier());
     } else {
