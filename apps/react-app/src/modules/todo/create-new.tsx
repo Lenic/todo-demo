@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ServiceLocator } from '@todo/container';
 import { IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-react';
+import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -12,29 +13,37 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import { useLoading } from '@/hooks';
 import { toast } from '@/hooks/use-toast';
-import { useIntl } from '@/i18n';
+import { languageChanged$, useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
 
-const formSchema = z.object({
-  title: z.string().min(2, { message: 'Task title must be at least 2 characters.' }),
-  date: z.date().nullable(),
-});
-type TFormSchema = z.infer<typeof formSchema>;
-
-const formProps = {
-  resolver: zodResolver(formSchema),
-  defaultValues: { title: '', date: null },
-};
-
 const dataService = ServiceLocator.default.get(IDataService);
 
-export const CreateNewTask: FC = () => {
+const CreateNewTaskCore: FC = () => {
   const { t } = useIntl('todo.create-new');
-  const form = useForm<TFormSchema>(formProps);
+
+  const formSchema = z.object({
+    title: z.string().min(2, { message: t('validation-rules.title-length') }),
+    date: z.date().nullable(),
+  });
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: { title: '', date: null },
+  });
+
+  const { clearErrors } = form;
+  useEffect(() => {
+    const subscription = languageChanged$.subscribe(() => {
+      clearErrors('title');
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [clearErrors]);
 
   const { handleSubmit, reset, setFocus } = form;
-  const [loading, handleEvent] = useLoading(async (data: TFormSchema) => {
+  const [loading, handleEvent] = useLoading(async (data: z.infer<typeof formSchema>) => {
     await dataService.add({
       title: data.title,
       overdueAt: data.date?.valueOf(),
@@ -84,3 +93,4 @@ export const CreateNewTask: FC = () => {
     </Form>
   );
 };
+export const CreateNewTask = memo(CreateNewTaskCore);

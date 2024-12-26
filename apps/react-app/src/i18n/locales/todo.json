@@ -9,6 +9,13 @@
     "short-date": "MM-dd"
   },
   "create-new": {
+    "validation-rules": {
+      "title-length": [
+        "Task title must be at least 2 characters.",
+        "任务标题必须至少有 2 个字符。",
+        "タスクのタイトルは少なくとも 2 文字でなければなりません。"
+      ]
+    },
     "create-success": ["New task created.", "新任务创建完成！", "新しいタスクが作成されました！"],
     "input-placeholder": ["Input your task title", "键入新任务标题", "新しいタスクのタイトルを入力してください"],
     "submit-form": ["Submit", "确认", "確認"]
