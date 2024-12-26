@@ -1,8 +1,9 @@
+import type { FC } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ServiceLocator } from '@todo/container';
 import { IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-react';
-import { type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -33,21 +34,18 @@ export const CreateNewTask: FC = () => {
   const form = useForm<TFormSchema>(formProps);
 
   const { handleSubmit, reset, setFocus } = form;
-  const [loading, handleEvent, handleAction] = useLoading<TFormSchema>();
-  useEffect(() => {
-    handleAction(async (data: TFormSchema) => {
-      await dataService.add({
-        title: data.title,
-        overdueAt: data.date?.valueOf(),
-      });
-
-      toast({ title: t('create-success'), duration: 1_000 });
-      reset();
-      setTimeout(() => {
-        setFocus('title');
-      }, 0);
+  const [loading, handleEvent] = useLoading(async (data: TFormSchema) => {
+    await dataService.add({
+      title: data.title,
+      overdueAt: data.date?.valueOf(),
     });
-  }, [handleAction, reset, setFocus, t]);
+
+    toast({ title: t('create-success'), duration: 1_000 });
+    reset();
+    setTimeout(() => {
+      setFocus('title');
+    }, 0);
+  });
 
   return (
     <Form {...form}>

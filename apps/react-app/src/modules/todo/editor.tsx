@@ -3,9 +3,11 @@ import type { FC } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
-import { useCallback, useEffect, useId, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useCallback, useEffect, useId } from 'react';
 import { useForm } from 'react-hook-form';
-import { map, take } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
+import { concatMap, map, take } from 'rxjs/operators';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -43,7 +45,6 @@ const dataService = ServiceLocator.default.get(IDataService);
 
 export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChange }) => {
   const form = useForm<TFormSchema>(formProps);
-  const [disableEditing] = useState(() => dataService.dataMapper[id].status === ETodoStatus.DONE);
 
   const { reset } = form;
   useEffect(() => {
@@ -62,31 +63,41 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
   }, [reset, id]);
 
   const handleClose = useCallback(() => {
+    reset();
     onOpenChange(false);
-  }, [onOpenChange]);
+  }, [onOpenChange, reset]);
 
   const { t } = useIntl('todo.editor');
-  const handleSubmitForm = form.handleSubmit((data) => {
-    dataService.dataMapper$
-      .pipe(
+  const handleSubmitForm = form.handleSubmit((data) =>
+    firstValueFrom(
+      dataService.dataMapper$.pipe(
         map((mapper) => mapper[id]),
         take(1),
-      )
-      .subscribe((item) => {
-        dataService.update({
-          ...item,
-          title: data.title,
-          description: data.description,
-          overdueAt: data.date?.valueOf(),
-          status: data.checked ? ETodoStatus.DONE : ETodoStatus.PENDING,
-        });
-
-        toast({ title: t('update-success'), duration: 1_000 });
-        handleClose();
-      });
-  });
+        concatMap((item) =>
+          dataService
+            .update({
+              ...item,
+              title: data.title,
+              description: data.description,
+              overdueAt: data.date?.valueOf(),
+              status: data.checked ? ETodoStatus.DONE : ETodoStatus.PENDING,
+            })
+            .then(
+              () => {
+                toast({ title: t('update-success'), duration: 1_000 });
+                onOpenChange(false);
+              },
+              () => {
+                toast({ title: t('update-failure'), duration: 0 });
+              },
+            ),
+        ),
+      ),
+    ),
+  );
 
   const checkboxKey = useId();
+  const disableEditing = form.watch('checked', false);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-md:w-full max-md:inset-0 max-md:top-[unset] max-md:transform-none">
@@ -155,10 +166,13 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
               )}
             />
             <div className="grid grid-cols-2 gap-2">
-              <Button type="button" variant="secondary" onClick={handleClose}>
+              <Button type="button" variant="secondary" onClick={handleClose} disabled={form.formState.isSubmitting}>
                 {t('cancel')}
               </Button>
-              <Button type="submit">{t('submit')}</Button>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting && <Loader2 className="animate-spin mr-2" width={18} height={18} />}
+                {t('submit')}
+              </Button>
             </div>
           </form>
         </Form>

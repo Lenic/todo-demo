@@ -19,6 +19,11 @@
   },
   "editor": {
     "update-success": ["Update the task successfully.", "任务信息更新完成！", "タスク情報が更新されました！"],
+    "update-failure": [
+      "Try to update but end in task failure.",
+      "尝试更新但以任务失败告终。",
+      "更新を試みるが、タスクの失敗で終わる。"
+    ],
     "title": ["Todo Task Editor", "编辑任务详情", "タスクの詳細を編集してください"],
     "description": [
       "You can change all of your task infomation here.",

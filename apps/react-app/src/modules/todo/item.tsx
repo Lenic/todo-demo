@@ -3,11 +3,13 @@ import type { CSSProperties, FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
+import { Loader2 } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';
-import { distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
+import { from } from 'rxjs';
+import { concatMap, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
 
 import { Checkbox } from '@/components/ui/checkbox';
-import { useObservableStore } from '@/hooks';
+import { useLoading, useObservableStore } from '@/hooks';
 
 import { AutoTooltip } from './components/auto-tooltip';
 import { RowDatePicker } from './components/row-data-picker';
@@ -33,13 +35,13 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
   );
   const item = useObservableStore(item$, dataService.dataMapper[id]);
 
-  const handleChangeChecked = useCallback(
-    (e: CheckedState) => {
-      item$.pipe(take(1)).subscribe((item) => {
-        dataService.update({ ...item, status: e === true ? ETodoStatus.DONE : ETodoStatus.PENDING });
-      });
-    },
-    [item$],
+  const [loading, handleChangeChecked] = useLoading((e: CheckedState) =>
+    item$.pipe(
+      take(1),
+      concatMap((item) =>
+        from(dataService.update({ ...item, status: e === true ? ETodoStatus.DONE : ETodoStatus.PENDING })),
+      ),
+    ),
   );
 
   const [open, setOpen] = useState(false);
@@ -50,7 +52,11 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
   const overdueAt = useMemo(() => (item.overdueAt ? new Date(item.overdueAt) : undefined), [item.overdueAt]);
   return (
     <div className="flex items-center space-x-2 pr-4" style={style}>
-      <Checkbox checked={item.status === ETodoStatus.DONE} onCheckedChange={handleChangeChecked} />
+      {loading ? (
+        <Loader2 className="animate-spin" width={16} height={16} />
+      ) : (
+        <Checkbox checked={item.status === ETodoStatus.DONE} onCheckedChange={handleChangeChecked} />
+      )}
       <AutoTooltip
         title={item.title}
         description={item.description ? item.description : item.title}

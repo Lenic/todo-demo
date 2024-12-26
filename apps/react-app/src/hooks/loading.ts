@@ -1,17 +1,39 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { catchError, combineLatest, exhaustMap, from, map, merge, of, race, share, Subject, timer } from 'rxjs';
+import type { Observable } from 'rxjs';
 
-export const useLoading = <T>(delayTime = 300) => {
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  catchError,
+  exhaustMap,
+  from,
+  map,
+  merge,
+  of,
+  race,
+  ReplaySubject,
+  share,
+  Subject,
+  timer,
+  withLatestFrom,
+} from 'rxjs';
+
+export const useLoading = <T>(fn: (args: T) => Promise<unknown> | Observable<unknown>, delayTime = 300) => {
   const [loading, setLoading] = useState(false);
   const eventArgsRef = useRef(new Subject<T>());
-  const actionRef = useRef(new Subject<(args: T) => Promise<unknown>>());
+
+  const actionRef = useRef(new ReplaySubject<(args: T) => Promise<unknown> | Observable<unknown>>(1));
+  useEffect(() => {
+    actionRef.current.next(fn);
+  }, [fn]);
 
   useEffect(() => {
-    const subscription = combineLatest([actionRef.current, eventArgsRef.current])
+    const subscription = eventArgsRef.current
       .pipe(
-        exhaustMap(([action, eventArgs]) => {
+        withLatestFrom(actionRef.current),
+        exhaustMap(([eventArgs, action]) => {
           const waiter = action(eventArgs);
-          const false$ = from(waiter).pipe(
+          const waiter$ = waiter instanceof Promise ? from(waiter) : waiter;
+
+          const false$ = waiter$.pipe(
             map(() => false),
             catchError(() => of(false)),
             share(),
@@ -33,9 +55,5 @@ export const useLoading = <T>(delayTime = 300) => {
     eventArgsRef.current.next(args);
   }, []);
 
-  const handleAction = useCallback((fn: (args: T) => Promise<unknown>) => {
-    actionRef.current.next(fn);
-  }, []);
-
-  return [loading, handleEvent, handleAction] as const;
+  return [loading, handleEvent] as const;
 };
