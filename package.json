@@ -10,6 +10,7 @@
     "build": "pnpm -r --filter ./apps/react-app build"
   },
   "devDependencies": {
+    "@eslint/config-inspector": "^0.6.0",
     "@eslint/js": "^9.9.0",
     "eslint": "^9.9.0",
     "eslint-plugin-import": "^2.31.0",

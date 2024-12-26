@@ -27,7 +27,7 @@ export const useLoading = <T>(delayTime = 300) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [delayTime]);
 
   const handleEvent = useCallback((args: T) => {
     eventArgsRef.current.next(args);

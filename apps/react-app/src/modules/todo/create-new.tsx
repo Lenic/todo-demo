@@ -47,7 +47,7 @@ export const CreateNewTask: FC = () => {
         setFocus('title');
       }, 0);
     });
-  }, [handleAction, setFocus]);
+  }, [handleAction, reset, setFocus, t]);
 
   return (
     <Form {...form}>
