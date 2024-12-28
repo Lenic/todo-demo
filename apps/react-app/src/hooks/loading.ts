@@ -12,6 +12,7 @@ import {
   ReplaySubject,
   share,
   Subject,
+  take,
   timer,
   withLatestFrom,
 } from 'rxjs';
@@ -31,7 +32,7 @@ export const useLoading = <T>(fn: (args: T) => Promise<unknown> | Observable<unk
         withLatestFrom(actionRef.current),
         exhaustMap(([eventArgs, action]) => {
           const waiter = action(eventArgs);
-          const waiter$ = waiter instanceof Promise ? from(waiter) : waiter;
+          const waiter$ = waiter instanceof Promise ? from(waiter) : waiter.pipe(take(1));
 
           const false$ = waiter$.pipe(
             map(() => false),
