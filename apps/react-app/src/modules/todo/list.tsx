@@ -10,11 +10,11 @@ import InfiniteLoader from 'react-window-infinite-loader';
 import { from } from 'rxjs';
 import {
   auditTime,
+  concatMap,
   distinct,
   distinctUntilChanged,
   filter,
   map,
-  mergeMap,
   shareReplay,
   toArray,
   withLatestFrom,
@@ -58,7 +58,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
               .map((date) => dayjs(date).get('year')),
           ),
           filter((v) => !!v.length),
-          mergeMap((list) =>
+          concatMap((list) =>
             from(list).pipe(
               distinct(),
               toArray(),
