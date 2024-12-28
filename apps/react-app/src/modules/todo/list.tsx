@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import { useCallback, useMemo, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import { from } from 'rxjs';
+import { firstValueFrom, from } from 'rxjs';
 import {
   auditTime,
   concatMap,
@@ -74,11 +74,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
     t('short-date'),
   );
 
-  const handleLoadMore = useCallback(() => {
-    return new Promise<void>((resolve) => {
-      dataService.loadMore(type).subscribe(resolve);
-    });
-  }, [type]);
+  const handleLoadMore = useCallback(() => firstValueFrom(dataService.loadMore(type)), [type]);
 
   const isEnd = useObservableStore(
     useMemo(() => dataService.ends$.pipe(map((ends) => ends[type])), [type]),
