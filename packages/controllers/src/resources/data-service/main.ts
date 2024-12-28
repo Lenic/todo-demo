@@ -4,7 +4,7 @@ import type { Observable } from 'rxjs';
 import { Disposable, injectableWith, injectWith } from '@todo/container';
 import dayjs from 'dayjs';
 import { produce } from 'immer';
-import { BehaviorSubject, combineLatest, firstValueFrom, Subject, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, EMPTY, Subject, timer } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
@@ -82,37 +82,31 @@ class DataService extends Disposable implements IDataService {
     this.appendSubject.next(list);
   }
 
-  add(item: ICreatedTodoItem): Promise<ITodoItem> {
-    return firstValueFrom(
-      this.storageService.add(item).pipe(
-        tap((value) => {
-          this.addSubject.next(value);
-        }),
-      ),
+  add(item: ICreatedTodoItem): Observable<ITodoItem> {
+    return this.storageService.add(item).pipe(
+      tap((value) => {
+        this.addSubject.next(value);
+      }),
     );
   }
 
-  update(item: ITodoItem): Promise<ITodoItem> {
-    return firstValueFrom(
-      this.storageService.update(item).pipe(
-        tap((value) => {
-          this.updateSubject.next(value);
-        }),
-      ),
+  update(item: ITodoItem): Observable<ITodoItem> {
+    return this.storageService.update(item).pipe(
+      tap((value) => {
+        this.updateSubject.next(value);
+      }),
     );
   }
 
-  delete(id?: string): Promise<void> {
+  delete(id?: string): Observable<void> {
     if (!id) {
       this.clearSubject.next(void 0);
-      return Promise.resolve();
+      return EMPTY;
     } else {
-      return firstValueFrom(
-        this.storageService.delete(id).pipe(
-          tap(() => {
-            this.clearSubject.next(id);
-          }),
-        ),
+      return this.storageService.delete(id).pipe(
+        tap(() => {
+          this.clearSubject.next(id);
+        }),
       );
     }
   }

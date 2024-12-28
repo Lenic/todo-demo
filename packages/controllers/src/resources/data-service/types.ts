@@ -19,9 +19,9 @@ export interface IDataService {
   loadMore(type: ETodoListType): Observable<void>;
 
   append(list: ITodoItem[]): void;
-  add(item: ICreatedTodoItem): Promise<ITodoItem>;
-  update(item: ITodoItem): Promise<ITodoItem>;
-  delete(id?: string): Promise<void>;
+  add(item: ICreatedTodoItem): Observable<ITodoItem>;
+  update(item: ITodoItem): Observable<ITodoItem>;
+  delete(id?: string): Observable<void>;
 }
 
 export const IDataService = createIdentifier<IDataService>(Symbol('IDataService'));

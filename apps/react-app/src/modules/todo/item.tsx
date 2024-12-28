@@ -5,7 +5,6 @@ import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';
-import { from } from 'rxjs';
 import { concatMap, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
 
 import { Checkbox } from '@/components/ui/checkbox';
@@ -38,9 +37,7 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
   const [loading, handleChangeChecked] = useLoading((e: CheckedState) =>
     item$.pipe(
       take(1),
-      concatMap((item) =>
-        from(dataService.update({ ...item, status: e === true ? ETodoStatus.DONE : ETodoStatus.PENDING })),
-      ),
+      concatMap((item) => dataService.update({ ...item, status: e === true ? ETodoStatus.DONE : ETodoStatus.PENDING })),
     ),
   );
 

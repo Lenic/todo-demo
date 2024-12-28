@@ -6,8 +6,8 @@ import { ETodoStatus, IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-react';
 import { useCallback, useEffect, useId } from 'react';
 import { useForm } from 'react-hook-form';
-import { firstValueFrom } from 'rxjs';
-import { concatMap, map, take } from 'rxjs/operators';
+import { EMPTY, firstValueFrom } from 'rxjs';
+import { catchError, concatMap, finalize, map, take } from 'rxjs/operators';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -82,14 +82,15 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
               overdueAt: data.date?.valueOf(),
               status: data.checked ? ETodoStatus.DONE : ETodoStatus.PENDING,
             })
-            .then(
-              () => {
+            .pipe(
+              finalize(() => {
                 toast({ title: t('update-success'), duration: 1_000 });
                 onOpenChange(false);
-              },
-              () => {
+              }),
+              catchError(() => {
                 toast({ title: t('update-failure'), duration: 0 });
-              },
+                return EMPTY;
+              }),
             ),
         ),
       ),

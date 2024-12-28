@@ -6,6 +6,7 @@ import { IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-react';
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { asyncScheduler, observeOn, tap } from 'rxjs';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -43,17 +44,22 @@ const CreateNewTaskCore: FC = () => {
   }, [clearErrors]);
 
   const { handleSubmit, reset, setFocus } = form;
-  const [loading, handleEvent] = useLoading(async (data: z.infer<typeof formSchema>) => {
-    await dataService.add({
-      title: data.title,
-      overdueAt: data.date?.valueOf(),
-    });
-
-    toast({ title: t('create-success'), duration: 1_000 });
-    reset();
-    setTimeout(() => {
-      setFocus('title');
-    }, 0);
+  const [loading, handleEvent] = useLoading((data: z.infer<typeof formSchema>) => {
+    return dataService
+      .add({
+        title: data.title,
+        overdueAt: data.date?.valueOf(),
+      })
+      .pipe(
+        tap(() => {
+          toast({ title: t('create-success'), duration: 1_000 });
+          reset();
+        }),
+        observeOn(asyncScheduler),
+        tap(() => {
+          setFocus('title');
+        }),
+      );
   });
 
   return (

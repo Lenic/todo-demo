@@ -5,7 +5,6 @@ import { IDataService } from '@todo/controllers';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import { from } from 'rxjs';
 import { concatMap, map, take, tap } from 'rxjs/operators';
 
 import { Button } from '@/components/ui/button';
@@ -33,7 +32,7 @@ export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, f
       tap(() => {
         setOpen(false);
       }),
-      concatMap((item) => from(dataService.update({ ...item, overdueAt: value?.valueOf() }))),
+      concatMap((item) => dataService.update({ ...item, overdueAt: value?.valueOf() })),
     ),
   );
 
