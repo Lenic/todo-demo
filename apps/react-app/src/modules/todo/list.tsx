@@ -21,7 +21,7 @@ import {
 } from 'rxjs/operators';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useObservableState, useObservableStore } from '@/hooks';
+import { useObservableState } from '@/hooks';
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
 
@@ -44,7 +44,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
       ),
     [type],
   );
-  const ids = useObservableStore(ids$, dataService.ids[type]);
+  const ids = useObservableState(ids$, dataService.ids[type]);
 
   const { t } = useIntl('todo.list');
   const dateFormatString = useObservableState(
@@ -76,7 +76,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
 
   const handleLoadMore = useCallback(() => firstValueFrom(dataService.loadMore(type)), [type]);
 
-  const isEnd = useObservableStore(
+  const isEnd = useObservableState(
     useMemo(() => dataService.ends$.pipe(map((ends) => ends[type])), [type]),
     dataService.ends[type],
   );

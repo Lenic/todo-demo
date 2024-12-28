@@ -8,7 +8,7 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import { concatMap, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
 
 import { Checkbox } from '@/components/ui/checkbox';
-import { useLoading, useObservableStore } from '@/hooks';
+import { useLoading, useObservableState } from '@/hooks';
 
 import { AutoTooltip } from './components/auto-tooltip';
 import { RowDatePicker } from './components/row-data-picker';
@@ -32,7 +32,7 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
       ),
     [id],
   );
-  const item = useObservableStore(item$, dataService.dataMapper[id]);
+  const item = useObservableState(item$, dataService.dataMapper[id]);
 
   const [loading, handleChangeChecked] = useLoading((e: CheckedState) =>
     item$.pipe(
