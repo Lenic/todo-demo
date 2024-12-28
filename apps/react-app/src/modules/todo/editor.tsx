@@ -28,23 +28,22 @@ export interface ITodoItemEditorProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const formSchema = z.object({
-  title: z.string().min(2, { message: 'Task title must be at least 2 characters.' }),
-  description: z.string(),
-  date: z.date().nullable(),
-  checked: z.boolean(),
-});
-type TFormSchema = z.infer<typeof formSchema>;
-
-const formProps = {
-  resolver: zodResolver(formSchema),
-  defaultValues: { title: '', description: '', checked: false, date: null },
-};
-
 const dataService = ServiceLocator.default.get(IDataService);
 
 export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChange }) => {
-  const form = useForm<TFormSchema>(formProps);
+  const { t } = useIntl('todo.editor');
+
+  const form = useForm({
+    resolver: zodResolver(
+      z.object({
+        title: z.string().min(2, { message: t('validation-rules.title-length') }),
+        description: z.string(),
+        date: z.date().nullable(),
+        checked: z.boolean(),
+      }),
+    ),
+    defaultValues: { title: '', description: '', checked: false, date: null as null | Date },
+  });
 
   const { reset } = form;
   useEffect(() => {
@@ -67,7 +66,6 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
     onOpenChange(false);
   }, [onOpenChange, reset]);
 
-  const { t } = useIntl('todo.editor');
   const handleSubmitForm = form.handleSubmit((data) =>
     firstValueFrom(
       dataService.dataMapper$.pipe(

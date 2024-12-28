@@ -25,6 +25,13 @@
     "placeholder": ["Pick a date", "选择日期", "日付選択"]
   },
   "editor": {
+    "validation-rules": {
+      "title-length": [
+        "Task title must be at least 2 characters.",
+        "任务标题必须至少有 2 个字符。",
+        "タスクのタイトルは少なくとも 2 文字でなければなりません。"
+      ]
+    },
     "update-success": ["Update the task successfully.", "任务信息更新完成！", "タスク情報が更新されました！"],
     "update-failure": [
       "Try to update but end in task failure.",
