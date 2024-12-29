@@ -4,10 +4,6 @@
   "description": "",
   "type": "module",
   "main": "./src/index.ts",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build && tsc"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,13 +16,10 @@
   "dependencies": {
     "@todo/container": "workspace:*",
     "@todo/indexed-db": "workspace:*",
-    "dayjs": "^1.11.13",
-    "immer": "^10.1.1",
-    "nanoid": "^5.0.7",
+    "dayjs": "catalog:",
+    "immer": "catalog:",
+    "nanoid": "catalog:",
+    "reflect-metadata": "catalog:",
     "rxjs": "catalog:"
-  },
-  "devDependencies": {
-    "reflect-metadata": "^0.2.2",
-    "vite": "^5.4.1"
   }
 }

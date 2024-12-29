@@ -2,7 +2,7 @@ import type { Observable } from 'rxjs';
 
 import { useEffect, useRef, useState } from 'react';
 
-const defaultEqualComparer = <T>(prev: T, next: T) => prev === next;
+export const defaultEqualComparer = <T>(prev: T, next: T) => prev === next;
 
 export function useObservableState<T>(
   source$: Observable<T>,

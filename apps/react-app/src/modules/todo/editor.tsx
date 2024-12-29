@@ -1,4 +1,3 @@
-import type { ITodoItem } from '@todo/controllers';
 import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -50,7 +49,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
 
   const { reset } = form;
   useEffect(() => {
-    const subscription = dataService.dataMapper$.pipe(map((mapper) => mapper[id] as ITodoItem)).subscribe((item) => {
+    const subscription = dataService.dataMapper$.pipe(map((mapper) => mapper[id])).subscribe((item) => {
       setIsSubmissionForbidden(item.status === ETodoStatus.DONE);
       reset({
         title: item.title,

@@ -7,17 +7,27 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "pnpm -r --filter ./apps/react-app dev",
-    "build": "pnpm -r --filter ./apps/react-app build"
+    "build": "pnpm -r --filter ./apps/react-app build",
+    "preview": "pnpm -r --filter ./apps/react-app preview"
   },
   "devDependencies": {
     "@eslint/config-inspector": "^0.6.0",
     "@eslint/js": "^9.9.0",
+    "@types/node": "^22.7.4",
     "eslint": "^9.9.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
-    "globals": "^15.9.0",
+    "globals": "^15.14.0",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.1"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.13",
+    "immer": "^10.1.1",
+    "inversify": "^6.2.1",
+    "nanoid": "^5.0.9",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
   }
 }

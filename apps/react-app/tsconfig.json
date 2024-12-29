@@ -1,13 +1,7 @@
 {
-  "include": ["src"],
-  "extends": ["../../tsconfig.json"],
-  "references": [{ "path": "./tsconfig.node.json" }],
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
   "compilerOptions": {
-    "types": ["node"],
-    "jsx": "react-jsx",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "experimentalDecorators": true
   }
 }

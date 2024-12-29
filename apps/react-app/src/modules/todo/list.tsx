@@ -1,4 +1,4 @@
-import type { ETodoListType } from '@todo/controllers';
+import type { ETodoListType, ITodoItem } from '@todo/controllers';
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
@@ -51,7 +51,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
     useMemo(
       () =>
         dataService.dataMapper$.pipe(
-          withLatestFrom(ids$, (mapper, ids) =>
+          withLatestFrom(ids$, (mapper: Record<string, ITodoItem>, ids) =>
             ids
               .map((id) => mapper[id].overdueAt)
               .filter((v) => !!v)
@@ -99,7 +99,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
     240,
   );
 
-  const itemCount = isEnd ? ids.length : (ids.length as number) + TODO_LIST_PAGE_SIZE;
+  const itemCount = isEnd ? ids.length : ids.length + TODO_LIST_PAGE_SIZE;
   return (
     <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemCount} loadMoreItems={handleLoadMore} threshold={3}>
       {({ onItemsRendered, ref }) => (

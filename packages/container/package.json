@@ -7,7 +7,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "inversify": "^6.1.4",
-    "reflect-metadata": "^0.2.2"
+    "inversify": "catalog:",
+    "reflect-metadata": "catalog:"
   }
 }

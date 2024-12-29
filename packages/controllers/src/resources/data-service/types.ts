@@ -1,5 +1,5 @@
-import type { ETodoListType, ICreatedTodoItem, ITodoItem } from '@/api';
 import type { Observable } from 'rxjs';
+import type { ETodoListType, ICreatedTodoItem, ITodoItem } from '../../api';
 
 import { createIdentifier } from '@todo/container';
 

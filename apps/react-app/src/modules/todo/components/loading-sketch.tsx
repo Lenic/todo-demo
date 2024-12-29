@@ -11,7 +11,7 @@ import { delay, distinctUntilChanged, map, pairwise, startWith, switchMap } from
 import { useObservableState } from '@/hooks';
 import { getElementResize$ } from '@/lib/utils';
 
-export interface ILoadingSketcProps {
+export interface ILoadingSketchProps {
   type: ETodoListType;
 }
 
@@ -19,7 +19,7 @@ const defaultRowWidth = [364, 300, 332] as [number, number, number];
 
 const dataService = ServiceLocator.default.get(IDataService);
 
-const LoadingSketchCore: FC<ILoadingSketcProps> = ({ type }) => {
+const LoadingSketchCore: FC<ILoadingSketchProps> = ({ type }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const rowWidth = useObservableState(
