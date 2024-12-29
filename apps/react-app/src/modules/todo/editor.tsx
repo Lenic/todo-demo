@@ -1,10 +1,11 @@
+import type { ITodoItem } from '@todo/controllers';
 import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-react';
-import { useCallback, useEffect, useId } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { EMPTY, firstValueFrom } from 'rxjs';
 import { catchError, concatMap, finalize, map, take } from 'rxjs/operators';
@@ -45,9 +46,12 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
     defaultValues: { title: '', description: '', checked: false, date: null as null | Date },
   });
 
+  const [isSubmissionForbidden, setIsSubmissionForbidden] = useState(false);
+
   const { reset } = form;
   useEffect(() => {
-    const subscription = dataService.dataMapper$.pipe(map((mapper) => mapper[id])).subscribe((item) => {
+    const subscription = dataService.dataMapper$.pipe(map((mapper) => mapper[id] as ITodoItem)).subscribe((item) => {
+      setIsSubmissionForbidden(item.status === ETodoStatus.DONE);
       reset({
         title: item.title,
         description: item.description ?? '',
@@ -96,7 +100,6 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
   );
 
   const checkboxKey = useId();
-  const disableEditing = form.watch('checked', false);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-md:w-full max-md:inset-0 max-md:top-[unset] max-md:transform-none">
@@ -114,7 +117,13 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
                   <FormItem>
                     <FormControl>
                       <div className="flex items-center space-x-2">
-                        <Checkbox id={checkboxKey} checked={value} onCheckedChange={onChange} {...rest} />
+                        <Checkbox
+                          id={checkboxKey}
+                          checked={value}
+                          onCheckedChange={onChange}
+                          {...rest}
+                          disabled={isSubmissionForbidden}
+                        />
                         <Label htmlFor={checkboxKey} className="cursor-pointer">
                           {value ? t('status.done') : t('status.pending')}
                         </Label>
@@ -129,7 +138,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <DatePicker value={field.value} onChange={field.onChange} disabled={disableEditing} />
+                      <DatePicker value={field.value} onChange={field.onChange} disabled={isSubmissionForbidden} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -141,7 +150,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder={t('title-placeholder')} {...field} disabled={disableEditing} />
+                    <Input placeholder={t('title-placeholder')} {...field} disabled={isSubmissionForbidden} />
                   </FormControl>
                   <FormMessage className="absolute left-0 bottom-0" />
                 </FormItem>
@@ -157,7 +166,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
                       rows={6}
                       placeholder={t('description-placeholder')}
                       {...field}
-                      disabled={disableEditing}
+                      disabled={isSubmissionForbidden}
                     />
                   </FormControl>
                   <FormMessage className="absolute left-0 bottom-0" />
@@ -168,7 +177,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
               <Button type="button" variant="secondary" onClick={handleClose} disabled={form.formState.isSubmitting}>
                 {t('cancel')}
               </Button>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
+              <Button type="submit" disabled={form.formState.isSubmitting || isSubmissionForbidden}>
                 {form.formState.isSubmitting && <Loader2 className="animate-spin mr-2" width={18} height={18} />}
                 {t('submit')}
               </Button>
