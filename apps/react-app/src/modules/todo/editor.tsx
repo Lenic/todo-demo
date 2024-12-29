@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { EMPTY, firstValueFrom } from 'rxjs';
-import { catchError, concatMap, finalize, map, take } from 'rxjs/operators';
+import { catchError, concatMap, filter, finalize, map, take } from 'rxjs/operators';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -49,15 +49,20 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
 
   const { reset } = form;
   useEffect(() => {
-    const subscription = dataService.dataMapper$.pipe(map((mapper) => mapper[id])).subscribe((item) => {
-      setIsSubmissionForbidden(item.status === ETodoStatus.DONE);
-      reset({
-        title: item.title,
-        description: item.description ?? '',
-        checked: item.status === ETodoStatus.DONE,
-        date: item.overdueAt ? new Date(item.overdueAt) : null,
+    const subscription = dataService.dataMapper$
+      .pipe(
+        map((mapper) => mapper[id]),
+        filter((item) => !!item),
+      )
+      .subscribe((item) => {
+        setIsSubmissionForbidden(item.status === ETodoStatus.DONE);
+        reset({
+          title: item.title,
+          description: item.description ?? '',
+          checked: item.status === ETodoStatus.DONE,
+          date: item.overdueAt ? new Date(item.overdueAt) : null,
+        });
       });
-    });
 
     return () => {
       subscription.unsubscribe();

@@ -18,13 +18,24 @@ import {
 } from 'rxjs';
 
 export const useLoading = <T>(fn: (args: T) => Promise<unknown> | Observable<unknown>, delayTime = 300) => {
-  const [loading, setLoading] = useState(false);
   const eventArgsRef = useRef(new Subject<T>());
+  const handleEvent = useCallback((args: T) => {
+    eventArgsRef.current.next(args);
+  }, []);
 
   const actionRef = useRef(new ReplaySubject<(args: T) => Promise<unknown> | Observable<unknown>>(1));
   useEffect(() => {
     actionRef.current.next(fn);
   }, [fn]);
+
+  const [loading, setLoading] = useState(false);
+  const [loadingTrigger] = useState(() => new Subject<boolean>());
+  useEffect(() => {
+    const subscription = loadingTrigger.subscribe(setLoading);
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [loadingTrigger]);
 
   useEffect(() => {
     const subscription = eventArgsRef.current
@@ -44,17 +55,13 @@ export const useLoading = <T>(fn: (args: T) => Promise<unknown> | Observable<unk
         }),
       )
       .subscribe((loading) => {
-        setLoading(loading);
+        loadingTrigger.next(loading);
       });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [delayTime]);
+  }, [delayTime, loadingTrigger]);
 
-  const handleEvent = useCallback((args: T) => {
-    eventArgsRef.current.next(args);
-  }, []);
-
-  return [loading, handleEvent] as const;
+  return [loading, handleEvent, loadingTrigger] as const;
 };

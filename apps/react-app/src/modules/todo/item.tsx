@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useLoading, useObservableState } from '@/hooks';
 
 import { AutoTooltip } from './components/auto-tooltip';
+import { RowContextMenu } from './components/row-context-menu';
 import { RowDatePicker } from './components/row-data-picker';
 import { TodoItemEditor } from './editor';
 
@@ -54,12 +55,14 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
       ) : (
         <Checkbox checked={item.status === ETodoStatus.DONE} onCheckedChange={handleChangeChecked} />
       )}
-      <AutoTooltip
-        title={item.title}
-        description={item.description ? item.description : item.title}
-        className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
-        onClick={handleOpenEditor}
-      />
+      <RowContextMenu id={id}>
+        <AutoTooltip
+          title={item.title}
+          description={item.description ? item.description : item.title}
+          className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
+          onClick={handleOpenEditor}
+        />
+      </RowContextMenu>
       <div className="flex-auto" />
       <RowDatePicker className="flex-initial" id={id} value={overdueAt} formatString={dateFormatString} />
       <TodoItemEditor id={id} open={open} onOpenChange={setOpen} />
