@@ -1,4 +1,5 @@
 import type { CheckedState } from '@radix-ui/react-checkbox';
+import type { ITodoItem } from '@todo/controllers';
 import type { CSSProperties, FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
@@ -26,13 +27,13 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
   const item$ = useMemo(
     () =>
       dataService.dataMapper$.pipe(
-        map((mapper) => mapper[id]),
+        map((mapper) => mapper[id] as ITodoItem),
         distinctUntilChanged(),
         shareReplay(1),
       ),
     [id],
   );
-  const item = useObservableState(item$, dataService.dataMapper[id]);
+  const item: ITodoItem = useObservableState(item$, dataService.dataMapper[id]);
 
   const [loading, handleChangeChecked] = useLoading((e: CheckedState) =>
     item$.pipe(
