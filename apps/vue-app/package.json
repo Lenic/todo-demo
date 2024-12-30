@@ -1,0 +1,39 @@
+{
+  "name": "@todo/vue",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "lint": "eslint .",
+    "lint:check": "eslint --inspect-config",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@todo/container": "workspace:*",
+    "@todo/controllers": "workspace:*",
+    "@todo/indexed-db": "workspace:*",
+    "dayjs": "catalog:",
+    "immer": "catalog:",
+    "inversify": "catalog:",
+    "reflect-metadata": "catalog:",
+    "rxjs": "catalog:",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^22.10.2",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue-jsx": "^4.1.1",
+    "@vue/eslint-config-prettier": "^10.1.0",
+    "@vue/eslint-config-typescript": "^14.1.3",
+    "@vue/runtime-core": "^3.5.13",
+    "eslint-plugin-vue": "^9.30.0",
+    "globals": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
+    "vite": "catalog:"
+  }
+}

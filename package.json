@@ -6,21 +6,25 @@
   "packageManager": "pnpm@9.12.3",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "pnpm -r --filter ./apps/react-app dev",
-    "build": "pnpm -r --filter ./apps/react-app build",
-    "preview": "pnpm -r --filter ./apps/react-app preview"
+    "dev:react": "pnpm -r --filter ./apps/react-app dev",
+    "build:react": "pnpm -r --filter ./apps/react-app build",
+    "preview:react": "pnpm -r --filter ./apps/react-app preview",
+    "dev:vue": "pnpm -r --filter ./apps/vue-app dev",
+    "build:vue": "pnpm -r --filter ./apps/vue-app build",
+    "preview:vue": "pnpm -r --filter ./apps/vue-app preview"
   },
   "devDependencies": {
     "@eslint/config-inspector": "^0.6.0",
     "@eslint/js": "^9.9.0",
     "@types/node": "^22.7.4",
     "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^15.14.0",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^8.0.1"
+    "typescript-eslint": "^8.18.2"
   },
   "dependencies": {
     "dayjs": "^1.11.13",
