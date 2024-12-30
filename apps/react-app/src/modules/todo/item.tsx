@@ -5,7 +5,7 @@ import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';
-import { concatMap, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs/operators';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { useLoading, useObservableState } from '@/hooks';
@@ -29,6 +29,7 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
       dataService.dataMapper$.pipe(
         map((mapper) => mapper[id]),
         distinctUntilChanged(),
+        filter((v) => !!v),
         shareReplay(1),
       ),
     [id],
