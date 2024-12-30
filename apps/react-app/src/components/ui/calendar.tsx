@@ -9,7 +9,7 @@ import { concatMap } from 'rxjs/operators';
 
 import { buttonVariants } from '@/components/ui/button';
 import { useObservableState } from '@/hooks';
-import { ELocaleType, languageChanged$ } from '@/i18n';
+import { ELocaleType, language$ } from '@/i18n';
 import { cn } from '@/lib/utils';
 
 export type CalendarProps = ComponentProps<typeof DayPicker>;
@@ -19,7 +19,7 @@ const languageLoader: Record<ELocaleType, () => Observable<Locale>> = {
   [ELocaleType.ZH_CN]: () => from(import('date-fns/locale/zh-CN').then((v) => v.zhCN)),
   [ELocaleType.JA_JP]: () => from(import('date-fns/locale/ja').then((v) => v.ja)),
 };
-const lang$ = languageChanged$.pipe(concatMap((lang) => languageLoader[lang]()));
+const lang$ = language$.pipe(concatMap((lang) => languageLoader[lang]()));
 
 function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
   const lng = useObservableState<Locale | undefined>(lang$, undefined);

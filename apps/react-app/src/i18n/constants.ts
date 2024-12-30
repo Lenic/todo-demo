@@ -7,7 +7,9 @@ import { ELocaleType } from './types';
  */
 export const LANGUAGE_LIST = [ELocaleType.EN_US, ELocaleType.ZH_CN, ELocaleType.JA_JP];
 
-const language$ = new Observable<ELocaleType>((observer) => {
+/**
+ * user language changed notification
+ */ export const language$ = new Observable<ELocaleType>((observer) => {
   const action = (lang: ELocaleType) => {
     observer.next(lang);
   };
@@ -18,8 +20,4 @@ const language$ = new Observable<ELocaleType>((observer) => {
   return () => {
     i18next.off('languageChanged', action);
   };
-});
-/**
- * user language changed notification
- */
-export const languageChanged$ = language$.pipe(shareReplay(1));
+}).pipe(shareReplay(1));

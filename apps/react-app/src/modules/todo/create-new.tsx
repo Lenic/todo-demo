@@ -14,7 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import { useLoading } from '@/hooks';
 import { toast } from '@/hooks/use-toast';
-import { languageChanged$, useIntl } from '@/i18n';
+import { language$, useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
 
@@ -35,7 +35,7 @@ const CreateNewTaskCore: FC = () => {
 
   const { clearErrors } = form;
   useEffect(() => {
-    const subscription = languageChanged$.subscribe(() => {
+    const subscription = language$.subscribe(() => {
       clearErrors('title');
     });
     return () => {
