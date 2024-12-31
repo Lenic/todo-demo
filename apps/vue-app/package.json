@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "lint": "eslint ./src",
+    "lint": "eslint --fix ./src && prettier --write src/**/*",
     "lint:check": "eslint --inspect-config",
     "preview": "vite preview --host 0.0.0.0"
   },

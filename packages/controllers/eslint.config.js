@@ -15,9 +15,6 @@ export default [
         projectService: true,
         project: ['./tsconfig.json'],
         tsconfigRootDir: import.meta.dirname,
-        ecmaFeatures: {
-          jsx: true,
-        },
       },
     },
   },

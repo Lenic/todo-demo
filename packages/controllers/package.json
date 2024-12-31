@@ -4,6 +4,10 @@
   "description": "",
   "type": "module",
   "main": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint --fix ./src",
+    "lint:check": "eslint --inspect-config"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
