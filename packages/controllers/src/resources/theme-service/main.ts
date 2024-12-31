@@ -37,7 +37,9 @@ class ThemeService extends Disposable implements IThemeService {
     root.classList.remove('light', 'dark');
 
     if (theme === ETheme.SYSTEM) {
-      if (this.subscription) return;
+      if (this.subscription) {
+        this.subscription.unsubscribe();
+      }
 
       this.subscription = preferColorScheme$.subscribe((currentTheme) => {
         if (root.classList.contains(currentTheme)) return;
