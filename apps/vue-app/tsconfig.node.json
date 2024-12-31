@@ -20,5 +20,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts", "auto-alias.ts"]
+  "include": ["vite.config.ts", "./src/i18n", "auto-alias.ts"]
 }

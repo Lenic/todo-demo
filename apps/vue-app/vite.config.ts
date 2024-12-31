@@ -4,6 +4,7 @@ import autoprefixer from 'autoprefixer';
 import tailwind from 'tailwindcss';
 import { defineConfig } from 'vite';
 
+import { languageFilesIntegrationPlugin } from './src/i18n/core';
 import { autoAlias } from './auto-alias';
 
 // https://vite.dev/config/
@@ -13,6 +14,6 @@ export default defineConfig({
       plugins: [tailwind(), autoprefixer()],
     },
   },
-  plugins: [vue(), vueJsx()],
+  plugins: [languageFilesIntegrationPlugin, vue(), vueJsx()],
   resolve: { alias: [autoAlias] },
 });

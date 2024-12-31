@@ -7,10 +7,13 @@ import { defineComponent, ref } from 'vue';
 
 import { Button } from '@/components/ui/button';
 
+import { ELocaleType, setLocale, useIntl } from './i18n';
+
 const dataService = ServiceLocator.default.get(IDataService);
 
 export default defineComponent({
   setup() {
+    const { t } = useIntl('todo.editor');
     const dataRef = ref<ITodoItem[]>([]);
     dataService
       .loadMore(ETodoListType.PENDING)
@@ -31,10 +34,30 @@ export default defineComponent({
     return () => (
       <div id="app">
         <h1>Hello Vite + Vue 3</h1>
-        <p>
-          Edit <code>App.vue</code> and save to test HMR updates.
-        </p>
-        Button: <Button onClick={handleLoadArchive}>Click me</Button>
+        <p>{t('title')}</p>
+        Button: <Button onClick={handleLoadArchive}>load archive</Button>
+        <div>abc</div>
+        <Button
+          onClick={() => {
+            setLocale(ELocaleType.JA_JP);
+          }}
+        >
+          jp
+        </Button>
+        <Button
+          onClick={() => {
+            setLocale(ELocaleType.ZH_CN);
+          }}
+        >
+          cn
+        </Button>
+        <Button
+          onClick={() => {
+            setLocale(ELocaleType.EN_US);
+          }}
+        >
+          en
+        </Button>
         <p>
           <a class="link" href="https://vitejs.dev/guide/features.html" target="_blank">
             Vite Documentation

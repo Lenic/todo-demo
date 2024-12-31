@@ -1,0 +1,60 @@
+{
+  "panel": {
+    "pending": ["Pending", "进行中", "進行中"],
+    "overdue": ["Overdue", "逾期", "期限超過"],
+    "archive": ["Archive", "归档", "ファイリングする"]
+  },
+  "list": {
+    "full-date": "yyyy-MM-dd",
+    "short-date": "MM-dd"
+  },
+  "create-new": {
+    "validation-rules": {
+      "title-length": [
+        "Task title must be at least 2 characters.",
+        "任务标题必须至少有 2 个字符。",
+        "タスクのタイトルは少なくとも 2 文字でなければなりません。"
+      ]
+    },
+    "create-success": ["New task created.", "新任务创建完成！", "新しいタスクが作成されました！"],
+    "input-placeholder": ["Input your task title", "键入新任务标题", "新しいタスクのタイトルを入力してください"],
+    "submit-form": ["Submit", "确认", "確認"]
+  },
+  "date-picker": {
+    "date-formatter": ["yyyy-MM-dd", "yyyy-MM-dd", "yyyy-MM-dd"],
+    "placeholder": ["Pick a date", "选择日期", "日付選択"]
+  },
+  "editor": {
+    "validation-rules": {
+      "title-length": [
+        "Task title must be at least 2 characters.",
+        "任务标题必须至少有 2 个字符。",
+        "タスクのタイトルは少なくとも 2 文字でなければなりません。"
+      ]
+    },
+    "update-success": ["Update the task successfully.", "任务信息更新完成！", "タスク情報が更新されました！"],
+    "update-failure": [
+      "Try to update but end in task failure.",
+      "尝试更新但以任务失败告终。",
+      "更新を試みるが、タスクの失敗で終わる。"
+    ],
+    "title": ["Todo Task Editor", "编辑任务详情", "タスクの詳細を編集してください"],
+    "description": [
+      "You can change all of your task infomation here.",
+      "您可以在这里编辑任务的所有信息。",
+      "ここでタスクの全ての情報を編集することができます。"
+    ],
+    "status": {
+      "done": ["Done", "已完成", "完了"],
+      "pending": ["Pending", "进行中", "進行中"]
+    },
+    "title-placeholder": ["Input your task title", "键入任务的标题", "タスクのタイトルを入力してください"],
+    "description-placeholder": ["Input your task description", "键入任务的描述", "タスクの説明を入力します"],
+    "cancel": ["Cancel", "取消", "キャンセル"],
+    "submit": ["Submit", "提交", "提出"]
+  },
+  "item-context-menu": {
+    "remove": ["Remove", "删除", "取り除"],
+    "executing": ["In operation. Please wait a moment...", "正在操作中，请稍等……", "操作中です。少々お待ちください……"]
+  }
+}

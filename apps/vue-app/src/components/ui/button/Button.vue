@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 import { buttonVariants } from '.';
 
-interface Props extends PrimitiveProps, ButtonHTMLAttributes {
+interface Props extends PrimitiveProps, /* @vue-ignore */ ButtonHTMLAttributes {
   variant?: ButtonVariants['variant'];
   size?: ButtonVariants['size'];
   class?: HTMLAttributes['class'];
