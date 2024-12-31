@@ -4,7 +4,7 @@ import { shareReplay } from 'rxjs/operators';
 import { ETheme } from './types';
 
 export const DEFAULT_THEME = ETheme.SYSTEM;
-export const THEME_STORAGE_KEY = 'vite-ui-theme';
+export const THEME_STORAGE_KEY = 'UI-THEME';
 
 export const preferColorScheme$ = new Observable<Exclude<ETheme, 'system'>>((observer) => {
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');

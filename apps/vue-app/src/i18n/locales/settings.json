@@ -1,8 +1,8 @@
 {
   "theme": {
-    "light": ["light", "明亮", "明るい"],
-    "dark": ["dark", "暗黑", "暗黒の"],
-    "system": ["system", "跟随系统", "システムに従う"]
+    "light": ["Light", "明亮", "明るい"],
+    "dark": ["Dark", "暗黑", "暗黒の"],
+    "system": ["System", "跟随系统", "システムに従う"]
   },
   "language": {
     "icon": {

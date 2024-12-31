@@ -15,10 +15,7 @@ export const intl = createI18n({
   messages: {},
 });
 
-const localTrigger = new BehaviorSubject(intl.global.locale.value as ELocaleType);
-export const setLocale = (locale: ELocaleType) => {
-  localTrigger.next(locale);
-};
+export const localTrigger = new BehaviorSubject(intl.global.locale.value as ELocaleType);
 
 export const intlPromise = new Promise<typeof intl>((resolve, reject) => {
   zip(

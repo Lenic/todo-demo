@@ -1,26 +1,33 @@
 import { Disposable, injectableWith } from '@todo/container';
-import { ReplaySubject, Subscription } from 'rxjs';
+import { filter, ReplaySubject, Subscription } from 'rxjs';
 
 import { DEFAULT_THEME, preferColorScheme$, THEME_STORAGE_KEY } from './constants';
 import { ETheme, IThemeService } from './types';
+
+const getCurrentTheme = () => (localStorage.getItem(THEME_STORAGE_KEY) as ETheme | null) ?? DEFAULT_THEME;
 
 @injectableWith(IThemeService)
 class ThemeService extends Disposable implements IThemeService {
   private subscription: Subscription | null = null;
   private themeSubject = new ReplaySubject<ETheme>(1);
 
-  theme = ETheme.SYSTEM;
+  theme = getCurrentTheme();
   theme$ = this.themeSubject.asObservable();
 
   constructor() {
     super();
 
-    this.disposeWithMe(this.theme$.subscribe((theme) => void (this.theme = theme)));
+    this.disposeWithMe(
+      this.theme$.pipe(filter((theme) => this.theme !== theme)).subscribe((theme) => {
+        this.theme = theme;
+        localStorage.setItem(THEME_STORAGE_KEY, theme);
+      }),
+    );
     this.disposeWithMe(() => this.subscription?.unsubscribe());
   }
 
   initialize() {
-    this.setTheme((localStorage.getItem(THEME_STORAGE_KEY) as ETheme | null) ?? DEFAULT_THEME);
+    this.setTheme(getCurrentTheme());
   }
 
   setTheme(theme: ETheme) {
@@ -37,7 +44,7 @@ class ThemeService extends Disposable implements IThemeService {
 
         root.classList.remove('light', 'dark');
         root.classList.add(currentTheme);
-        this.themeSubject.next(currentTheme);
+        this.themeSubject.next(theme);
       });
     } else {
       if (this.subscription) {
