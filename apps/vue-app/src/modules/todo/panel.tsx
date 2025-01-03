@@ -4,8 +4,8 @@ import { defineComponent } from 'vue';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIntl } from '@/i18n';
 
-// import { TodoList } from './list';
-// <TodoList type={ETodoListType.PENDING} />
+import { TodoList } from './list';
+//
 // <TodoList type={ETodoListType.OVERDUE} />
 // <TodoList type={ETodoListType.ARCHIVE} />
 
@@ -22,7 +22,7 @@ export const TodoPanel = defineComponent({
           <TabsTrigger value={ETodoListType.ARCHIVE}>{t('archive')}</TabsTrigger>
         </TabsList>
         <TabsContent value="PENDING" class="pl-2">
-          <div>pending</div>
+          <TodoList type={ETodoListType.PENDING} />
         </TabsContent>
         <TabsContent value="OVERDUE" class="pl-2">
           <div>overdue</div>
