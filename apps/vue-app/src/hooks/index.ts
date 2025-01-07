@@ -1,3 +1,4 @@
+export * from './loading';
 export * from './observable-effect';
 export * from './observable-ref';
 export * from './observable-shallow-ref';
