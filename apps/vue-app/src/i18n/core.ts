@@ -96,9 +96,7 @@ const refreshConfig = (singleLanguageConfig: LangConfig, partialMixedConfig: Mix
 
     const currentConfig = partialMixedConfig[key] as string | string[] | MixedLangConfig | undefined;
     if (typeof currentConfig === 'string') {
-      if (index === 0) {
-        singleLanguageConfig[key] = currentConfig;
-      }
+      singleLanguageConfig[key] = currentConfig;
     } else if (Array.isArray(currentConfig)) {
       const currentConfigValue = currentConfig[index] as string | undefined | null;
       if (currentConfigValue !== null && currentConfigValue !== undefined) {
