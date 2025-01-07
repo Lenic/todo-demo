@@ -2,7 +2,7 @@ import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-vue-next';
 import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs/operators';
-import { defineComponent, watch } from 'vue';
+import { defineComponent } from 'vue';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { useLoading, useObservableShallowRef } from '@/hooks';
@@ -28,16 +28,6 @@ export const TodoItem = defineComponent({
       shareReplay(1),
     );
     const itemRef = useObservableShallowRef(item$, dataService.dataMapper[props.id]);
-
-    if (props.id === 'fh8qJcsupSqzgr5Tx-Ji6') {
-      watch(
-        () => props.id,
-        (id) => {
-          console.log('item id', id);
-        },
-        { immediate: true },
-      );
-    }
 
     const [loadingRef, handleChangeChecked] = useLoading((e: boolean) =>
       item$.pipe(
