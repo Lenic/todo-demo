@@ -2,19 +2,19 @@ import type { ETodoListType } from '@todo/controllers';
 
 import { ServiceLocator } from '@todo/container';
 import { areArraysEqual, IDataService } from '@todo/controllers';
-import { delay, distinctUntilChanged, map, of, pairwise, startWith, switchMap } from 'rxjs';
+import { delay, distinctUntilChanged, filter, map, of, pairwise, startWith, switchMap } from 'rxjs';
 import { defineComponent, type PropType, ref } from 'vue';
 import { ContentLoader } from 'vue-content-loader';
 
 import { useObservableShallowRef } from '@/hooks';
-import { getElementResize$ } from '@/lib/utils';
+import { listenResize$ } from '@/lib/listen-resize';
 
 const defaultRowWidth = [430, 366, 398] as [number, number, number];
 
 const dataService = ServiceLocator.default.get(IDataService);
 
 export const LoadingSketch = defineComponent({
-  name: 'LoadingSketchCore',
+  name: 'LoadingSketch',
   props: {
     type: { type: String as PropType<ETodoListType>, required: true },
   },
@@ -26,15 +26,18 @@ export const LoadingSketch = defineComponent({
         map((ends) => ends[props.type]),
         distinctUntilChanged(),
         switchMap((isEnd) =>
-          isEnd || !containerRef.value
+          isEnd
             ? of(defaultRowWidth)
-            : getElementResize$(containerRef.value, (v) => [v.clientWidth, v.clientHeight] as const).pipe(
+            : listenResize$(containerRef).pipe(
+                map((list) => list[0]),
+                filter((v) => !!v),
+                map((v) => [v.contentRect.width, v.contentRect.height] as const),
                 distinctUntilChanged((prev, curr) => prev[0] === curr[0] && prev[1] === curr[1]),
                 startWith([0, 0] as const),
                 pairwise(),
                 switchMap((val) => {
                   const next$ = of(val[1][0]);
-                  return val[0][1] !== val[1][1] ? next$ : next$.pipe(delay(2000));
+                  return val[0][1] !== val[1][1] ? next$ : next$.pipe(delay(100));
                 }),
                 distinctUntilChanged(),
                 map((rowWidth) => {
