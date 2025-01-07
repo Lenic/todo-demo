@@ -24,6 +24,7 @@ import {
   withLatestFrom,
 } from 'rxjs';
 import { defineComponent, ref } from 'vue';
+// @ts-expect-error 7016 -- this package doesn't have the type definition.
 import { RecycleScroller } from 'vue-virtual-scroller';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -37,6 +38,8 @@ import {
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
 
+import { TodoItem } from './item';
+
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 // import { TodoItem } from './item';
@@ -46,8 +49,7 @@ export interface ITodoListProps {
 }
 
 export interface ITodoItemRenderer {
-  item: string;
-  index: number;
+  item: { id: string };
 }
 
 const dataService = ServiceLocator.default.get(IDataService);
@@ -73,7 +75,8 @@ export const TodoList = defineComponent({
       distinctUntilChanged(areArraysEqual),
       shareReplay(1),
     );
-    const idsRef = useObservableShallowRef(ids$, dataService.ids[props.type]);
+    // there's some bug in the vue-virtual-scroller package.
+    const idsRef = useObservableShallowRef(ids$.pipe(map((list) => list.map((id) => ({ id })))), []);
 
     const { t } = useIntl('todo.list');
     const dateFormatString = useObservableShallowRef(
@@ -139,9 +142,7 @@ export const TodoList = defineComponent({
     );
 
     const renderItem = ({ item }: ITodoItemRenderer) => (
-      <div key={item}>
-        {item}-{dateFormatString}
-      </div>
+      <TodoItem id={item.id} dateFormatString={dateFormatString.value} />
     );
 
     const renderAfterRef = useObservableShallowRef(
@@ -167,6 +168,7 @@ export const TodoList = defineComponent({
       <ScrollArea ref={scrollerRef} style={listStyle.value}>
         <RecycleScroller
           itemSize={40}
+          keyField="id"
           items={idsRef.value}
           v-slots={{ default: renderItem, after: renderAfterRef.value }}
         />
@@ -175,4 +177,3 @@ export const TodoList = defineComponent({
   },
 });
 // <LoadingSketch type={type} />
-// <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />
