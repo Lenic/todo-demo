@@ -103,7 +103,7 @@ export const TodoList = defineComponent({
       t('short-date'),
     );
 
-    const [containerRef, targetRef, entry$, handleCheck] = useScrollListener();
+    const [refs, entry$, handleCheck] = useScrollListener();
     useObservableEffect(
       entry$
         .pipe(
@@ -133,7 +133,7 @@ export const TodoList = defineComponent({
         filter((v) => !!v),
         switchMap((v) => v.viewportElement$),
         tap((el) => {
-          containerRef.value = el;
+          refs.container.value = el;
         }),
       ),
     );
@@ -161,7 +161,7 @@ export const TodoList = defineComponent({
         map(
           (isEnd) => () =>
             isEnd ? null : (
-              <div ref={targetRef}>
+              <div ref={refs.target}>
                 {loadingIds.map((id) => (
                   <LoadingSketch key={id} type={props.type} />
                 ))}

@@ -52,5 +52,6 @@ export function useScrollListener(immediate = true) {
     observer?.disconnect();
   });
 
-  return [containerRef, targetRef, entryTrigger.asObservable(), handleCheck] as const;
+  const refs = { container: containerRef, target: targetRef };
+  return [refs, entryTrigger.asObservable(), handleCheck] as const;
 }
