@@ -1,25 +1,39 @@
-import type { ETodoListType, ITodoItem } from '@todo/controllers';
-import type { PropType } from 'vue';
+import type { ETodoListType } from '@todo/controllers';
+import type { Observable } from 'rxjs';
+import type { CSSProperties, PropType } from 'vue';
 
 import { ServiceLocator } from '@todo/container';
 import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/controllers';
 import dayjs from 'dayjs';
-import { firstValueFrom, from } from 'rxjs';
 import {
   auditTime,
   concatMap,
   distinct,
   distinctUntilChanged,
+  EMPTY,
+  exhaustMap,
   filter,
+  from,
   map,
+  pairwise,
   shareReplay,
+  startWith,
+  switchMap,
+  tap,
   toArray,
   withLatestFrom,
-} from 'rxjs/operators';
-import { defineComponent, onMounted, ref } from 'vue';
+} from 'rxjs';
+import { defineComponent, ref } from 'vue';
+import { RecycleScroller } from 'vue-virtual-scroller';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useObservableShallowRef } from '@/hooks';
+import {
+  useObservableEffect,
+  useObservableRef,
+  useObservableShallowRef,
+  useObservableWatch,
+  useScrollListener,
+} from '@/hooks';
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
 
@@ -31,7 +45,19 @@ export interface ITodoListProps {
   type: ETodoListType;
 }
 
+export interface ITodoItemRenderer {
+  item: string;
+  index: number;
+}
+
 const dataService = ServiceLocator.default.get(IDataService);
+
+const defaultListStyle: CSSProperties = { height: '240px' };
+
+const loadingIds: string[] = [];
+for (let i = 0; i < TODO_LIST_PAGE_SIZE; i++) {
+  loadingIds.push(`###${i.toString()}`);
+}
 
 export const TodoList = defineComponent({
   name: 'TodoList',
@@ -47,12 +73,12 @@ export const TodoList = defineComponent({
       distinctUntilChanged(areArraysEqual),
       shareReplay(1),
     );
-    const ids = useObservableShallowRef(ids$, dataService.ids[props.type]);
+    const idsRef = useObservableShallowRef(ids$, dataService.ids[props.type]);
 
     const { t } = useIntl('todo.list');
     const dateFormatString = useObservableShallowRef(
       dataService.dataMapper$.pipe(
-        withLatestFrom(ids$, (mapper: Record<string, ITodoItem>, ids) =>
+        withLatestFrom(ids$, (mapper, ids) =>
           ids
             .map((id) => mapper[id].overdueAt)
             .filter((v) => !!v)
@@ -73,34 +99,77 @@ export const TodoList = defineComponent({
       t('short-date'),
     );
 
-    const handleLoadMore = () => firstValueFrom(dataService.loadMore(props.type));
-    onMounted(() => handleLoadMore());
-
-    const isEnd = useObservableShallowRef(
-      dataService.ends$.pipe(map((ends) => ends[props.type])),
-      dataService.ends[props.type],
+    const [containerRef, targetRef, entry$] = useScrollListener();
+    useObservableEffect(
+      entry$
+        .pipe(
+          startWith({ intersectionRatio: -1 } as IntersectionObserverEntry),
+          pairwise(),
+          filter(([prev, curr]) => prev.intersectionRatio < curr.intersectionRatio && curr.intersectionRatio > 0),
+          map((v) => v[1]),
+          switchMap(() => dataService.ends$.pipe(map((mapper) => mapper[props.type]))),
+          exhaustMap((isEnd) => (isEnd ? EMPTY : dataService.loadMore(props.type))),
+        )
+        .subscribe(),
     );
 
-    const isItemLoaded = (index: number) => ids.length > index;
+    const scrollerRef = ref<{ viewportElement$: Observable<HTMLDivElement> }>();
+    const scroller$ = useObservableWatch(scrollerRef);
+    const scrollContainerRef = useObservableRef(
+      scroller$.pipe(
+        filter((v) => !!v),
+        switchMap((v) => v.viewportElement$),
+        tap((el) => {
+          containerRef.value = el;
+        }),
+      ),
+    );
 
-    const containerRef = ref<HTMLDivElement>();
-    const listHeight = useObservableShallowRef(
+    const listStyle = useObservableShallowRef(
       windowResize$.pipe(
         auditTime(60),
         map((v) => {
-          if (v.width >= 768) return 240;
-          return v.height - (containerRef.value.current?.getBoundingClientRect().top ?? 218) - 6;
+          if (v.width >= 768) return defaultListStyle;
+
+          const height = v.height - (scrollContainerRef.value?.getBoundingClientRect().top ?? 218) - 6;
+          return { height: `${height.toString()}px` } as CSSProperties;
         }),
       ),
-      240,
+      defaultListStyle,
     );
 
-    const itemCount = isEnd ? ids.length : ids.length + TODO_LIST_PAGE_SIZE;
+    const renderItem = ({ item }: ITodoItemRenderer) => (
+      <div key={item}>
+        {item}-{dateFormatString}
+      </div>
+    );
+
+    const renderAfterRef = useObservableShallowRef(
+      dataService.ends$.pipe(
+        map((mapper) => mapper[props.type]),
+        map(
+          (isEnd) => () =>
+            isEnd ? null : (
+              <div ref={targetRef}>
+                {loadingIds.map((id) => (
+                  <div key={id} class="h-10">
+                    <div>loading</div>
+                  </div>
+                ))}
+              </div>
+            ),
+        ),
+      ),
+      null,
+    );
+
     return () => (
-      <ScrollArea ref={containerRef}>
-        {ids.value.map((id) => (
-          <div key={id}>{id}</div>
-        ))}
+      <ScrollArea ref={scrollerRef} style={listStyle.value}>
+        <RecycleScroller
+          itemSize={40}
+          items={idsRef.value}
+          v-slots={{ default: renderItem, after: renderAfterRef.value }}
+        />
       </ScrollArea>
     );
   },

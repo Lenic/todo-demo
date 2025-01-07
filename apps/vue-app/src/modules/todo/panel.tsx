@@ -5,9 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIntl } from '@/i18n';
 
 import { TodoList } from './list';
-//
-// <TodoList type={ETodoListType.OVERDUE} />
-// <TodoList type={ETodoListType.ARCHIVE} />
 
 export const TodoPanel = defineComponent({
   name: 'TodoPanel',
@@ -25,10 +22,10 @@ export const TodoPanel = defineComponent({
           <TodoList type={ETodoListType.PENDING} />
         </TabsContent>
         <TabsContent value="OVERDUE" class="pl-2">
-          <div>overdue</div>
+          <TodoList type={ETodoListType.OVERDUE} />
         </TabsContent>
         <TabsContent value="ARCHIVE" class="pl-2">
-          <div>archive</div>
+          <TodoList type={ETodoListType.ARCHIVE} />
         </TabsContent>
       </Tabs>
     );
