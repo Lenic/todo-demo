@@ -13,12 +13,20 @@ export function useScrollListener(immediate = true) {
 
   const entryTrigger = new Subject<IntersectionObserverEntry>();
 
+  let previousEntries: IntersectionObserverEntry[] = [];
   const observerCallback = (entries: IntersectionObserverEntry[]) => {
     if (!entries.length) return;
+
+    previousEntries = entries;
     entryTrigger.next(entries[0]);
   };
 
   let observer: IntersectionObserver | null = null;
+  const handleCheck = () => {
+    const currentEntries = observer?.takeRecords() ?? [];
+    observerCallback(currentEntries.length ? currentEntries : previousEntries);
+  };
+
   useObservableEffect(
     combineLatest([container$.pipe(filter((v) => !!v)), target$.pipe(filter((v) => !!v))]).subscribe(
       ([container, target]) => {
@@ -32,8 +40,9 @@ export function useScrollListener(immediate = true) {
           threshold: 0,
         });
         observer.observe(target);
+
         if (immediate) {
-          container.dispatchEvent(new Event('scroll'));
+          handleCheck();
         }
       },
     ),
@@ -43,5 +52,5 @@ export function useScrollListener(immediate = true) {
     observer?.disconnect();
   });
 
-  return [containerRef, targetRef, entryTrigger.asObservable()] as const;
+  return [containerRef, targetRef, entryTrigger.asObservable(), handleCheck] as const;
 }

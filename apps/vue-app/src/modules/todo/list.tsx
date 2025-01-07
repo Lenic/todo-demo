@@ -8,11 +8,13 @@ import dayjs from 'dayjs';
 import {
   auditTime,
   concatMap,
+  delay,
   distinct,
   distinctUntilChanged,
   EMPTY,
   exhaustMap,
   filter,
+  finalize,
   from,
   map,
   pairwise,
@@ -101,16 +103,25 @@ export const TodoList = defineComponent({
       t('short-date'),
     );
 
-    const [containerRef, targetRef, entry$] = useScrollListener();
+    const [containerRef, targetRef, entry$, handleCheck] = useScrollListener();
     useObservableEffect(
       entry$
         .pipe(
           startWith({ intersectionRatio: -1 } as IntersectionObserverEntry),
           pairwise(),
-          filter(([prev, curr]) => prev.intersectionRatio < curr.intersectionRatio && curr.intersectionRatio > 0),
+          filter(([prev, curr]) => prev.intersectionRatio <= curr.intersectionRatio && curr.intersectionRatio > 0),
           map((v) => v[1]),
           switchMap(() => dataService.ends$.pipe(map((mapper) => mapper[props.type]))),
-          exhaustMap((isEnd) => (isEnd ? EMPTY : dataService.loadMore(props.type))),
+          exhaustMap((isEnd) =>
+            isEnd
+              ? EMPTY
+              : dataService.loadMore(props.type).pipe(
+                  delay(100),
+                  finalize(() => {
+                    handleCheck();
+                  }),
+                ),
+          ),
         )
         .subscribe(),
     );
