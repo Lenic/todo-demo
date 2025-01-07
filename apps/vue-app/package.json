@@ -26,6 +26,7 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "vue": "^3.5.13",
+    "vue-content-loader": "^2.0.1",
     "vue-i18n": "^11.0.1",
     "vue-virtual-scroller": "2.0.0-beta.8"
   },

@@ -38,11 +38,10 @@ import {
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
 
+import { LoadingSketch } from './components/loading-sketch';
 import { TodoItem } from './item';
 
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
-
-// import { TodoItem } from './item';
 
 export interface ITodoListProps {
   type: ETodoListType;
@@ -153,9 +152,7 @@ export const TodoList = defineComponent({
             isEnd ? null : (
               <div ref={targetRef}>
                 {loadingIds.map((id) => (
-                  <div key={id} class="h-10">
-                    <div>loading</div>
-                  </div>
+                  <LoadingSketch key={id} type={props.type} />
                 ))}
               </div>
             ),
@@ -176,4 +173,3 @@ export const TodoList = defineComponent({
     );
   },
 });
-// <LoadingSketch type={type} />

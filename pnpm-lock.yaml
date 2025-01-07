@@ -319,6 +319,9 @@ importers:
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.7.2)
+      vue-content-loader:
+        specifier: ^2.0.1
+        version: 2.0.1(vue@3.5.13(typescript@5.7.2))
       vue-i18n:
         specifier: ^11.0.1
         version: 11.0.1(vue@3.5.13(typescript@5.7.2))
@@ -3406,6 +3409,11 @@ packages:
   void-elements@3.1.0:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
+
+  vue-content-loader@2.0.1:
+    resolution: {integrity: sha512-pkof4+q2xmzNEdhqelxtJejeP/vQUJtLle4/v2ueG+HURqM9Q/GIGC8GJ2bVVWeLfTDET51jqimwQdmxJTlu0g==}
+    peerDependencies:
+      vue: ^3
 
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
@@ -6676,6 +6684,10 @@ snapshots:
       fsevents: 2.3.3
 
   void-elements@3.1.0: {}
+
+  vue-content-loader@2.0.1(vue@3.5.13(typescript@5.7.2)):
+    dependencies:
+      vue: 3.5.13(typescript@5.7.2)
 
   vue-demi@0.14.10(vue@3.5.13(typescript@5.7.2)):
     dependencies:
