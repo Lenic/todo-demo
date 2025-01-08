@@ -1,14 +1,14 @@
 import type { Observable } from 'rxjs';
 import type { Ref, ShallowRef, WatchOptions } from 'vue';
 
-import { Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { onBeforeUnmount, watch } from 'vue';
 
 export function useObservableWatch<T, Immediate extends Readonly<boolean> = true>(
-  inputRef: Ref<T> | ShallowRef<T>,
+  inputRef: Ref<T> | ShallowRef<T> | (() => T),
   options?: WatchOptions<Immediate>,
 ): Observable<T> {
-  const refTrigger = new Subject<T>();
+  const refTrigger = new ReplaySubject<T>();
   watch(
     inputRef,
     (el) => {

@@ -1,13 +1,13 @@
 import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-vue-next';
-import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs';
 import { defineComponent } from 'vue';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { useLoading, useObservableShallowRef } from '@/hooks';
 
-// import { AutoTooltip } from './components/auto-tooltip';
+import { AutoTooltip } from './components/auto-tooltip';
 // import { RowContextMenu } from './components/row-context-menu';
 // import { RowDatePicker } from './components/row-data-picker';
 // import { TodoItemEditor } from './editor';
@@ -15,7 +15,7 @@ import { useLoading, useObservableShallowRef } from '@/hooks';
 const dataService = ServiceLocator.default.get(IDataService);
 
 export const TodoItem = defineComponent({
-  name: 'TodoItemCore',
+  name: 'TodoItem',
   props: {
     id: { type: String, required: true },
     dateFormatString: { type: String, required: true },
@@ -36,6 +36,10 @@ export const TodoItem = defineComponent({
       ),
     );
 
+    const handleOpenEditor = () => {
+      console.log('Open Editor');
+    };
+
     // const overdueAt = computed(() => (item.overdueAt ? new Date(item.overdueAt) : undefined), [item.overdueAt]);
     return () => (
       <div class="flex items-center space-x-2 pr-4">
@@ -44,7 +48,12 @@ export const TodoItem = defineComponent({
         ) : (
           <Checkbox checked={itemRef.value.status === ETodoStatus.DONE} onUpdate:checked={handleChangeChecked} />
         )}
-        <div>{itemRef.value.title}</div>
+        <AutoTooltip
+          title={itemRef.value.title}
+          description={itemRef.value.description ? itemRef.value.description : itemRef.value.title}
+          className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
+          onClick={handleOpenEditor}
+        />
         <div class="flex-auto" />
       </div>
     );
