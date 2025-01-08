@@ -4,9 +4,9 @@ import { ServiceLocator } from '@todo/container';
 import { IDataService } from '@todo/controllers';
 import { toTypedSchema } from '@vee-validate/zod';
 import { Loader2 } from 'lucide-vue-next';
-import { asyncScheduler, filter, finalize, observeOn, switchMap, take, tap } from 'rxjs';
+import { filter, Subject, switchMap, take, tap } from 'rxjs';
 import { useForm } from 'vee-validate';
-import { defineComponent } from 'vue';
+import { defineComponent, onUpdated } from 'vue';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -52,20 +52,24 @@ export const CreateNewTask = defineComponent({
       }),
     );
 
+    const updatedStatusTrigger = new Subject<void>();
+    onUpdated(() => {
+      updatedStatusTrigger.next();
+    });
+
     const [inputRef, input$] = useRef<{ el$: Observable<HTMLInputElement> }>();
     const [loadingRef, handleEvent] = useLoading((data: z.infer<typeof formSchema>) => {
       return dataService.add({ title: data.title, overdueAt: data.date?.valueOf() }).pipe(
         tap(() => {
           toast({ title: t('create-success'), duration: 1_000 });
           form.resetForm();
-        }),
-        finalize(() => {
-          input$
+
+          updatedStatusTrigger
             .pipe(
+              switchMap(() => input$),
               filter((v) => !!v),
               switchMap((v) => v.el$),
               take(1),
-              observeOn(asyncScheduler),
             )
             .subscribe((el) => {
               el.focus();
