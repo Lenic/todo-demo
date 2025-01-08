@@ -8,7 +8,7 @@ export function useObservableWatch<T, Immediate extends Readonly<boolean> = true
   inputRef: Ref<T> | ShallowRef<T> | (() => T),
   options?: WatchOptions<Immediate>,
 ): Observable<T> {
-  const refTrigger = new ReplaySubject<T>();
+  const refTrigger = new ReplaySubject<T>(1);
   watch(
     inputRef,
     (el) => {

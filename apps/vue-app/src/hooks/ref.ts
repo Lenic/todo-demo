@@ -1,7 +1,7 @@
 import type { Observable } from 'rxjs';
 import type { Ref } from 'vue';
 
-import { Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { onBeforeUnmount, ref, watch } from 'vue';
 
 export function useRef<T>(): readonly [Ref<T | undefined>, Observable<T | undefined>];
@@ -9,7 +9,7 @@ export function useRef<T>(defaultValue: T): readonly [Ref<T>, Observable<T>];
 
 export function useRef<T>(defaultValue?: T) {
   const valueRef = ref<T | undefined>(defaultValue);
-  const valueTrigger = new Subject<T | undefined>();
+  const valueTrigger = new ReplaySubject<T | undefined>(1);
 
   watch(
     valueRef,
