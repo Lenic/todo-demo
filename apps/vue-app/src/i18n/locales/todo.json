@@ -5,8 +5,8 @@
     "archive": ["Archive", "归档", "ファイリングする"]
   },
   "list": {
-    "full-date": "yyyy-MM-dd",
-    "short-date": "MM-dd"
+    "full-date": "YYYY-MM-DD",
+    "short-date": "MM-DD"
   },
   "create-new": {
     "validation-rules": {

@@ -9,7 +9,7 @@ import { useLoading, useObservableShallowRef } from '@/hooks';
 
 import { AutoTooltip } from './components/auto-tooltip';
 // import { RowContextMenu } from './components/row-context-menu';
-// import { RowDatePicker } from './components/row-data-picker';
+import { RowDatePicker } from './components/row-data-picker';
 // import { TodoItemEditor } from './editor';
 
 const dataService = ServiceLocator.default.get(IDataService);
@@ -40,7 +40,6 @@ export const TodoItem = defineComponent({
       console.log('Open Editor');
     };
 
-    // const overdueAt = computed(() => (item.overdueAt ? new Date(item.overdueAt) : undefined), [item.overdueAt]);
     return () => (
       <div class="flex items-center space-x-2 pr-4">
         {loadingRef.value ? (
@@ -55,6 +54,12 @@ export const TodoItem = defineComponent({
           onClick={handleOpenEditor}
         />
         <div class="flex-auto" />
+        <RowDatePicker
+          className="flex-initial"
+          id={itemRef.value.id}
+          value={itemRef.value.overdueAt}
+          formatString={props.dateFormatString}
+        />
       </div>
     );
   },

@@ -274,6 +274,9 @@ importers:
 
   apps/vue-app:
     dependencies:
+      '@internationalized/date':
+        specifier: ^3.6.0
+        version: 3.6.0
       '@todo/container':
         specifier: workspace:*
         version: link:../../packages/container
