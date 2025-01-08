@@ -108,7 +108,7 @@ export const CreateNewTask = defineComponent({
             ),
           }}
         />
-        <Button type="submit" class="flex-initial" disabled={loadingRef.value}>
+        <Button type="submit" class="flex-initial" disabled={loadingRef.value || !form.meta.value.valid}>
           {loadingRef.value && <Loader2 class="animate-spin mr-2" width={18} height={18} />}
           {t('submit-form')}
         </Button>
