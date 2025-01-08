@@ -34,10 +34,10 @@ const dataService = ServiceLocator.default.get(IDataService);
 export const CreateNewTask = defineComponent({
   name: 'CreateNewTask',
   setup() {
-    const { t } = useIntl('todo.create-new');
+    const { t, n } = useIntl('todo.create-new');
 
     const formSchema = z.object({
-      title: z.string().min(2, { message: t('validation-rules.title-length') }),
+      title: z.string().min(2, { message: n('validation-rules.title-length') }),
       date: z.date().nullable(),
     });
 

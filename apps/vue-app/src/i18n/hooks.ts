@@ -5,5 +5,10 @@ export const useIntl = (prefix: string) => {
 
   const handleTranslate = (key: string) => t(`${prefix}.${key}`);
 
-  return { t: handleTranslate };
+  /**
+   * Custom rule of the form error message: It's the i18n key if it starts and ends with the '#' symbol.
+   */
+  const handleTransform = (key: string) => `#${prefix}.${key}#`;
+
+  return { t: handleTranslate, n: handleTransform };
 };
