@@ -6,7 +6,6 @@ import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/control
 import dayjs from 'dayjs';
 import {
   auditTime,
-  concatMap,
   distinct,
   distinctUntilChanged,
   EMPTY,
@@ -21,21 +20,12 @@ import {
   take,
   tap,
   toArray,
-  withLatestFrom,
 } from 'rxjs';
 import { defineComponent } from 'vue';
 // @ts-expect-error 7016 -- this package doesn't have the type definition.
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 
-import {
-  EUpdateType,
-  useObservableEffect,
-  useObservableRef,
-  useObservableShallowRef,
-  useRef,
-  useScrollListener,
-  useUpdate,
-} from '@/hooks';
+import { EUpdateType, useObservableEffect, useObservableShallowRef, useScrollListener, useUpdate } from '@/hooks';
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
 
@@ -78,27 +68,22 @@ export const TodoList = defineComponent({
     const idsRef = useObservableShallowRef(
       ids$.pipe(
         map((ids) => ids.map((id) => ({ id, type: 'item' }) as ITodoIdentity)),
-        switchMap((list) =>
-          dataService.ends$.pipe(
-            map((mapper) => mapper[props.type]),
-            map((isEnd) => (isEnd ? list : list.concat(loadingItems))),
-          ),
-        ),
+        map((list) => (dataService.ends[props.type] ? list : list.concat(loadingItems))),
       ),
       loadingItems,
     );
 
     const { t } = useIntl('todo.list');
     const dateFormatString = useObservableShallowRef(
-      dataService.dataMapper$.pipe(
-        withLatestFrom(ids$, (mapper, ids) =>
+      ids$.pipe(
+        map((ids) =>
           ids
-            .map((id) => mapper[id].overdueAt)
+            .map((id) => dataService.dataMapper[id].overdueAt)
             .filter((v) => !!v)
             .map((date) => dayjs(date).get('year')),
         ),
         filter((v) => !!v.length),
-        concatMap((list) =>
+        switchMap((list) =>
           from(list).pipe(
             distinct(),
             toArray(),
@@ -119,9 +104,8 @@ export const TodoList = defineComponent({
         .pipe(
           map((v) => v.intersectionRatio),
           filter((v) => v > 0),
-          switchMap(() => dataService.ends$.pipe(map((mapper) => mapper[props.type]))),
-          exhaustMap((isEnd) =>
-            isEnd
+          exhaustMap(() =>
+            dataService.ends[props.type]
               ? EMPTY
               : dataService.loadMore(props.type).pipe(
                   tap(() =>
@@ -138,17 +122,6 @@ export const TodoList = defineComponent({
         .subscribe(),
     );
 
-    const [scrollerRef, scroller$] = useRef<{ $el: HTMLDivElement }>();
-    const scrollContainerRef = useObservableRef(
-      scroller$.pipe(
-        filter((v) => !!v),
-        map((v) => v.$el),
-        tap((el) => {
-          refs.container.value = el;
-        }),
-      ),
-    );
-
     const listStyle = useObservableShallowRef(
       merge(
         refreshed$.pipe(
@@ -161,7 +134,7 @@ export const TodoList = defineComponent({
         map((v) => {
           if (v.width >= 768) return defaultListStyle;
 
-          const height = v.height - (scrollContainerRef.value?.getBoundingClientRect().top ?? 218) - 6;
+          const height = v.height - (refs.container.value?.getBoundingClientRect().top ?? 218) - 6;
           return { height: `${height.toString()}px` } as CSSProperties;
         }),
       ),
@@ -169,21 +142,23 @@ export const TodoList = defineComponent({
     );
 
     return () => (
-      <DynamicScroller ref={scrollerRef} minItemSize={40} buffer={10} items={idsRef.value} style={listStyle.value}>
-        {({ item, active }: ITodoItemRenderer) => (
-          <DynamicScrollerItem key={item.id} item={item} active={active} sizeDependencies={[item.type]}>
-            {item.id === '###0' ? (
-              <div ref={refs.target}>
-                {new Array<number>(TODO_LIST_PAGE_SIZE).fill(0).map((_, index) => (
-                  <LoadingSketch key={index} type={props.type} />
-                ))}
-              </div>
-            ) : (
-              <TodoItem id={item.id} dateFormatString={dateFormatString.value} />
-            )}
-          </DynamicScrollerItem>
-        )}
-      </DynamicScroller>
+      <div ref={refs.container}>
+        <DynamicScroller minItemSize={40} buffer={10} items={idsRef.value} style={listStyle.value}>
+          {({ item, active }: ITodoItemRenderer) => (
+            <DynamicScrollerItem key={item.id} item={item} active={active} sizeDependencies={[item.type]}>
+              {item.id === '###0' ? (
+                <div ref={refs.target}>
+                  {new Array<number>(TODO_LIST_PAGE_SIZE).fill(0).map((_, index) => (
+                    <LoadingSketch key={index} type={props.type} />
+                  ))}
+                </div>
+              ) : (
+                <TodoItem id={item.id} dateFormatString={dateFormatString.value} />
+              )}
+            </DynamicScrollerItem>
+          )}
+        </DynamicScroller>
+      </div>
     );
   },
 });
