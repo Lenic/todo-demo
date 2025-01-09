@@ -5,6 +5,8 @@ import type { HTMLAttributes } from 'vue';
 import { CalendarRoot, useForwardPropsEmits } from 'radix-vue';
 import { computed } from 'vue';
 
+import { useObservableRef } from '@/hooks';
+import { language$ } from '@/i18n';
 import { cn } from '@/lib/utils';
 
 import {
@@ -32,10 +34,12 @@ const delegatedProps = computed(() => {
 });
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
+
+const langRef = useObservableRef(language$, '');
 </script>
 
 <template>
-  <CalendarRoot v-slot="{ grid, weekDays }" :class="cn('p-3', props.class)" v-bind="forwarded">
+  <CalendarRoot v-slot="{ grid, weekDays }" :class="cn('p-3', props.class)" v-bind="forwarded" :locale="langRef">
     <CalendarHeader>
       <CalendarPrevButton />
       <CalendarHeading />
