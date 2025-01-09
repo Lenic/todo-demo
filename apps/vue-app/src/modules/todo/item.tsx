@@ -8,8 +8,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useLoading, useObservableShallowRef } from '@/hooks';
 
 import { AutoTooltip } from './components/auto-tooltip';
-// import { RowContextMenu } from './components/row-context-menu';
 import { RowDatePicker } from './components/row-data-picker';
+import { RowDropdownMenu } from './components/row-dropdown-menu';
 // import { TodoItemEditor } from './editor';
 
 const dataService = ServiceLocator.default.get(IDataService);
@@ -47,12 +47,14 @@ export const TodoItem = defineComponent({
         ) : (
           <Checkbox checked={itemRef.value.status === ETodoStatus.DONE} onUpdate:checked={handleChangeChecked} />
         )}
-        <AutoTooltip
-          title={itemRef.value.title}
-          description={itemRef.value.description ? itemRef.value.description : itemRef.value.title}
-          className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
-          onClick={handleOpenEditor}
-        />
+        <RowDropdownMenu id={itemRef.value.id}>
+          <AutoTooltip
+            title={itemRef.value.title}
+            description={itemRef.value.description ? itemRef.value.description : itemRef.value.title}
+            className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
+            onClick={handleOpenEditor}
+          />
+        </RowDropdownMenu>
         <div class="flex-auto" />
         <RowDatePicker
           className="flex-initial"
