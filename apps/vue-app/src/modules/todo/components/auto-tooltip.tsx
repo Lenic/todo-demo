@@ -38,8 +38,9 @@ export const AutoTooltip = defineComponent({
                 ),
               ),
             ]).pipe(
-              map(([containerElement, entry]) =>
-                containerElement ? entry.contentRect.height <= containerElement.getBoundingClientRect().height : false,
+              map(
+                ([containerElement, entry]) =>
+                  entry.contentRect.height <= containerElement.getBoundingClientRect().height,
               ),
             );
           }
