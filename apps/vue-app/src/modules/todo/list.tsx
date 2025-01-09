@@ -170,21 +170,19 @@ export const TodoList = defineComponent({
 
     return () => (
       <DynamicScroller ref={scrollerRef} minItemSize={40} buffer={10} items={idsRef.value} style={listStyle.value}>
-        {({ item, index, active }: ITodoItemRenderer) => {
-          return (
-            <DynamicScrollerItem item={item} active={active} sizeDependencies={[item.type]} dataIndex={index}>
-              {item.id === '###0' ? (
-                <div ref={refs.target}>
-                  {new Array<number>(TODO_LIST_PAGE_SIZE).fill(0).map((_, index) => (
-                    <LoadingSketch key={index} type={props.type} />
-                  ))}
-                </div>
-              ) : (
-                <TodoItem id={item.id} dateFormatString={dateFormatString.value} />
-              )}
-            </DynamicScrollerItem>
-          );
-        }}
+        {({ item, active }: ITodoItemRenderer) => (
+          <DynamicScrollerItem key={item.id} item={item} active={active} sizeDependencies={[item.type]}>
+            {item.id === '###0' ? (
+              <div ref={refs.target}>
+                {new Array<number>(TODO_LIST_PAGE_SIZE).fill(0).map((_, index) => (
+                  <LoadingSketch key={index} type={props.type} />
+                ))}
+              </div>
+            ) : (
+              <TodoItem id={item.id} dateFormatString={dateFormatString.value} />
+            )}
+          </DynamicScrollerItem>
+        )}
       </DynamicScroller>
     );
   },
