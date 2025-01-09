@@ -1,5 +1,4 @@
 import type { ETodoListType } from '@todo/controllers';
-import type { Observable } from 'rxjs';
 import type { CSSProperties, PropType } from 'vue';
 
 import { ServiceLocator } from '@todo/container';
@@ -8,34 +7,31 @@ import dayjs from 'dayjs';
 import {
   auditTime,
   concatMap,
-  delay,
   distinct,
   distinctUntilChanged,
   EMPTY,
   exhaustMap,
   filter,
-  finalize,
   from,
   map,
-  pairwise,
   shareReplay,
-  startWith,
   switchMap,
+  take,
   tap,
   toArray,
   withLatestFrom,
 } from 'rxjs';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 // @ts-expect-error 7016 -- this package doesn't have the type definition.
-import { RecycleScroller } from 'vue-virtual-scroller';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 
-import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   useObservableEffect,
   useObservableRef,
   useObservableShallowRef,
-  useObservableWatch,
+  useRef,
   useScrollListener,
+  useUpdate,
 } from '@/hooks';
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
@@ -45,22 +41,22 @@ import { TodoItem } from './item';
 
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
-export interface ITodoListProps {
-  type: ETodoListType;
+export interface ITodoIdentity {
+  id: string;
+  type: 'item' | 'polyfill';
 }
 
 export interface ITodoItemRenderer {
-  item: { id: string };
+  item: ITodoIdentity;
+  index: number;
+  active: boolean;
 }
 
 const dataService = ServiceLocator.default.get(IDataService);
 
 const defaultListStyle: CSSProperties = { height: '240px' };
 
-const loadingIds: string[] = [];
-for (let i = 0; i < TODO_LIST_PAGE_SIZE; i++) {
-  loadingIds.push(`###${i.toString()}`);
-}
+const loadingItems: ITodoIdentity[] = [{ id: `###0`, type: 'polyfill' }];
 
 export const TodoList = defineComponent({
   name: 'TodoList',
@@ -76,8 +72,18 @@ export const TodoList = defineComponent({
       distinctUntilChanged(areArraysEqual),
       shareReplay(1),
     );
-    // there's some bug in the vue-virtual-scroller package.
-    const idsRef = useObservableShallowRef(ids$.pipe(map((list) => list.map((id) => ({ id })))), []);
+    const idsRef = useObservableShallowRef(
+      ids$.pipe(
+        map((ids) => ids.map((id) => ({ id, type: 'item' }) as ITodoIdentity)),
+        switchMap((list) =>
+          dataService.ends$.pipe(
+            map((mapper) => mapper[props.type]),
+            map((isEnd) => (isEnd ? list : list.concat(loadingItems))),
+          ),
+        ),
+      ),
+      loadingItems,
+    );
 
     const { t } = useIntl('todo.list');
     const dateFormatString = useObservableShallowRef(
@@ -103,35 +109,28 @@ export const TodoList = defineComponent({
       t('short-date'),
     );
 
+    const update$ = useUpdate();
     const [refs, entry$, handleCheck] = useScrollListener();
     useObservableEffect(
       entry$
         .pipe(
-          startWith({ intersectionRatio: -1 } as IntersectionObserverEntry),
-          pairwise(),
-          filter(([prev, curr]) => prev.intersectionRatio <= curr.intersectionRatio && curr.intersectionRatio > 0),
-          map((v) => v[1]),
+          map((v) => v.intersectionRatio),
+          filter((v) => v > 0),
           switchMap(() => dataService.ends$.pipe(map((mapper) => mapper[props.type]))),
           exhaustMap((isEnd) =>
             isEnd
               ? EMPTY
-              : dataService.loadMore(props.type).pipe(
-                  delay(100),
-                  finalize(() => {
-                    handleCheck();
-                  }),
-                ),
+              : dataService.loadMore(props.type).pipe(tap(() => update$.pipe(take(1)).subscribe(handleCheck))),
           ),
         )
         .subscribe(),
     );
 
-    const scrollerRef = ref<{ viewportElement$: Observable<HTMLDivElement> }>();
-    const scroller$ = useObservableWatch(scrollerRef);
+    const [scrollerRef, scroller$] = useRef<{ $el: HTMLDivElement }>();
     const scrollContainerRef = useObservableRef(
       scroller$.pipe(
         filter((v) => !!v),
-        switchMap((v) => v.viewportElement$),
+        map((v) => v.$el),
         tap((el) => {
           refs.container.value = el;
         }),
@@ -151,36 +150,24 @@ export const TodoList = defineComponent({
       defaultListStyle,
     );
 
-    const renderItem = ({ item }: ITodoItemRenderer) => (
-      <TodoItem id={item.id} dateFormatString={dateFormatString.value} />
-    );
-
-    const renderAfterRef = useObservableShallowRef(
-      dataService.ends$.pipe(
-        map((mapper) => mapper[props.type]),
-        map(
-          (isEnd) => () =>
-            isEnd ? null : (
-              <div ref={refs.target}>
-                {loadingIds.map((id) => (
-                  <LoadingSketch key={id} type={props.type} />
-                ))}
-              </div>
-            ),
-        ),
-      ),
-      null,
-    );
-
     return () => (
-      <ScrollArea ref={scrollerRef} style={listStyle.value}>
-        <RecycleScroller
-          itemSize={40}
-          keyField="id"
-          items={idsRef.value}
-          v-slots={{ default: renderItem, after: renderAfterRef.value }}
-        />
-      </ScrollArea>
+      <DynamicScroller ref={scrollerRef} minItemSize={40} buffer={10} items={idsRef.value} style={listStyle.value}>
+        {({ item, index, active }: ITodoItemRenderer) => {
+          return (
+            <DynamicScrollerItem item={item} active={active} sizeDependencies={[item.type]} dataIndex={index}>
+              {item.id === '###0' ? (
+                <div ref={refs.target}>
+                  {new Array<number>(TODO_LIST_PAGE_SIZE).fill(0).map((_, index) => (
+                    <LoadingSketch key={index} type={props.type} />
+                  ))}
+                </div>
+              ) : (
+                <TodoItem id={item.id} dateFormatString={dateFormatString.value} />
+              )}
+            </DynamicScrollerItem>
+          );
+        }}
+      </DynamicScroller>
     );
   },
 });

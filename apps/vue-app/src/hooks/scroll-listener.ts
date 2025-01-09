@@ -1,4 +1,4 @@
-import { combineLatest, filter, Subject } from 'rxjs';
+import { combineLatest, Subject } from 'rxjs';
 import { onBeforeUnmount, ref } from 'vue';
 
 import { useObservableEffect } from './observable-effect';
@@ -28,24 +28,25 @@ export function useScrollListener(immediate = true) {
   };
 
   useObservableEffect(
-    combineLatest([container$.pipe(filter((v) => !!v)), target$.pipe(filter((v) => !!v))]).subscribe(
-      ([container, target]) => {
-        if (observer) {
-          observer.disconnect();
-        }
+    combineLatest([container$, target$]).subscribe(([container, target]) => {
+      if (observer) {
+        previousEntries = [];
+        observer.disconnect();
+      }
 
-        observer = new IntersectionObserver(observerCallback, {
-          root: container,
-          rootMargin: '0px',
-          threshold: 0,
-        });
-        observer.observe(target);
+      if (!container || !target) return;
 
-        if (immediate) {
-          handleCheck();
-        }
-      },
-    ),
+      observer = new IntersectionObserver(observerCallback, {
+        root: container,
+        rootMargin: '0px',
+        threshold: 0,
+      });
+      observer.observe(target);
+
+      if (immediate) {
+        handleCheck();
+      }
+    }),
   );
 
   onBeforeUnmount(() => {
