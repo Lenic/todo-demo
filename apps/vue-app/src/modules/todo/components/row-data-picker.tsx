@@ -58,12 +58,7 @@ export const RowDatePicker = defineComponent({
           </Button>
         </PopoverTrigger>
         <PopoverContent class="w-auto p-0">
-          <Calendar
-            multiple={false}
-            modelValue={calendarValueRef.value}
-            onUpdate:modelValue={handleChangeDate}
-            initialFocus
-          />
+          <Calendar multiple={false} modelValue={calendarValueRef.value} onUpdate:modelValue={handleChangeDate} />
         </PopoverContent>
       </Popover>
     );

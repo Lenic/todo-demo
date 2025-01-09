@@ -13,19 +13,19 @@ import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/toast';
-import { useLoading, useObservableEffect, useRef } from '@/hooks';
-import { language$, useIntl } from '@/i18n';
+import { useLoading, useRef } from '@/hooks';
+import { useIntl } from '@/i18n';
 
-// import { DatePicker } from './components/date-picker';
+import { DatePicker } from './components/date-picker';
 
 interface IFieldRenderer<T, TUpdateModel = T> {
   field: {
+    value: T;
     name: string;
-    modelValue: T | undefined;
     onBlur: (e: Event) => void;
     onChange: (e: Event) => void;
     onInput: (e: Event) => void;
-    'onUpdate:modelValue': (value: TUpdateModel | undefined) => void;
+    'onUpdate:modelValue': (value: TUpdateModel) => void;
   };
 }
 
@@ -45,12 +45,6 @@ export const CreateNewTask = defineComponent({
       validationSchema: toTypedSchema(formSchema),
       initialValues: { title: '', date: null },
     });
-
-    useObservableEffect(
-      language$.subscribe(() => {
-        form.setFieldError('title', []);
-      }),
-    );
 
     const updatedStatusTrigger = new Subject<void>();
     onUpdated(() => {
@@ -81,38 +75,32 @@ export const CreateNewTask = defineComponent({
     const handleSubmit = (e: Event) => void form.handleSubmit(handleEvent)(e);
     return () => (
       <form class="h-[4.25rem] relative flex flex-row space-x-2" onSubmit={handleSubmit}>
-        <FormField
-          name="title"
-          v-slots={{
-            default: ({ field }: IFieldRenderer<string, string | number>) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    ref={inputRef}
-                    type="text"
-                    {...field}
-                    placeholder={t('input-placeholder')}
-                    disabled={loadingRef.value}
-                  />
-                </FormControl>
-                <FormMessage class="absolute left-0 bottom-0" />
-              </FormItem>
-            ),
-          }}
-        />
-        <FormField
-          name="date"
-          v-slots={{
-            default: ({ field }: IFieldRenderer<string, string | number>) => (
-              <FormItem class="flex-initial">
-                <FormControl>
-                  <Input type="text" {...field} placeholder={t('input-placeholder')} disabled={loadingRef.value} />
-                </FormControl>
-              </FormItem>
-            ),
-          }}
-        />
-        <Button type="submit" class="flex-initial" disabled={loadingRef.value || !form.meta.value.valid}>
+        <FormField name="title">
+          {({ field }: IFieldRenderer<string | undefined, string | number | undefined>) => (
+            <FormItem class="flex-auto">
+              <FormControl>
+                <Input
+                  ref={inputRef}
+                  type="text"
+                  {...field}
+                  placeholder={t('input-placeholder')}
+                  disabled={loadingRef.value}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        </FormField>
+        <FormField name="date">
+          {({ field }: IFieldRenderer<Date | null>) => (
+            <FormItem class="flex-initial">
+              <FormControl>
+                <DatePicker {...field} disabled={loadingRef.value} />
+              </FormControl>
+            </FormItem>
+          )}
+        </FormField>
+        <Button size="lg" type="submit" class="flex-initial px-4" disabled={loadingRef.value || !form.meta.value.valid}>
           {loadingRef.value && <Loader2 class="animate-spin mr-2" width={18} height={18} />}
           {t('submit-form')}
         </Button>
@@ -120,5 +108,3 @@ export const CreateNewTask = defineComponent({
     );
   },
 });
-
-// <DatePicker value={field.value} onChange={field.onChange} disabled={loading} />

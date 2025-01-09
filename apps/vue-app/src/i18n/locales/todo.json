@@ -21,7 +21,7 @@
     "submit-form": ["Submit", "确认", "確認"]
   },
   "date-picker": {
-    "date-formatter": ["yyyy-MM-dd", "yyyy-MM-dd", "yyyy-MM-dd"],
+    "date-formatter": "YYYY-MM-DD",
     "placeholder": ["Pick a date", "选择日期", "日付選択"]
   },
   "editor": {
