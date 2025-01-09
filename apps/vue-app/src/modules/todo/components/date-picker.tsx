@@ -44,7 +44,7 @@ export const DatePicker = defineComponent({
             variant="outline"
             disabled={props.disabled}
             class={cn(
-              'w-[8.75rem] justify-start text-left font-normal px-4',
+              'max-w-[8.75rem] justify-start text-left font-normal px-4',
               !props.value && 'text-muted-foreground',
               props.className,
             )}

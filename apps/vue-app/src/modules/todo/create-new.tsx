@@ -83,13 +83,13 @@ export const CreateNewTask = defineComponent({
                   disabled={loadingRef.value}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage class="absolute left-0 bottom-0" />
             </FormItem>
           )}
         </FormField>
         <FormField name="date">
           {({ field }: IFieldRenderer<Date | null>) => (
-            <FormItem class="flex-initial">
+            <FormItem class="flex-none">
               <FormControl>
                 <DatePicker {...field} disabled={loadingRef.value} />
               </FormControl>
