@@ -5,3 +5,4 @@ export * from './observable-shallow-ref';
 export * from './observable-watch';
 export * from './ref';
 export * from './scroll-listener';
+export * from './update';
