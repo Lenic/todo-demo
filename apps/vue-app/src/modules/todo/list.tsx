@@ -14,7 +14,9 @@ import {
   filter,
   from,
   map,
+  merge,
   shareReplay,
+  skip,
   switchMap,
   take,
   tap,
@@ -26,6 +28,7 @@ import { defineComponent } from 'vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 
 import {
+  EUpdateType,
   useObservableEffect,
   useObservableRef,
   useObservableShallowRef,
@@ -109,7 +112,7 @@ export const TodoList = defineComponent({
       t('short-date'),
     );
 
-    const update$ = useUpdate();
+    const refreshed$ = useUpdate(EUpdateType.ALL);
     const [refs, entry$, handleCheck] = useScrollListener();
     useObservableEffect(
       entry$
@@ -120,7 +123,16 @@ export const TodoList = defineComponent({
           exhaustMap((isEnd) =>
             isEnd
               ? EMPTY
-              : dataService.loadMore(props.type).pipe(tap(() => update$.pipe(take(1)).subscribe(handleCheck))),
+              : dataService.loadMore(props.type).pipe(
+                  tap(() =>
+                    refreshed$
+                      .pipe(
+                        filter((v) => v === EUpdateType.UPDATED),
+                        take(1),
+                      )
+                      .subscribe(handleCheck),
+                  ),
+                ),
           ),
         )
         .subscribe(),
@@ -138,8 +150,14 @@ export const TodoList = defineComponent({
     );
 
     const listStyle = useObservableShallowRef(
-      windowResize$.pipe(
-        auditTime(60),
+      merge(
+        refreshed$.pipe(
+          filter((v) => v === EUpdateType.MOUNTED),
+          switchMap(() => windowResize$),
+          take(1),
+        ),
+        windowResize$.pipe(skip(1), auditTime(60)),
+      ).pipe(
         map((v) => {
           if (v.width >= 768) return defaultListStyle;
 

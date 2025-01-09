@@ -8,17 +8,17 @@ export enum EUpdateType {
 }
 
 export function useUpdate(updateType: EUpdateType = EUpdateType.UPDATED) {
-  const updateTrigger = new Subject<void>();
+  const updateTrigger = new Subject<EUpdateType>();
 
   onMounted(() => {
     if (EUpdateType.MOUNTED & updateType) {
-      updateTrigger.next();
+      updateTrigger.next(EUpdateType.MOUNTED);
     }
   });
 
   onUpdated(() => {
     if (EUpdateType.UPDATED & updateType) {
-      updateTrigger.next();
+      updateTrigger.next(EUpdateType.UPDATED);
     }
   });
 
