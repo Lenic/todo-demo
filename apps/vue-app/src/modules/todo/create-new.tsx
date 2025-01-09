@@ -73,7 +73,7 @@ export const CreateNewTask = defineComponent({
       <form class="h-[4.25rem] relative flex flex-row space-x-2" onSubmit={handleSubmit}>
         <FormField name="title">
           {({ field }: IFieldRenderer<string | undefined, string | number | undefined>) => (
-            <FormItem class="flex-auto">
+            <FormItem class="flex-auto space-y-0">
               <FormControl>
                 <Input
                   ref={inputRef}
@@ -83,7 +83,7 @@ export const CreateNewTask = defineComponent({
                   disabled={loadingRef.value}
                 />
               </FormControl>
-              <FormMessage class="absolute left-0 bottom-0" />
+              <FormMessage class="absolute left-0 bottom-2 text-xs" />
             </FormItem>
           )}
         </FormField>
