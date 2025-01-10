@@ -53,7 +53,17 @@
     "cancel": ["Cancel", "取消", "キャンセル"],
     "submit": ["Submit", "提交", "提出"]
   },
-  "item-context-menu": {
+  "item-dropdown-menu": {
+    "remove-dialog": {
+      "title": ["Are you sure you want to delete it?", "你确定要删除吗？", "本当に削除してもよろしいですか？"],
+      "description": [
+        "Deletion is a dangerous operation. You are about to delete \"{val}\" and it cannot be undone. Are you sure you want to do this?",
+        "删除是一个危险的操作，你即将删除「{val}」并且不能撤销，你确定要这样做吗？",
+        "削除は危険な操作です。あなたは「{val}」を削除しようとしており、取り消すことはできません。本当にこれを行いますか？"
+      ],
+      "cancel": ["Cancel", "取消", "キャンセル"]
+    },
+    "detail": ["Detail", "详情", "詳細"],
     "remove": ["Remove", "删除", "取り除"],
     "executing": ["In operation. Please wait a moment...", "正在操作中，请稍等……", "操作中です。少々お待ちください……"]
   }
