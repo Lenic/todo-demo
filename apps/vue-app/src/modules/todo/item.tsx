@@ -54,7 +54,7 @@ export const TodoItem = defineComponent({
         </RowDropdownMenu>
         <div class="flex-auto" />
         <RowDatePicker
-          className="flex-initial"
+          className="shrink-0"
           id={itemRef.value.id}
           value={itemRef.value.overdueAt}
           formatString={props.dateFormatString}

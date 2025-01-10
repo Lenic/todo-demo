@@ -50,7 +50,7 @@ export const AutoTooltip = defineComponent({
     return () => (
       <TooltipProvider disabled={disabledRef.value}>
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger class="w-full">
             <div ref={containerRef} class={disabledRef.value ? containerClassNameRef.value : ''}>
               <div class="truncate">{props.title}</div>
               <div ref={realElementRef} class="absolute invisible top-0 left-0 text-wrap">
