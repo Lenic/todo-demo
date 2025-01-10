@@ -97,7 +97,7 @@ export const TodoList = defineComponent({
       t('short-date'),
     );
 
-    const refreshed$ = useUpdate(EUpdateType.ALL);
+    const refresh$ = useUpdate(EUpdateType.ALL);
     const [refs, entry$, handleCheck] = useScrollListener();
     useObservableEffect(
       entry$
@@ -109,7 +109,7 @@ export const TodoList = defineComponent({
               ? EMPTY
               : dataService.loadMore(props.type).pipe(
                   tap(() =>
-                    refreshed$
+                    refresh$
                       .pipe(
                         filter((v) => v === EUpdateType.UPDATED),
                         take(1),
@@ -124,7 +124,7 @@ export const TodoList = defineComponent({
 
     const listStyle = useObservableShallowRef(
       merge(
-        refreshed$.pipe(
+        refresh$.pipe(
           filter((v) => v === EUpdateType.MOUNTED),
           switchMap(() => windowResize$),
           take(1),

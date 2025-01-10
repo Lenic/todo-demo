@@ -46,15 +46,15 @@ export const CreateNewTask = defineComponent({
       initialValues: { title: '', date: null },
     });
 
-    const update$ = useUpdate();
+    const refresh$ = useUpdate();
     const [inputRef, input$] = useRef<{ el$: Observable<HTMLInputElement> }>();
-    const [loadingRef, handleEvent] = useLoading((data: z.infer<typeof formSchema>) => {
-      return dataService.add({ title: data.title, overdueAt: data.date?.valueOf() }).pipe(
+    const [loadingRef, handleEvent] = useLoading((data: z.infer<typeof formSchema>) =>
+      dataService.add({ title: data.title, overdueAt: data.date?.valueOf() }).pipe(
         tap(() => {
           toast({ title: t('create-success'), duration: 1_000 });
           form.resetForm();
 
-          update$
+          refresh$
             .pipe(
               switchMap(() => input$),
               filter((v) => !!v),
@@ -65,8 +65,8 @@ export const CreateNewTask = defineComponent({
               el.focus();
             });
         }),
-      );
-    });
+      ),
+    );
 
     const handleSubmit = (e: Event) => void form.handleSubmit(handleEvent)(e);
     return () => (
