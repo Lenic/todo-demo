@@ -21,6 +21,7 @@ export const RowDatePicker = defineComponent({
     value: { type: Number },
     className: { type: String },
     formatString: { type: String, required: true },
+    disabled: { type: Boolean, required: true },
   },
   setup(props) {
     const openRef = ref(false);
@@ -49,7 +50,7 @@ export const RowDatePicker = defineComponent({
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            disabled={loadingRef.value}
+            disabled={loadingRef.value || props.disabled}
             class={cn('font-mono justify-start text-left font-normal text-muted-foreground px-0', props.className)}
           >
             {!loadingRef.value ? null : <Loader2 class="animate-spin mr-2" width={16} height={16} />}

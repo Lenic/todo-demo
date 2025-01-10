@@ -58,6 +58,7 @@ export const TodoItem = defineComponent({
           id={itemRef.value.id}
           value={itemRef.value.overdueAt}
           formatString={props.dateFormatString}
+          disabled={itemRef.value.status === ETodoStatus.DONE}
         />
         <TodoItemEditor id={props.id} v-model:open={openRef.value} />
       </div>
