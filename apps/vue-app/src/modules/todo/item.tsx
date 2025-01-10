@@ -2,7 +2,7 @@ import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-vue-next';
 import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { useLoading, useObservableShallowRef } from '@/hooks';
@@ -10,7 +10,7 @@ import { useLoading, useObservableShallowRef } from '@/hooks';
 import { AutoTooltip } from './components/auto-tooltip';
 import { RowDatePicker } from './components/row-data-picker';
 import { RowDropdownMenu } from './components/row-dropdown-menu';
-// import { TodoItemEditor } from './editor';
+import { TodoItemEditor } from './editor';
 
 const dataService = ServiceLocator.default.get(IDataService);
 
@@ -36,10 +36,8 @@ export const TodoItem = defineComponent({
       ),
     );
 
-    const handleOpenEditor = () => {
-      console.log('Open Editor');
-    };
-
+    const openRef = ref(false);
+    const handleOpenEditor = () => void (openRef.value = true);
     return () => (
       <div class="flex items-center space-x-2 pr-4">
         {loadingRef.value ? (
@@ -47,12 +45,11 @@ export const TodoItem = defineComponent({
         ) : (
           <Checkbox checked={itemRef.value.status === ETodoStatus.DONE} onUpdate:checked={handleChangeChecked} />
         )}
-        <RowDropdownMenu id={itemRef.value.id}>
+        <RowDropdownMenu id={itemRef.value.id} onDetail={handleOpenEditor}>
           <AutoTooltip
             title={itemRef.value.title}
             description={itemRef.value.description ? itemRef.value.description : itemRef.value.title}
             className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
-            onClick={handleOpenEditor}
           />
         </RowDropdownMenu>
         <div class="flex-auto" />
@@ -62,6 +59,7 @@ export const TodoItem = defineComponent({
           value={itemRef.value.overdueAt}
           formatString={props.dateFormatString}
         />
+        <TodoItemEditor id={props.id} v-model:open={openRef.value} />
       </div>
     );
   },

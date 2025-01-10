@@ -1,3 +1,4 @@
+import type { IFieldRendererEventArgs } from './types';
 import type { Observable } from 'rxjs';
 
 import { ServiceLocator } from '@todo/container';
@@ -17,17 +18,6 @@ import { useLoading, useRef, useUpdate } from '@/hooks';
 import { useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
-
-interface IFieldRenderer<T, TUpdateModel = T> {
-  field: {
-    value: T;
-    name: string;
-    onBlur: (e: Event) => void;
-    onChange: (e: Event) => void;
-    onInput: (e: Event) => void;
-    'onUpdate:modelValue': (value: TUpdateModel) => void;
-  };
-}
 
 const dataService = ServiceLocator.default.get(IDataService);
 
@@ -72,15 +62,16 @@ export const CreateNewTask = defineComponent({
     return () => (
       <form class="h-[4.25rem] relative flex flex-row space-x-2" onSubmit={handleSubmit}>
         <FormField name="title">
-          {({ field }: IFieldRenderer<string | undefined, string | number | undefined>) => (
+          {({ field }: IFieldRendererEventArgs<string | undefined, string | number | undefined>) => (
             <FormItem class="flex-auto space-y-0">
               <FormControl>
                 <Input
-                  ref={inputRef}
                   type="text"
-                  {...field}
-                  placeholder={t('input-placeholder')}
+                  ref={inputRef}
+                  modelValue={field.value}
                   disabled={loadingRef.value}
+                  placeholder={t('input-placeholder')}
+                  onUpdate:modelValue={field['onUpdate:modelValue']}
                 />
               </FormControl>
               <FormMessage class="absolute left-0 bottom-2 text-xs" />
@@ -88,7 +79,7 @@ export const CreateNewTask = defineComponent({
           )}
         </FormField>
         <FormField name="date">
-          {({ field }: IFieldRenderer<Date | null>) => (
+          {({ field }: IFieldRendererEventArgs<Date | null>) => (
             <FormItem class="flex-none">
               <FormControl>
                 <DatePicker {...field} disabled={loadingRef.value} />

@@ -7,7 +7,7 @@ import { computed } from 'vue';
 
 import { cn } from '@/lib/utils';
 
-const props = defineProps<LabelProps & { class?: HTMLAttributes['class'] }>();
+const props = defineProps<LabelProps & { class?: HTMLAttributes['class']; htmlFor: HTMLLabelElement['htmlFor'] }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

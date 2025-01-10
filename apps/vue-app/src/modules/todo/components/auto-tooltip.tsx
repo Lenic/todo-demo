@@ -1,5 +1,3 @@
-import type { PropType } from 'vue';
-
 import { combineLatest, filter, map, of, switchMap } from 'rxjs';
 import { computed, defineComponent } from 'vue';
 
@@ -13,7 +11,6 @@ export const AutoTooltip = defineComponent({
     title: { type: String, required: true },
     description: { type: String, required: true },
     className: { type: String, default: '' },
-    onClick: { type: Function as PropType<() => void>, required: true },
   },
   setup(props) {
     const [containerRef, container$] = useRef<HTMLDivElement>();
@@ -54,11 +51,7 @@ export const AutoTooltip = defineComponent({
       <TooltipProvider disabled={disabledRef.value}>
         <Tooltip>
           <TooltipTrigger>
-            <div
-              ref={containerRef}
-              class={disabledRef.value ? containerClassNameRef.value : ''}
-              onClick={props.onClick}
-            >
+            <div ref={containerRef} class={disabledRef.value ? containerClassNameRef.value : ''}>
               <div class="truncate">{props.title}</div>
               <div ref={realElementRef} class="absolute invisible top-0 left-0 text-wrap">
                 {props.title}
