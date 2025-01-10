@@ -1,7 +1,7 @@
 import { ServiceLocator } from '@todo/container';
 import { IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-vue-next';
-import { filter, map, take, tap } from 'rxjs';
+import { filter, finalize, map } from 'rxjs';
 import { defineComponent, ref } from 'vue';
 
 import {
@@ -20,7 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useLoading, useObservableRef, useUpdate } from '@/hooks';
+import { useLoading, useObservableRef } from '@/hooks';
 import { useIntl } from '@/i18n';
 
 const dataService = ServiceLocator.default.get(IDataService);
@@ -47,13 +47,10 @@ export const RowDropdownMenu = defineComponent({
       emit('detail', props.id);
     };
 
-    const refresh$ = useUpdate();
     const showRemoveDialogRef = ref(false);
     const openRemoveDialog = () => void (showRemoveDialogRef.value = true);
     const [loadingRef, handleRemove] = useLoading(() =>
-      dataService
-        .delete(props.id)
-        .pipe(tap(() => refresh$.pipe(take(1)).subscribe(() => void (showRemoveDialogRef.value = false)))),
+      dataService.delete(props.id).pipe(finalize(() => void (showRemoveDialogRef.value = false))),
     );
 
     return () => (
