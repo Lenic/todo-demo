@@ -76,11 +76,15 @@ export const TodoList = defineComponent({
     const { t } = useIntl('todo.list');
     const dateFormatString = useObservableShallowRef(
       ids$.pipe(
-        map((ids) =>
-          ids
-            .map((id) => dataService.dataMapper[id].overdueAt)
-            .filter((v) => !!v)
-            .map((date) => dayjs(date).get('year')),
+        switchMap((ids) =>
+          dataService.dataMapper$.pipe(
+            map((mapper) =>
+              ids
+                .map((id) => mapper[id].overdueAt)
+                .filter((v) => !!v)
+                .map((date) => dayjs(date).get('year')),
+            ),
+          ),
         ),
         filter((v) => !!v.length),
         switchMap((list) =>
