@@ -68,7 +68,12 @@ export const TodoList = defineComponent({
     const idsRef = useObservableShallowRef(
       ids$.pipe(
         map((ids) => ids.map((id) => ({ id, type: 'item' }) as ITodoIdentity)),
-        map((list) => (dataService.ends[props.type] ? list : list.concat(loadingItems))),
+        switchMap((list) =>
+          dataService.ends$.pipe(
+            map((mapper) => mapper[props.type]),
+            map((isEnd) => (isEnd ? list : list.concat(loadingItems))),
+          ),
+        ),
       ),
       loadingItems,
     );
