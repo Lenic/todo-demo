@@ -27,19 +27,9 @@ export const AutoTooltip = defineComponent({
               container$.pipe(filter((v) => !!v)),
               realElement$.pipe(
                 filter((v) => !!v),
-                switchMap((el) =>
-                  listenResize$(el).pipe(
-                    filter((entries) => !!entries.length),
-                    map((entries) => entries[0]),
-                  ),
-                ),
+                switchMap((el) => listenResize$(el)),
               ),
-            ]).pipe(
-              map(
-                ([containerElement, entry]) =>
-                  entry.contentRect.height <= containerElement.getBoundingClientRect().height,
-              ),
-            );
+            ]).pipe(map(([containerElement, entry]) => entry[1] <= containerElement.getBoundingClientRect().height));
           }
         }),
       ),

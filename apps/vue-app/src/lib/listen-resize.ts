@@ -3,10 +3,13 @@ import type { Ref, ShallowRef, WatchHandle } from 'vue';
 import { Observable } from 'rxjs';
 import { effectScope, isRef, watch } from 'vue';
 
-function listenRefResize$(elRef: Ref<HTMLDivElement | undefined> | ShallowRef<HTMLDivElement | undefined>) {
-  return new Observable<ResizeObserverEntry[]>((observer) => {
+function listenRefResize$(elRef: Ref<HTMLElement | undefined> | ShallowRef<HTMLElement | undefined>) {
+  return new Observable<[number, number]>((observer) => {
     const resizeObserver = new ResizeObserver((entries) => {
-      observer.next(entries);
+      if (entries.length) {
+        const entry = entries[0];
+        observer.next([entry.contentRect.width, entry.contentRect.height]);
+      }
     });
 
     const scope = effectScope(true);
@@ -36,10 +39,13 @@ function listenRefResize$(elRef: Ref<HTMLDivElement | undefined> | ShallowRef<HT
   });
 }
 
-function listenElementResize$(el: HTMLDivElement | undefined) {
-  return new Observable<ResizeObserverEntry[]>((observer) => {
+function listenElementResize$(el: HTMLElement | undefined) {
+  return new Observable<[number, number]>((observer) => {
     const resizeObserver = new ResizeObserver((entries) => {
-      observer.next(entries);
+      if (entries.length) {
+        const entry = entries[0];
+        observer.next([entry.contentRect.width, entry.contentRect.height]);
+      }
     });
 
     if (el) {
@@ -54,7 +60,7 @@ function listenElementResize$(el: HTMLDivElement | undefined) {
 }
 
 export function listenResize$(
-  elRef: Ref<HTMLDivElement | undefined> | ShallowRef<HTMLDivElement | undefined> | HTMLDivElement | undefined,
+  elRef: Ref<HTMLElement | undefined> | ShallowRef<HTMLElement | undefined> | HTMLElement | undefined,
 ) {
   if (isRef(elRef)) {
     return listenRefResize$(elRef);

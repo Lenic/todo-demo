@@ -2,7 +2,7 @@ import type { ETodoListType } from '@todo/controllers';
 
 import { ServiceLocator } from '@todo/container';
 import { areArraysEqual, IDataService } from '@todo/controllers';
-import { delay, distinctUntilChanged, filter, map, of, pairwise, startWith, switchMap } from 'rxjs';
+import { delay, distinctUntilChanged, map, of, pairwise, startWith, switchMap } from 'rxjs';
 import { defineComponent, type PropType, ref } from 'vue';
 import { ContentLoader } from 'vue-content-loader';
 
@@ -29,11 +29,8 @@ export const LoadingSketch = defineComponent({
           isEnd
             ? of(defaultRowWidth)
             : listenResize$(containerRef).pipe(
-                map((list) => list[0]),
-                filter((v) => !!v),
-                map((v) => [v.contentRect.width, v.contentRect.height] as const),
-                distinctUntilChanged((prev, curr) => prev[0] === curr[0] && prev[1] === curr[1]),
-                startWith([0, 0] as const),
+                distinctUntilChanged(areArraysEqual),
+                startWith([0, 0] as [number, number]),
                 pairwise(),
                 switchMap((val) => {
                   const next$ = of(val[1][0]);
