@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-vue-next';
 import { filter, switchMap, take, tap } from 'rxjs';
 import { useForm } from 'vee-validate';
 import { defineComponent } from 'vue';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
