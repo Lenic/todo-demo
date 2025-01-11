@@ -5,7 +5,7 @@ import { ServiceLocator } from '@todo/container';
 import { IDataService } from '@todo/controllers';
 import { toTypedSchema } from '@vee-validate/zod';
 import { Loader2 } from 'lucide-vue-next';
-import { filter, switchMap, take, tap } from 'rxjs';
+import { filter, map, switchMap, take, tap } from 'rxjs';
 import { useForm } from 'vee-validate';
 import { defineComponent } from 'vue';
 import { z } from 'zod';
@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/toast';
-import { useLoading, useRef, useUpdate } from '@/hooks';
+import { useEvent, useLoading, useRef, useUpdate } from '@/hooks';
 import { useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
@@ -35,6 +35,16 @@ export const CreateNewTask = defineComponent({
       validationSchema: toTypedSchema(formSchema),
       initialValues: { title: '', date: null },
     });
+
+    const [handleBlur] = useEvent<FocusEvent>((e$) =>
+      e$.pipe(
+        map((e) => e.target as HTMLInputElement | null),
+        filter((v) => !!v && !v.value),
+        tap(() => {
+          form.setFieldError('title', []);
+        }),
+      ),
+    );
 
     const refresh$ = useUpdate();
     const [inputRef, input$] = useRef<{ el$: Observable<HTMLInputElement> }>();
@@ -71,6 +81,7 @@ export const CreateNewTask = defineComponent({
                   modelValue={field.value}
                   disabled={loadingRef.value}
                   placeholder={t('input-placeholder')}
+                  onBlur={handleBlur}
                   onUpdate:modelValue={field['onUpdate:modelValue']}
                 />
               </FormControl>
