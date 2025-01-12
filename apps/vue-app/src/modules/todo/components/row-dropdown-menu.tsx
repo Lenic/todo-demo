@@ -59,7 +59,7 @@ export const RowDropdownMenu = defineComponent({
           <DropdownMenuTrigger class="leading-5 h-5 overflow-hidden">{slots.default?.()}</DropdownMenuTrigger>
           <DropdownMenuContent align="start" side="bottom">
             <DropdownMenuItem inset onClick={handleModify}>
-              {t('detail')}
+              {t('edit')}
             </DropdownMenuItem>
             <DropdownMenuItem inset onClick={openRemoveDialog}>
               {t('remove')}

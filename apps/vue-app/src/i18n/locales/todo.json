@@ -63,7 +63,7 @@
       ],
       "cancel": ["Cancel", "取消", "キャンセル"]
     },
-    "detail": ["Detail", "详情", "詳細"],
+    "edit": ["Edit", "编辑", "編集"],
     "remove": ["Remove", "删除", "取り除"],
     "executing": ["In operation. Please wait a moment...", "正在操作中，请稍等……", "操作中です。少々お待ちください……"]
   }
