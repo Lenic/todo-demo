@@ -1,6 +1,6 @@
 import { ServiceLocator } from '@todo/container';
 import { IDataService } from '@todo/controllers';
-import { Loader2 } from 'lucide-vue-next';
+import { FilePenLine, Loader2, Trash2 } from 'lucide-vue-next';
 import { filter, finalize, map } from 'rxjs';
 import { defineComponent, ref } from 'vue';
 
@@ -58,10 +58,12 @@ export const RowDropdownMenu = defineComponent({
         <DropdownMenu>
           <DropdownMenuTrigger class="leading-5 h-5 overflow-hidden">{slots.default?.()}</DropdownMenuTrigger>
           <DropdownMenuContent align="start" side="bottom">
-            <DropdownMenuItem inset onClick={handleModify}>
+            <DropdownMenuItem onClick={handleModify}>
+              <FilePenLine class="h-4 w-4" />
               {t('edit')}
             </DropdownMenuItem>
-            <DropdownMenuItem inset onClick={openRemoveDialog}>
+            <DropdownMenuItem onClick={openRemoveDialog}>
+              <Trash2 class="h-4 w-4" />
               {t('remove')}
             </DropdownMenuItem>
           </DropdownMenuContent>
