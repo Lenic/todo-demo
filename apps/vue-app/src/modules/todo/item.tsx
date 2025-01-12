@@ -1,6 +1,6 @@
 import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
-import { ListCollapse, Loader2 } from 'lucide-vue-next';
+import { EllipsisVertical, Loader2 } from 'lucide-vue-next';
 import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs';
 import { defineComponent, ref } from 'vue';
 
@@ -51,7 +51,14 @@ export const TodoItem = defineComponent({
         />
         <div class="flex-auto" />
         <RowDropdownMenu id={itemRef.value.id} onDetail={handleOpenEditor}>
-          <ListCollapse class="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity ease-in-out duration-300" />
+          {(open: boolean) => (
+            <EllipsisVertical
+              class={[
+                'h-4 w-4 group-hover:opacity-100 transition-opacity ease-in-out duration-300',
+                { 'opacity-0': !open },
+              ]}
+            />
+          )}
         </RowDropdownMenu>
         <RowDatePicker
           className="shrink-0"

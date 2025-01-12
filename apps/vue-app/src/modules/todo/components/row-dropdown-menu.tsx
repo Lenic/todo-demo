@@ -53,10 +53,11 @@ export const RowDropdownMenu = defineComponent({
       dataService.delete(props.id).pipe(finalize(() => void (showRemoveDialogRef.value = false))),
     );
 
+    const openRef = ref(false);
     return () => (
       <>
-        <DropdownMenu>
-          <DropdownMenuTrigger class="leading-5 h-5 flex-initial">{slots.default?.()}</DropdownMenuTrigger>
+        <DropdownMenu v-model:open={openRef.value}>
+          <DropdownMenuTrigger class="leading-5 h-5 flex-initial">{slots.default?.(openRef.value)}</DropdownMenuTrigger>
           <DropdownMenuContent align="start" side="bottom">
             <DropdownMenuItem onClick={handleModify}>
               <FilePenLine class="h-4 w-4" />
