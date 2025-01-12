@@ -56,7 +56,7 @@ export const RowDropdownMenu = defineComponent({
     return () => (
       <>
         <DropdownMenu>
-          <DropdownMenuTrigger class="leading-5 h-5 overflow-hidden">{slots.default?.()}</DropdownMenuTrigger>
+          <DropdownMenuTrigger class="leading-5 h-5 flex-initial">{slots.default?.()}</DropdownMenuTrigger>
           <DropdownMenuContent align="start" side="bottom">
             <DropdownMenuItem onClick={handleModify}>
               <FilePenLine class="h-4 w-4" />

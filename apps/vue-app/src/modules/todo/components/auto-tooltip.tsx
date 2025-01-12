@@ -1,26 +1,35 @@
-import { combineLatest, filter, map, of, switchMap } from 'rxjs';
+import { ServiceLocator } from '@todo/container';
+import { IDataService } from '@todo/controllers';
+import { combineLatest, distinctUntilChanged, filter, map, of, shareReplay, switchMap } from 'rxjs';
 import { computed, defineComponent } from 'vue';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { useObservableRef, useObservableWatch, useRef } from '@/hooks';
+import { useObservableRef, useObservableShallowRef, useRef } from '@/hooks';
 import { listenResize$ } from '@/lib/listen-resize';
+
+const dataService = ServiceLocator.default.get(IDataService);
 
 export const AutoTooltip = defineComponent({
   name: 'AutoTooltip',
   props: {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
+    id: { type: String, required: true },
     className: { type: String, default: '' },
   },
   setup(props) {
     const [containerRef, container$] = useRef<HTMLDivElement>();
     const [realElementRef, realElement$] = useRef<HTMLDivElement>();
 
-    const props$ = useObservableWatch(() => props, { deep: true });
+    const item$ = dataService.dataMapper$.pipe(
+      map((mapper) => mapper[props.id]),
+      filter((v) => !!v),
+      shareReplay(1),
+    );
+    const itemRef = useObservableShallowRef(item$, dataService.dataMapper[props.id]);
+
     const disabledRef = useObservableRef(
-      props$.pipe(
-        switchMap((p) => {
-          if (p.title !== p.description) {
+      item$.pipe(
+        switchMap((item) => {
+          if (item.description) {
             return of(false);
           } else {
             return combineLatest([
@@ -32,24 +41,25 @@ export const AutoTooltip = defineComponent({
             ]).pipe(map(([containerElement, entry]) => entry[1] <= containerElement.getBoundingClientRect().height));
           }
         }),
+        distinctUntilChanged(),
       ),
       true,
     );
 
     const containerClassNameRef = computed(() => ['relative overflow-hidden', props.className].join(' '));
     return () => (
-      <TooltipProvider disabled={disabledRef.value}>
-        <Tooltip>
-          <TooltipTrigger class="w-full">
+      <TooltipProvider>
+        <Tooltip disabled={disabledRef.value}>
+          <TooltipTrigger class="truncate flex-initial">
             <div ref={containerRef} class={disabledRef.value ? containerClassNameRef.value : ''}>
-              <div class="truncate">{props.title}</div>
+              <div class="truncate">{itemRef.value.title}</div>
               <div ref={realElementRef} class="absolute invisible top-0 left-0 text-wrap">
-                {props.title}
+                {itemRef.value.title}
               </div>
             </div>
           </TooltipTrigger>
           <TooltipContent>
-            <div class="max-w-lg whitespace-break-spaces">{props.description}</div>
+            <div class="max-w-lg whitespace-break-spaces">{itemRef.value.description || itemRef.value.title}</div>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

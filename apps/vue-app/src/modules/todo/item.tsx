@@ -1,6 +1,6 @@
 import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
-import { Loader2 } from 'lucide-vue-next';
+import { ListCollapse, Loader2 } from 'lucide-vue-next';
 import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs';
 import { defineComponent, ref } from 'vue';
 
@@ -39,20 +39,20 @@ export const TodoItem = defineComponent({
     const openRef = ref(false);
     const handleOpenEditor = () => void (openRef.value = true);
     return () => (
-      <div class="flex items-center space-x-2 pr-4">
+      <div class="flex items-center space-x-2 pr-4 group">
         {loadingRef.value ? (
           <Loader2 class="animate-spin" width={16} height={16} />
         ) : (
           <Checkbox checked={itemRef.value.status === ETodoStatus.DONE} onUpdate:checked={handleChangeChecked} />
         )}
-        <RowDropdownMenu id={itemRef.value.id} onDetail={handleOpenEditor}>
-          <AutoTooltip
-            title={itemRef.value.title}
-            description={itemRef.value.description ? itemRef.value.description : itemRef.value.title}
-            className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
-          />
-        </RowDropdownMenu>
+        <AutoTooltip
+          id={itemRef.value.id}
+          className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 truncate"
+        />
         <div class="flex-auto" />
+        <RowDropdownMenu id={itemRef.value.id} onDetail={handleOpenEditor}>
+          <ListCollapse class="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity ease-in-out duration-300" />
+        </RowDropdownMenu>
         <RowDatePicker
           className="shrink-0"
           id={itemRef.value.id}
