@@ -1,8 +1,22 @@
 {
   "theme": {
-    "light": ["light", "明亮", "明るい"],
-    "dark": ["dark", "暗黑", "暗黒の"],
-    "system": ["system", "跟随系统", "システムに従う"]
+    "light": ["Light", "明亮", "明るい"],
+    "dark": ["Dark", "暗黑", "暗黒の"],
+    "system": ["System", "跟随系统", "システムに従う"]
+  },
+  "theme-color": {
+    "colors": {
+      "neutral": "rgb(64, 64, 64)",
+      "blue": "rgb(29, 78, 216)",
+      "green": "rgb(21, 128, 61)",
+      "yellow": "rgb(161, 98, 7)"
+    },
+    "labels": {
+      "neutral": ["Neutral", "中性的", "中性"],
+      "blue": ["Blue", "蓝色", "青"],
+      "green": ["Green", "绿色", "緑"],
+      "yellow": ["Yellow", "黄色", "黄色"]
+    }
   },
   "language": {
     "icon": {
