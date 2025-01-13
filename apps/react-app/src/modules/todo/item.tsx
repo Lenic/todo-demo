@@ -65,8 +65,9 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
       <RowDropdownMenu id={id} onDetail={handleOpenEditor}>
         {(open: boolean) => (
           <EllipsisVertical
-            className={clsx('h-4 w-4 group-hover:opacity-100 transition-opacity ease-in-out duration-300', {
-              'opacity-0': !open,
+            className={clsx('h-4 w-0 group-hover:w-4 group-hover:opacity-100 transition-all ease-in-out duration-300', {
+              'opacity-0 w-0': !open,
+              '!w-4': open,
             })}
           />
         )}

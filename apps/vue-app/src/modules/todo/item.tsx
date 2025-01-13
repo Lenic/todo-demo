@@ -54,8 +54,8 @@ export const TodoItem = defineComponent({
           {(open: boolean) => (
             <EllipsisVertical
               class={[
-                'h-4 w-4 group-hover:opacity-100 transition-opacity ease-in-out duration-300',
-                { 'opacity-0': !open },
+                'h-4 w-0 group-hover:w-4 group-hover:opacity-100 transition-opacity ease-in-out duration-300',
+                { 'opacity-0': !open, '!w-4': open },
               ]}
             />
           )}
