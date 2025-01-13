@@ -3,7 +3,8 @@ import type { CSSProperties, FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
-import { Loader2 } from 'lucide-react';
+import { clsx } from 'clsx';
+import { EllipsisVertical, Loader2 } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs/operators';
 
@@ -11,8 +12,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useLoading, useObservableState } from '@/hooks';
 
 import { AutoTooltip } from './components/auto-tooltip';
-import { RowContextMenu } from './components/row-context-menu';
 import { RowDatePicker } from './components/row-data-picker';
+import { RowDropdownMenu } from './components/row-dropdown-menu';
 import { TodoItemEditor } from './editor';
 
 export interface ITodoItemProps {
@@ -50,21 +51,26 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
 
   const overdueAt = useMemo(() => (item.overdueAt ? new Date(item.overdueAt) : undefined), [item.overdueAt]);
   return (
-    <div className="flex items-center space-x-2 pr-4" style={style}>
+    <div className="flex group items-center space-x-2 pr-4" style={style}>
       {loading ? (
         <Loader2 className="animate-spin" width={16} height={16} />
       ) : (
         <Checkbox checked={item.status === ETodoStatus.DONE} onCheckedChange={handleChangeChecked} />
       )}
-      <RowContextMenu id={id}>
-        <AutoTooltip
-          title={item.title}
-          description={item.description ? item.description : item.title}
-          className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
-          onClick={handleOpenEditor}
-        />
-      </RowContextMenu>
+      <AutoTooltip
+        id={item.id}
+        className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
+      />
       <div className="flex-auto" />
+      <RowDropdownMenu id={id} onDetail={handleOpenEditor}>
+        {(open: boolean) => (
+          <EllipsisVertical
+            className={clsx('h-4 w-4 group-hover:opacity-100 transition-opacity ease-in-out duration-300', {
+              'opacity-0': !open,
+            })}
+          />
+        )}
+      </RowDropdownMenu>
       <RowDatePicker className="flex-initial" id={id} value={overdueAt} formatString={dateFormatString} />
       <TodoItemEditor id={id} open={open} onOpenChange={setOpen} />
     </div>
