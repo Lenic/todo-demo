@@ -2,7 +2,7 @@ import type { EThemeColor } from '@todo/controllers';
 import type { CSSProperties } from 'vue';
 
 import { ServiceLocator } from '@todo/container';
-import { IThemeColorService, THEME_COLOR_LIST } from '@todo/controllers';
+import { IThemeService, THEME_COLOR_LIST } from '@todo/controllers';
 import { Palette } from 'lucide-vue-next';
 import { map } from 'rxjs';
 import { defineComponent } from 'vue';
@@ -14,10 +14,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useObservableRef, useObservableShallowRef } from '@/hooks';
-import { useIntl } from '@/i18n';
+import { useObservableShallowRef } from '@/hooks';
+import { language$, useIntl } from '@/i18n';
 
-const themeColorService = ServiceLocator.default.get(IThemeColorService);
+const themeService = ServiceLocator.default.get(IThemeService);
 
 export const ThemeColorToggle = defineComponent({
   name: 'ThemeColorToggle',
@@ -27,25 +27,14 @@ export const ThemeColorToggle = defineComponent({
     const handleChangeThemeColor = (e: MouseEvent) => {
       const { themeColor } = (e.target as HTMLDivElement).dataset;
       if (themeColor) {
-        themeColorService.setThemeColor(themeColor as EThemeColor);
+        themeService.setColor(themeColor as EThemeColor);
       }
     };
 
-    const iconStyleRef = useObservableShallowRef(
-      themeColorService.themeColor$.pipe(map((color) => ({ color: t(`colors.${color}`) }) as CSSProperties)),
-      { color: t(`colors.${themeColorService.themeColor}`) } as CSSProperties,
-    );
-    const themeColorRef = useObservableRef(themeColorService.themeColor$, themeColorService.themeColor);
-    return () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline">
-            <Palette class="h-[1.2rem] w-[1.2rem]" style={iconStyleRef.value} />
-            {t(`labels.${themeColorRef.value}`)}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {THEME_COLOR_LIST.map((color) => (
+    const colorListRef = useObservableShallowRef(
+      language$.pipe(
+        map(() =>
+          THEME_COLOR_LIST.map((color) => (
             <DropdownMenuItem key={color} data-theme-color={color} onClick={handleChangeThemeColor}>
               <span
                 class="h-5 w-5 rounded-full flex items-center justify-center shrink-0"
@@ -53,8 +42,21 @@ export const ThemeColorToggle = defineComponent({
               />
               {t(`labels.${color}`)}
             </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
+          )),
+        ),
+      ),
+    );
+
+    const iconStyle: CSSProperties = { color: 'hsl(var(--primary))' };
+    return () => (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Palette class="h-[1.2rem] w-[1.2rem]" style={iconStyle} />
+            <span class="sr-only">{t(`labels.${themeService.color}`)}</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">{colorListRef.value}</DropdownMenuContent>
       </DropdownMenu>
     );
   },

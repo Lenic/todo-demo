@@ -1,5 +1,5 @@
 import { ServiceLocator } from '@todo/container';
-import { IThemeColorService, IThemeService } from '@todo/controllers';
+import { IThemeService } from '@todo/controllers';
 import { defineComponent } from 'vue';
 
 import { Toaster } from '@/components/ui/toast';
@@ -12,7 +12,6 @@ export default defineComponent({
   name: 'App',
   setup() {
     ServiceLocator.default.get(IThemeService).initialize();
-    ServiceLocator.default.get(IThemeColorService).initialize();
 
     return () => (
       <div class="container fixed inset-0 mx-auto">
