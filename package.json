@@ -11,7 +11,10 @@
     "preview:react": "pnpm -r --filter ./apps/react-app preview",
     "dev:vue": "pnpm -r --filter ./apps/vue-app dev",
     "build:vue": "pnpm -r --filter ./apps/vue-app build",
-    "preview:vue": "pnpm -r --filter ./apps/vue-app preview"
+    "preview:vue": "pnpm -r --filter ./apps/vue-app preview",
+    "dev:solid": "pnpm -r --filter ./apps/solid-app dev",
+    "build:solid": "pnpm -r --filter ./apps/solid-app build",
+    "preview:solid": "pnpm -r --filter ./apps/solid-app preview"
   },
   "devDependencies": {
     "@eslint/config-inspector": "^0.6.0",
