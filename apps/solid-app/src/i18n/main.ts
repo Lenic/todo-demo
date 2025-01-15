@@ -1,8 +1,11 @@
-import type { ELocaleType } from './types';
+import type { ELocaleType, ILocaleController, TLanguageStore } from './types';
+import type { Observable } from 'rxjs';
 
 import { flatten } from '@solid-primitives/i18n';
+import { areArraysEqual } from '@todo/controllers';
 import {
   BehaviorSubject,
+  catchError,
   concatMap,
   distinctUntilChanged,
   EMPTY,
@@ -15,49 +18,77 @@ import {
   zip,
 } from 'rxjs';
 
-const CURRENT_LANGUAGE_KEY = 'CURRENT_LANGUAGE_KEY';
+import { CURRENT_LANGUAGE_KEY } from './constants';
 
-type TLanguageStore = Record<ELocaleType, Record<string, string> | Promise<Record<string, string>> | undefined>;
+class LocaleController implements ILocaleController {
+  private localeTrigger: BehaviorSubject<ELocaleType>;
 
-const initialLanguage =
-  (typeof window !== 'undefined' && localStorage.getItem(CURRENT_LANGUAGE_KEY)) ?? navigator.language;
-export const localeTrigger = new BehaviorSubject(initialLanguage as ELocaleType);
+  language$: Observable<ELocaleType>;
+  messages$: Observable<Record<string, string>>;
 
-export const messages$ = zip(
-  localeTrigger,
-  localeTrigger.pipe(
-    mergeScan((acc, locale) => {
-      const item = acc[locale];
-      if (!item) {
-        return from(import(`./dist/${locale}.json`)).pipe(
-          map((val: { default: Record<string, string> }) => {
-            acc[locale] = flatten(val.default);
-            return acc;
-          }),
-        );
-      }
-      return of(acc);
-    }, {} as TLanguageStore),
-  ),
-).pipe(
-  concatMap(([locale, store]) => {
-    const messages = store[locale];
-    if (!messages) return EMPTY;
-    if (messages instanceof Promise) return EMPTY;
+  language: ELocaleType;
+  ready: Promise<boolean>;
+  messages: Record<string, string>;
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(CURRENT_LANGUAGE_KEY, locale);
-    }
+  constructor() {
+    this.language = ((typeof window !== 'undefined' && localStorage.getItem(CURRENT_LANGUAGE_KEY)) ??
+      navigator.language) as ELocaleType;
+    this.localeTrigger = new BehaviorSubject(this.language);
 
-    return of(messages);
-  }),
-  distinctUntilChanged(),
-  shareReplay(1),
-);
+    const localeAndMessages$ = this.buildLocaleAndMessage$();
 
-/**
- * user language changed notification
- */
-export const language$ = messages$.pipe(map(() => localeTrigger.getValue()));
+    this.messages$ = localeAndMessages$.pipe(map(([, messages]) => messages));
+    this.messages = {};
+    this.messages$.subscribe((messages) => void (this.messages = messages));
 
-export const intlPromise = firstValueFrom(messages$);
+    this.language$ = localeAndMessages$.pipe(map(([locale]) => locale));
+    this.language$.subscribe((language) => void (this.language = language));
+
+    this.ready = firstValueFrom(
+      localeAndMessages$.pipe(
+        map(() => true),
+        catchError(() => of(false)),
+      ),
+    );
+  }
+
+  setLocale = (locale: ELocaleType) => {
+    this.localeTrigger.next(locale);
+  };
+
+  private buildLocaleAndMessage$() {
+    return zip(
+      this.localeTrigger,
+      this.localeTrigger.pipe(
+        mergeScan((acc, locale) => {
+          const item = acc[locale];
+          if (!item) {
+            return from(import(`./dist/${locale}.json`)).pipe(
+              map((val: { default: Record<string, string> }) => {
+                acc[locale] = flatten(val.default);
+                return acc;
+              }),
+            );
+          }
+          return of(acc);
+        }, {} as TLanguageStore),
+      ),
+    ).pipe(
+      concatMap(([locale, store]) => {
+        const messages = store[locale];
+        if (!messages) return EMPTY;
+        if (messages instanceof Promise) return EMPTY;
+
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(CURRENT_LANGUAGE_KEY, locale);
+        }
+
+        return of([locale, messages] as [ELocaleType, Record<string, string>]);
+      }),
+      distinctUntilChanged(areArraysEqual),
+      shareReplay(1),
+    );
+  }
+}
+
+export const i18n: ILocaleController = new LocaleController();

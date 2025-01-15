@@ -5,10 +5,10 @@ import { resolveTemplate, scopedTranslator, translator } from '@solid-primitives
 
 import { useObservableSignal } from '../hooks';
 
-import { messages$ } from './main';
+import { i18n } from './main';
 
 export const useIntl = (prefix: string) => {
-  const messages = useObservableSignal(messages$, {} as Flatten<Record<string, string>>);
+  const messages = useObservableSignal(i18n.messages$, {} as Flatten<Record<string, string>>);
   const translate = translator(messages, resolveTemplate);
   const scopedTranslate = scopedTranslator(translate, prefix as keyof typeof messages);
 

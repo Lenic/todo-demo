@@ -1,5 +1,3 @@
-import type { ELocaleType } from '@/i18n';
-
 import { Languages } from 'lucide-solid';
 import { Index } from 'solid-js';
 
@@ -11,17 +9,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useObservableSignal } from '@/hooks';
-import { language$, localeTrigger } from '@/i18n';
-import { LANGUAGE_LIST, useIntl } from '@/i18n';
+import { i18n, LANGUAGE_LIST, useIntl } from '@/i18n';
 
 export const LanguageToggle = () => {
   const { t } = useIntl('settings.language');
 
-  const handleChangeLanguage = (lang: ELocaleType) => {
-    localeTrigger.next(lang);
-  };
-
-  const language = useObservableSignal(language$, localeTrigger.getValue());
+  const language = useObservableSignal(i18n.language$, i18n.language);
   return (
     <DropdownMenu placement="bottom-end">
       <DropdownMenuTrigger>
@@ -32,9 +25,7 @@ export const LanguageToggle = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <Index each={LANGUAGE_LIST}>
-          {(lang) => (
-            <DropdownMenuItem onClick={[handleChangeLanguage, lang()]}>{t(`menu.${lang()}`)}</DropdownMenuItem>
-          )}
+          {(lang) => <DropdownMenuItem onClick={[i18n.setLocale, lang()]}>{t(`menu.${lang()}`)}</DropdownMenuItem>}
         </Index>
       </DropdownMenuContent>
     </DropdownMenu>
