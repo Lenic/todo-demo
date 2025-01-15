@@ -1,4 +1,4 @@
-import type { ELocaleType, ILocaleController, TLanguageStore } from './types';
+import type { ILocaleController, TLanguageStore } from './types';
 import type { Observable } from 'rxjs';
 
 import { flatten } from '@solid-primitives/i18n';
@@ -18,7 +18,8 @@ import {
   zip,
 } from 'rxjs';
 
-import { CURRENT_LANGUAGE_KEY } from './constants';
+import { CURRENT_LANGUAGE_KEY, LANGUAGE_LIST } from './constants';
+import { ELocaleType } from './types';
 
 class LocaleController implements ILocaleController {
   private localeTrigger: BehaviorSubject<ELocaleType>;
@@ -31,8 +32,9 @@ class LocaleController implements ILocaleController {
   messages: Record<string, string>;
 
   constructor() {
-    this.language = ((typeof window !== 'undefined' && localStorage.getItem(CURRENT_LANGUAGE_KEY)) ??
-      navigator.language) as ELocaleType;
+    const locale = (typeof window !== 'undefined' && localStorage.getItem(CURRENT_LANGUAGE_KEY)) ?? navigator.language;
+
+    this.language = LANGUAGE_LIST.includes(locale as ELocaleType) ? (locale as ELocaleType) : ELocaleType.EN_US;
     this.localeTrigger = new BehaviorSubject(this.language);
 
     const localeAndMessages$ = this.buildLocaleAndMessage$();
