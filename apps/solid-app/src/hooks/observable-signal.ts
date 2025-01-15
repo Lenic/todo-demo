@@ -11,7 +11,11 @@ export function useObservableSignal<T>(input$: Observable<T>, defaultValue: T): 
 export function useObservableSignal<T>(input$: BehaviorSubject<T> | Observable<T>, defaultValue?: T) {
   const [value, setValue] = createSignal(input$ instanceof BehaviorSubject ? input$.getValue() : defaultValue);
 
-  const subscription = input$.subscribe((nextValue) => setValue((prev) => (prev !== nextValue ? nextValue : prev)));
+  const subscription = input$.subscribe((nextValue) => {
+    if (value() !== nextValue) {
+      setValue(nextValue as ReturnType<typeof value>);
+    }
+  });
   onCleanup(() => {
     subscription.unsubscribe();
   });
