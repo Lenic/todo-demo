@@ -1,5 +1,4 @@
 import type { EThemeColor } from '@todo/controllers';
-import type { CSSProperties } from 'react';
 
 import { ServiceLocator } from '@todo/container';
 import { IThemeService, THEME_COLOR_LIST } from '@todo/controllers';
@@ -18,7 +17,6 @@ import { useObservableState } from '@/hooks';
 import { language$, useIntl } from '@/i18n';
 
 const themeService = ServiceLocator.default.get(IThemeService);
-const iconStyle: CSSProperties = { color: 'hsl(var(--primary))' };
 
 export const ThemeColorToggle: FC = () => {
   const { t } = useIntl('settings.theme-color');
@@ -55,7 +53,7 @@ export const ThemeColorToggle: FC = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
-          <Palette className="h-[1.2rem] w-[1.2rem]" style={iconStyle} />
+          <Palette className="h-[1.2rem] w-[1.2rem] text-primary" />
           <span className="sr-only">{t(`labels.${themeService.color}`)}</span>
         </Button>
       </DropdownMenuTrigger>

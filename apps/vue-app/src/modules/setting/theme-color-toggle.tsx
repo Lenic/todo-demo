@@ -1,5 +1,4 @@
 import type { EThemeColor } from '@todo/controllers';
-import type { CSSProperties } from 'vue';
 
 import { ServiceLocator } from '@todo/container';
 import { IThemeService, THEME_COLOR_LIST } from '@todo/controllers';
@@ -47,12 +46,11 @@ export const ThemeColorToggle = defineComponent({
       ),
     );
 
-    const iconStyle: CSSProperties = { color: 'hsl(var(--primary))' };
     return () => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon">
-            <Palette class="h-[1.2rem] w-[1.2rem]" style={iconStyle} />
+            <Palette class="h-[1.2rem] w-[1.2rem] text-primary" />
             <span class="sr-only">{t(`labels.${themeService.color}`)}</span>
           </Button>
         </DropdownMenuTrigger>

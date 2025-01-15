@@ -21,7 +21,7 @@ export const ThemeColorToggle = () => {
     <DropdownMenu placement="bottom-end">
       <DropdownMenuTrigger>
         <Button variant="outline" size="icon">
-          <Palette class="h-[1.2rem] w-[1.2rem]" style={{ color: 'hsl(var(--primary))' }} />
+          <Palette class="h-[1.2rem] w-[1.2rem] text-primary" />
           <span class="sr-only">{t(`labels.${themeService.color}`)}</span>
         </Button>
       </DropdownMenuTrigger>
