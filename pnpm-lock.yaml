@@ -299,12 +299,21 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.49)
+      globals:
+        specifier: 'catalog:'
+        version: 15.14.0
+      prettier:
+        specifier: 'catalog:'
+        version: 3.4.2
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17
       typescript:
         specifier: 'catalog:'
         version: 5.7.2
+      typescript-eslint:
+        specifier: 'catalog:'
+        version: 8.18.2(eslint@9.17.0(jiti@1.21.7))(typescript@5.7.2)
       vite:
         specifier: 'catalog:'
         version: 5.4.11(@types/node@22.10.2)
@@ -421,7 +430,7 @@ importers:
         specifier: 'catalog:'
         version: 3.4.2
       tailwindcss:
-        specifier: ^3.4.17
+        specifier: ^3.4.13
         version: 3.4.17
       typescript:
         specifier: 'catalog:'

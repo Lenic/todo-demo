@@ -18,8 +18,11 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
+    "globals": "catalog:",
+    "prettier": "catalog:",
     "tailwindcss": "^3.4.17",
     "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
     "vite": "catalog:",
     "vite-plugin-solid": "^2.10.2"
   }
