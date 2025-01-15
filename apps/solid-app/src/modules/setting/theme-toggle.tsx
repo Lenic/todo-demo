@@ -16,13 +16,6 @@ const themeService = ServiceLocator.default.get(IThemeService);
 export const ThemeToggle = () => {
   const { t } = useIntl('settings.theme');
 
-  const handleChangeTheme = (e: MouseEvent) => {
-    const { theme } = (e.target as HTMLDivElement).dataset;
-    if (theme) {
-      themeService.setTheme(theme as ETheme);
-    }
-  };
-
   return (
     <DropdownMenu placement="bottom-end">
       <DropdownMenuTrigger>
@@ -33,15 +26,9 @@ export const ThemeToggle = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem data-theme={ETheme.LIGHT} onClick={handleChangeTheme}>
-          {t('light')}
-        </DropdownMenuItem>
-        <DropdownMenuItem data-theme={ETheme.DARK} onClick={handleChangeTheme}>
-          {t('dark')}
-        </DropdownMenuItem>
-        <DropdownMenuItem data-theme={ETheme.SYSTEM} onClick={handleChangeTheme}>
-          {t('system')}
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={[themeService.setTheme, ETheme.LIGHT]}>{t('light')}</DropdownMenuItem>
+        <DropdownMenuItem onClick={[themeService.setTheme, ETheme.DARK]}>{t('dark')}</DropdownMenuItem>
+        <DropdownMenuItem onClick={[themeService.setTheme, ETheme.SYSTEM]}>{t('system')}</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

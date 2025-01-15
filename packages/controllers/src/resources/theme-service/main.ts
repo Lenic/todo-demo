@@ -53,7 +53,7 @@ class ThemeService extends Disposable implements IThemeService {
     this.setColor(getCurrentThemeColor());
   }
 
-  setTheme(theme: ETheme) {
+  setTheme = (theme: ETheme) => {
     const root = window.document.documentElement;
     if (root.classList.contains(theme)) return;
 
@@ -80,9 +80,9 @@ class ThemeService extends Disposable implements IThemeService {
       root.classList.add(theme);
       this.themeSubject.next(theme);
     }
-  }
+  };
 
-  setColor(theme: EThemeColor) {
+  setColor = (theme: EThemeColor) => {
     const className = `theme-${theme}`;
     const root = window.document.documentElement;
     if (root.classList.contains(className)) return;
@@ -93,7 +93,7 @@ class ThemeService extends Disposable implements IThemeService {
 
     root.classList.add(className);
     this.colorTrigger.next(theme);
-  }
+  };
 }
 
 export { ThemeService };

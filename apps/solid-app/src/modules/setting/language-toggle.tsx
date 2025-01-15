@@ -17,11 +17,8 @@ import { LANGUAGE_LIST, useIntl } from '@/i18n';
 export const LanguageToggle = () => {
   const { t } = useIntl('settings.language');
 
-  const handleChangeLanguage = (e: MouseEvent) => {
-    const { lang } = (e.target as HTMLDivElement).dataset;
-    if (lang) {
-      localeTrigger.next(lang as ELocaleType);
-    }
+  const handleChangeLanguage = (lang: ELocaleType) => {
+    localeTrigger.next(lang);
   };
 
   const language = useObservableSignal(language$, localeTrigger.getValue());
@@ -36,9 +33,7 @@ export const LanguageToggle = () => {
       <DropdownMenuContent>
         <Index each={LANGUAGE_LIST}>
           {(lang) => (
-            <DropdownMenuItem data-lang={lang()} onClick={handleChangeLanguage}>
-              {t(`menu.${lang()}`)}
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={[handleChangeLanguage, lang()]}>{t(`menu.${lang()}`)}</DropdownMenuItem>
           )}
         </Index>
       </DropdownMenuContent>
