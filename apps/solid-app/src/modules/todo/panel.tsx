@@ -1,6 +1,6 @@
 import { ETodoListType } from '@todo/controllers';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIntl } from '@/i18n';
 
 // import { TodoList } from './list';
@@ -14,6 +14,7 @@ export const TodoPanel = () => {
         <TabsTrigger value={ETodoListType.PENDING}>{t('pending')}</TabsTrigger>
         <TabsTrigger value={ETodoListType.OVERDUE}>{t('overdue')}</TabsTrigger>
         <TabsTrigger value={ETodoListType.ARCHIVE}>{t('archive')}</TabsTrigger>
+        <TabsIndicator />
       </TabsList>
       <TabsContent value="PENDING" class="pl-2">
         <div>PENDING</div>
