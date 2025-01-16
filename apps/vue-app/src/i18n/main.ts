@@ -1,4 +1,16 @@
-import { BehaviorSubject, from, map, mergeScan, of, zip } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  filter,
+  firstValueFrom,
+  from,
+  map,
+  mergeScan,
+  of,
+  shareReplay,
+  tap,
+  zip,
+} from 'rxjs';
 import { createI18n } from 'vue-i18n';
 
 import { ELocaleType } from './types';
@@ -15,45 +27,52 @@ export const intl = createI18n({
   messages: {},
 });
 
-export const localTrigger = new BehaviorSubject(intl.global.locale.value as ELocaleType);
+export const localeTrigger = new BehaviorSubject(intl.global.locale.value as ELocaleType);
 
-export const intlPromise = new Promise<typeof intl>((resolve, reject) => {
-  zip(
-    localTrigger,
-    localTrigger.pipe(
-      mergeScan((acc, locale) => {
-        const item = acc[locale];
-        if (!item) {
-          return from(import(`./dist/${locale}.json`)).pipe(
-            map((val: { default: Record<string, string> }) => {
-              acc[locale] = val.default;
-              return acc;
-            }),
-          );
-        }
-        return of(acc);
-      }, {} as TLanguageStore),
-    ),
-  ).subscribe({
-    next([locale, store]) {
-      const messages = store[locale];
-      if (!messages) return;
-      if (messages instanceof Promise) return;
-
-      intl.global.setLocaleMessage(locale, messages);
-      // @ts-expect-error 2304 -- fix the `window` problem
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(CURRENT_LANGUAGE_KEY, locale);
+let isProcessing = false;
+const upriver$ = localeTrigger.pipe(
+  filter(() => !isProcessing),
+  tap(() => void (isProcessing = true)),
+  shareReplay(1),
+);
+const intl$ = zip(
+  upriver$,
+  upriver$.pipe(
+    mergeScan((acc, locale) => {
+      const item = acc[locale];
+      if (!item) {
+        return from(import(`./dist/${locale}.json`)).pipe(
+          map((val: { default: Record<string, string> }) => {
+            acc[locale] = val.default;
+            return acc;
+          }),
+        );
       }
+      return of(acc);
+    }, {} as TLanguageStore),
+    tap(() => void (isProcessing = false)),
+  ),
+).pipe(
+  map(([locale, store]) => {
+    const messages = store[locale];
+    if (!messages) return;
+    if (messages instanceof Promise) return;
 
-      if (intl.global.locale.value !== locale) {
-        intl.global.locale.value = locale;
-      }
+    intl.global.setLocaleMessage(locale, messages);
+    // @ts-expect-error 2304 -- fix the `window` problem
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(CURRENT_LANGUAGE_KEY, locale);
+    }
 
-      resolve(intl);
-    },
-    error() {
-      reject(new Error('load i18n error.'));
-    },
-  });
-});
+    if (intl.global.locale.value !== locale) {
+      intl.global.locale.value = locale;
+    }
+
+    return intl;
+  }),
+  distinctUntilChanged(),
+  shareReplay(1),
+);
+intl$.subscribe();
+
+export const intlPromise = firstValueFrom(intl$);

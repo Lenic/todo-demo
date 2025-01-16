@@ -9,12 +9,14 @@ import {
   concatMap,
   distinctUntilChanged,
   EMPTY,
+  filter,
   firstValueFrom,
   from,
   map,
   mergeScan,
   of,
   shareReplay,
+  tap,
   zip,
 } from 'rxjs';
 
@@ -59,9 +61,15 @@ class LocaleController implements ILocaleController {
   };
 
   private buildLocaleAndMessage$() {
+    let isProcessing = false;
+    const upriver$ = this.localeTrigger.pipe(
+      filter(() => !isProcessing),
+      tap(() => void (isProcessing = true)),
+      shareReplay(1),
+    );
     return zip(
-      this.localeTrigger,
-      this.localeTrigger.pipe(
+      upriver$,
+      upriver$.pipe(
         mergeScan((acc, locale) => {
           const item = acc[locale];
           if (!item) {
@@ -74,12 +82,12 @@ class LocaleController implements ILocaleController {
           }
           return of(acc);
         }, {} as TLanguageStore),
+        tap(() => void (isProcessing = false)),
       ),
     ).pipe(
       concatMap(([locale, store]) => {
         const messages = store[locale];
         if (!messages) return EMPTY;
-        if (messages instanceof Promise) return EMPTY;
 
         if (typeof window !== 'undefined') {
           localStorage.setItem(CURRENT_LANGUAGE_KEY, locale);

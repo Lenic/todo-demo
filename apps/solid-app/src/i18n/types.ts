@@ -8,7 +8,7 @@ export enum ELocaleType {
 
 export type TI18nTranslate = (key: string, literal?: Record<string, string>) => string;
 
-export type TLanguageStore = Record<ELocaleType, Record<string, string> | Promise<Record<string, string>> | undefined>;
+export type TLanguageStore = Record<ELocaleType, Record<string, string> | undefined>;
 
 export interface ILocaleController {
   language$: Observable<ELocaleType>;

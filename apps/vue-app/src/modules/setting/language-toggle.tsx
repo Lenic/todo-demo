@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useObservableRef } from '@/hooks';
-import { LANGUAGE_LIST, localTrigger, useIntl } from '@/i18n';
+import { LANGUAGE_LIST, language$, localeTrigger, useIntl } from '@/i18n';
 
 export const LanguageToggle = defineComponent({
   name: 'LanguageToggle',
@@ -21,11 +21,11 @@ export const LanguageToggle = defineComponent({
     const handleChangeLanguage = (e: MouseEvent) => {
       const { lang } = (e.target as HTMLDivElement).dataset;
       if (lang) {
-        localTrigger.next(lang as ELocaleType);
+        localeTrigger.next(lang as ELocaleType);
       }
     };
 
-    const languageRef = useObservableRef(localTrigger);
+    const languageRef = useObservableRef(language$, '');
     return () => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
