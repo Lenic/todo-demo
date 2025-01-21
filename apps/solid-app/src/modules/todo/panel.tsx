@@ -3,7 +3,7 @@ import { ETodoListType } from '@todo/controllers';
 import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIntl } from '@/i18n';
 
-// import { TodoList } from './list';
+import { TodoList } from './list';
 
 export const TodoPanel = () => {
   const { t } = useIntl('todo.panel');
@@ -17,7 +17,7 @@ export const TodoPanel = () => {
         <TabsIndicator />
       </TabsList>
       <TabsContent value="PENDING" class="pl-2">
-        <div>PENDING</div>
+        <TodoList />
       </TabsContent>
       <TabsContent value="OVERDUE" class="pl-2">
         <div>OVERDUE</div>
