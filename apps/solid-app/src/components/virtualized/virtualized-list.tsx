@@ -1,21 +1,22 @@
 import type { JSX } from 'solid-js';
 
-import { splitProps } from 'solid-js';
+import { createComputed, splitProps } from 'solid-js';
 
 import Range from './range';
 import { createScrollSync } from './scroll-sync';
 import { createVirtualized } from './virtualize';
 
-export interface VirtualizedListProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface VirtualizedListProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'children' | 'onScroll'> {
   height: number;
   itemHeight: number;
   totalCount: number;
   buffer?: number;
   children: (index: number) => JSX.Element;
+  onScroll?: (marginBottom: number) => void;
 }
 
 export function VirtualizedList(props: VirtualizedListProps) {
-  const [, rest] = splitProps(props, ['height', 'itemHeight', 'totalCount', 'buffer', 'children', 'style']);
+  const [, rest] = splitProps(props, ['height', 'itemHeight', 'totalCount', 'buffer', 'children', 'style', 'onScroll']);
 
   const [setScroll, onScroll, scrollState] = createScrollSync();
   const virtualized = createVirtualized(
@@ -25,6 +26,10 @@ export function VirtualizedList(props: VirtualizedListProps) {
     () => scrollState().top,
     () => props.buffer,
   );
+
+  createComputed(() => {
+    props.onScroll?.(virtualized.margins[1]);
+  });
 
   return (
     <div

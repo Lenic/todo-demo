@@ -17,7 +17,7 @@ export const TodoPanel = () => {
         <TabsIndicator />
       </TabsList>
       <TabsContent value="PENDING" class="pl-2">
-        <TodoList />
+        <TodoList type={ETodoListType.PENDING} />
       </TabsContent>
       <TabsContent value="OVERDUE" class="pl-2">
         <div>OVERDUE</div>
