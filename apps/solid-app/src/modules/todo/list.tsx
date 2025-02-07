@@ -1,7 +1,5 @@
-import type { ETodoListType } from '@todo/controllers';
-
 import { ServiceLocator } from '@todo/container';
-import { areArraysEqual, IDataService } from '@todo/controllers';
+import { areArraysEqual, ETodoListType, IDataService } from '@todo/controllers';
 import dayjs from 'dayjs';
 import {
   auditTime,
@@ -28,7 +26,7 @@ import { EUpdateType, useObservableEffect, useObservableRef, useObservableSignal
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/libs/listen-resize';
 
-// import { LoadingSketch } from './components/loading-sketch';
+import { LoadingSketch } from './components/loading-sketch';
 import { TodoItem } from './item';
 
 const dataService = ServiceLocator.default.get(IDataService);
@@ -136,7 +134,7 @@ export const TodoList = (props: TodoListProps) => {
   const renderItem = (index: number) => {
     const id = ids()[index];
     if (id == '-1-') {
-      return <div class="h-10">Loading {index}</div>;
+      return <LoadingSketch type={ETodoListType.PENDING} />;
     } else {
       return <TodoItem id={id} dateFormatString={dateFormatString()} />;
     }
