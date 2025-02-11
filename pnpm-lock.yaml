@@ -302,7 +302,7 @@ importers:
         specifier: ^0.471.0
         version: 0.471.0(solid-js@1.9.4)
       nanoid:
-        specifier: ^5.0.9
+        specifier: 'catalog:'
         version: 5.0.9
       solid-js:
         specifier: ^1.9.3
