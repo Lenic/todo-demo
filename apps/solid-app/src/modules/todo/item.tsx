@@ -1,9 +1,10 @@
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
+import { ETodoStatus, IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-solid';
-import { distinctUntilChanged, filter, map, shareReplay } from 'rxjs';
+import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs';
 
-import { useObservableSignal } from '@/hooks';
+import { Checkbox, CheckboxControl } from '@/components/ui/checkbox';
+import { useLoading, useObservableSignal } from '@/hooks';
 
 // import { Checkbox } from '@/components/ui/checkbox';
 // import { useLoading, useObservableShallowRef } from '@/hooks';
@@ -28,17 +29,23 @@ export const TodoItem = (props: TodoItemProps) => {
   );
   const item = useObservableSignal(item$, dataService.dataMapper[props.id]);
 
-  // const [loadingRef, handleChangeChecked] = useLoading((e: boolean) =>
-  //   item$.pipe(
-  //     take(1),
-  //     concatMap((item) => dataService.update({ ...item, status: e ? ETodoStatus.DONE : ETodoStatus.PENDING })),
-  //   ),
-  // );
+  const [loading, handleChangeChecked] = useLoading((checked: boolean) =>
+    item$.pipe(
+      take(1),
+      concatMap((item) => dataService.update({ ...item, status: checked ? ETodoStatus.DONE : ETodoStatus.PENDING })),
+    ),
+  );
 
   // const openRef = ref(false);
   return (
     <div class="h-10 flex flex-row items-center space-x-2 pr-4 group">
-      <Loader2 class="animate-spin w-4 h-4 flex-none" width={16} height={16} />
+      {loading() ? (
+        <Loader2 class="animate-spin w-4 h-4 flex-none" width={16} height={16} />
+      ) : (
+        <Checkbox checked={item().status === ETodoStatus.DONE} onChange={handleChangeChecked}>
+          <CheckboxControl />
+        </Checkbox>
+      )}
       <AutoTooltip
         id={props.id}
         className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 truncate"
