@@ -46,7 +46,7 @@ export const AutoTooltip = (props: AutoTooltipProps) => {
 
   const containerClassName = () => (!props.className ? {} : { [props.className]: true });
   return (
-    <Tooltip disabled={disabled()}>
+    <Tooltip openDelay={700} disabled={disabled()}>
       <TooltipTrigger class="truncate flex-initial" classList={{ 'cursor-default': disabled() }}>
         <div id={props.id} ref={setContainer} classList={{ 'relative overflow-hidden': true, ...containerClassName() }}>
           <div class="truncate">{item().title}</div>
