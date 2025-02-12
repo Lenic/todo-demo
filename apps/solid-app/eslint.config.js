@@ -20,5 +20,8 @@ export default [
         },
       },
     },
+    rules: {
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+    },
   },
 ];
