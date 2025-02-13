@@ -1,6 +1,6 @@
-import type { DatePickerContentProps } from '@ark-ui/solid/date-picker';
+import type { DatePickerContentProps, DatePickerRootProps } from '@ark-ui/solid/date-picker';
 
-import { For } from 'solid-js';
+import { For, splitProps } from 'solid-js';
 
 import { useObservableSignal } from '@/hooks';
 import { ELocaleType, i18n } from '@/i18n';
@@ -22,11 +22,14 @@ import {
   DatePickerViewTrigger,
 } from './date-picker';
 
-export const Calendar = (props: DatePickerContentProps) => {
+export const Calendar = (
+  props: DatePickerContentProps & Pick<DatePickerRootProps, 'value' | 'defaultValue' | 'onValueChange'>,
+) => {
+  const [local, rest] = splitProps(props, ['value', 'defaultValue', 'onValueChange']);
   const locale = useObservableSignal(i18n.language$, ELocaleType.EN_US);
   return (
-    <DatePicker open locale={locale()}>
-      <DatePickerContent {...props}>
+    <DatePicker open {...local} locale={locale()}>
+      <DatePickerContent {...rest}>
         <DatePickerView view="day">
           <DatePickerContext>
             {(context) => (
