@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ark-ui/solid": "^4.10.1",
+    "@internationalized/date": "^3.6.0",
     "@kobalte/core": "^0.13.7",
     "@solid-primitives/i18n": "^2.1.1",
     "@todo/container": "workspace:*",
