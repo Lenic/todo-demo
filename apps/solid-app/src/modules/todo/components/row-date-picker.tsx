@@ -18,7 +18,7 @@ const dataService = ServiceLocator.default.get(IDataService);
 
 export interface RowDatePicker {
   id: string;
-  value: number;
+  value?: number;
   className?: string;
   formatString: string;
   disabled: boolean;
