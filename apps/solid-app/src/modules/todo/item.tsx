@@ -6,10 +6,8 @@ import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 
 import { Checkbox, CheckboxControl } from '@/components/ui/checkbox';
 import { useLoading, useObservableSignal } from '@/hooks';
 
-// import { Checkbox } from '@/components/ui/checkbox';
-// import { useLoading, useObservableShallowRef } from '@/hooks';
 import { AutoTooltip } from './components/auto-tooltip';
-// import { RowDatePicker } from './components/row-data-picker';
+import { RowDatePicker } from './components/row-date-picker';
 // import { RowDropdownMenu } from './components/row-dropdown-menu';
 // import { TodoItemEditor } from './editor';
 
@@ -51,6 +49,13 @@ export const TodoItem = (props: TodoItemProps) => {
         className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 truncate"
       />
       <div class="flex-auto" />
+      <RowDatePicker
+        className="shrink-0"
+        id={item().id}
+        value={item().overdueAt}
+        formatString={props.dateFormatString}
+        disabled={item().status === ETodoStatus.DONE}
+      />
     </div>
   );
 };
