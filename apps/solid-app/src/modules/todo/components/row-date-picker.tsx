@@ -45,9 +45,9 @@ export const RowDatePicker = (props: RowDatePicker) => {
     if (typeof props.value === 'undefined') return [];
 
     const currentDate = dayjs(props.value);
-    return [new CalendarDate(currentDate.year(), currentDate.month(), currentDate.date())];
+    return [new CalendarDate(currentDate.year(), currentDate.month() + 1, currentDate.date())];
   });
-  return () => (
+  return (
     <Popover open={open()} onOpenChange={setOpen}>
       <PopoverTrigger>
         <Button
