@@ -35,7 +35,7 @@ export const RowDatePicker = (props: RowDatePicker) => {
 
   return (
     <Popover open={open()} onOpenChange={setOpen}>
-      <PopoverTrigger>
+      <PopoverTrigger disabled={props.disabled} classList={{ 'cursor-not-allowed': props.disabled }}>
         <Button
           variant="link"
           disabled={loading() || props.disabled}

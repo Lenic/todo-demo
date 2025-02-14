@@ -35,7 +35,6 @@ export const TodoItem = (props: TodoItemProps) => {
     ),
   );
 
-  // const openRef = ref(false);
   return (
     <div class="h-10 flex flex-row items-center space-x-2 pr-4 group">
       {loading() ? (
