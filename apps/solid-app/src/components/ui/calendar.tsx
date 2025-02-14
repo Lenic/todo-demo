@@ -1,6 +1,8 @@
-import type { DatePickerContentProps, DatePickerRootProps } from '@ark-ui/solid/date-picker';
+import type { DatePickerContentProps, DateValue } from '@ark-ui/solid/date-picker';
 
-import { For, splitProps } from 'solid-js';
+import { CalendarDate } from '@internationalized/date';
+import dayjs from 'dayjs';
+import { createMemo, For, splitProps } from 'solid-js';
 
 import { useObservableSignal } from '@/hooks';
 import { ELocaleType, i18n } from '@/i18n';
@@ -22,13 +24,36 @@ import {
   DatePickerViewTrigger,
 } from './date-picker';
 
-export const Calendar = (
-  props: DatePickerContentProps & Pick<DatePickerRootProps, 'value' | 'defaultValue' | 'onValueChange'>,
-) => {
-  const [local, rest] = splitProps(props, ['value', 'defaultValue', 'onValueChange']);
+export interface CalendarProps extends Omit<DatePickerContentProps, 'onChange'> {
+  value?: number | null;
+  defaultValue?: number | null;
+  onChange?: (value: number | null) => void;
+}
+
+export const Calendar = (props: CalendarProps) => {
+  const [local, rest] = splitProps(props, ['value', 'defaultValue', 'onChange']);
   const locale = useObservableSignal(i18n.language$, ELocaleType.EN_US);
+
+  const defaultValue = createMemo(() => {
+    if (local.defaultValue) return undefined;
+
+    const currentDate = dayjs(local.defaultValue);
+    return [new CalendarDate(currentDate.year(), currentDate.month() + 1, currentDate.date())];
+  });
+
+  const value = createMemo(() => {
+    if (!local.value) return undefined;
+
+    const currentDate = dayjs(local.value);
+    return [new CalendarDate(currentDate.year(), currentDate.month() + 1, currentDate.date())];
+  });
+
+  const handleChangeDate = (e: { value: DateValue[] }) => {
+    local.onChange?.(!e.value.length ? null : dayjs(e.value[0].toString()).valueOf());
+  };
+
   return (
-    <DatePicker open {...local} locale={locale()}>
+    <DatePicker open value={value()} defaultValue={defaultValue()} locale={locale()} onValueChange={handleChangeDate}>
       <DatePickerContent {...rest}>
         <DatePickerView view="day">
           <DatePickerContext>

@@ -1,12 +1,9 @@
-import type { DateValue } from '@internationalized/date';
-
-import { CalendarDate } from '@internationalized/date';
 import { ServiceLocator } from '@todo/container';
 import { IDataService } from '@todo/controllers';
 import dayjs from 'dayjs';
 import { Calendar as CalendarIcon, Loader2 } from 'lucide-solid';
 import { concatMap, map, take, tap } from 'rxjs/operators';
-import { createMemo, createSignal } from 'solid-js';
+import { createSignal } from 'solid-js';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -27,26 +24,15 @@ export interface RowDatePicker {
 export const RowDatePicker = (props: RowDatePicker) => {
   const [open, setOpen] = createSignal(false);
 
-  const [loading, handleChangeDate] = useLoading((e: { value: DateValue[] }) =>
+  const [loading, handleChangeDate] = useLoading((e: number | null) =>
     dataService.dataMapper$.pipe(
       map((mapper) => mapper[props.id]),
       take(1),
       tap(() => void setOpen(false)),
-      concatMap((item) =>
-        dataService.update({
-          ...item,
-          overdueAt: !e.value.length ? undefined : dayjs(e.value[0].toString()).valueOf(),
-        }),
-      ),
+      concatMap((item) => dataService.update({ ...item, overdueAt: !e ? undefined : e.valueOf() })),
     ),
   );
 
-  const calendarValue = createMemo(() => {
-    if (typeof props.value === 'undefined') return [];
-
-    const currentDate = dayjs(props.value);
-    return [new CalendarDate(currentDate.year(), currentDate.month() + 1, currentDate.date())];
-  });
   return (
     <Popover open={open()} onOpenChange={setOpen}>
       <PopoverTrigger>
@@ -61,7 +47,7 @@ export const RowDatePicker = (props: RowDatePicker) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent class="w-auto p-0">
-        <Calendar value={calendarValue()} onValueChange={handleChangeDate} />
+        <Calendar value={props.value} onChange={handleChangeDate} />
       </PopoverContent>
     </Popover>
   );

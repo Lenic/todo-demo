@@ -11,9 +11,11 @@ import { Toast, ToastContent, ToastProgress, ToastTitle } from '@/components/ui/
 import { useEvent, useLoading, useObservableRef, useUpdate } from '@/hooks';
 import { useIntl } from '@/i18n';
 
+import { DatePicker } from './components/date-picker';
+
 const dataService = ServiceLocator.default.get(IDataService);
 
-const getDefaultValue = () => ({ title: '', date: null as Date | null });
+const getDefaultValue = () => ({ title: '', date: null as number | null });
 
 export const CreateNewTask = () => {
   const [error, setError] = createSignal('');
@@ -37,6 +39,8 @@ export const CreateNewTask = () => {
       tap(() => setError('')),
     ),
   );
+
+  const handleChangeDate = (date: number | null) => setFormValue((prev) => ({ ...prev, date }));
 
   const refresh$ = useUpdate();
   const [setInput, input$] = useObservableRef<HTMLInputElement>();
@@ -83,7 +87,9 @@ export const CreateNewTask = () => {
         </TextFieldRoot>
         {!error() ? null : <div class="absolute left-0 bottom-2 text-destructive text-xs">{t(error())}</div>}
       </div>
-      <div class="flex-none">date picker</div>
+      <div class="flex-none">
+        <DatePicker value={formValue().date} onChange={handleChangeDate} disabled={loading()} />
+      </div>
       <Button size="lg" type="submit" class="flex-initial px-4" disabled={loading() || !!error()}>
         {loading() && <Loader2 class="animate-spin mr-2" width={18} height={18} />}
         {t('submit-form')}
@@ -91,4 +97,3 @@ export const CreateNewTask = () => {
     </form>
   );
 };
-// <DatePicker {...field} disabled={loading.value} />
