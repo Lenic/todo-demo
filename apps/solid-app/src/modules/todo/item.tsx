@@ -9,7 +9,6 @@ import { useLoading, useObservableSignal } from '@/hooks';
 import { AutoTooltip } from './components/auto-tooltip';
 import { RowDatePicker } from './components/row-date-picker';
 import { RowDropdownMenu } from './components/row-dropdown-menu';
-// import { RowDropdownMenu } from './components/row-dropdown-menu';
 // import { TodoItemEditor } from './editor';
 
 const dataService = ServiceLocator.default.get(IDataService);
@@ -44,10 +43,7 @@ export const TodoItem = (props: TodoItemProps) => {
           <CheckboxControl />
         </Checkbox>
       )}
-      <AutoTooltip
-        id={props.id}
-        className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 truncate"
-      />
+      <AutoTooltip id={props.id} className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 truncate" />
       <div class="flex-auto" />
       <RowDropdownMenu id={item().id}>
         {(open: boolean) => (

@@ -39,7 +39,7 @@ export const TodoItem = defineComponent({
     const openRef = ref(false);
     const handleOpenEditor = () => void (openRef.value = true);
     return () => (
-      <div class="flex items-center space-x-2 pr-4 group">
+      <div class="h-10 flex items-center space-x-2 pr-4 group">
         {loadingRef.value ? (
           <Loader2 class="animate-spin" width={16} height={16} />
         ) : (
@@ -47,7 +47,7 @@ export const TodoItem = defineComponent({
         )}
         <AutoTooltip
           id={itemRef.value.id}
-          className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 truncate"
+          className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 truncate"
         />
         <div class="flex-auto" />
         <RowDropdownMenu id={itemRef.value.id} onDetail={handleOpenEditor}>
