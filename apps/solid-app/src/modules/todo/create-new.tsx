@@ -2,13 +2,13 @@ import { toaster } from '@kobalte/core';
 import { ServiceLocator } from '@todo/container';
 import { IDataService } from '@todo/controllers';
 import { Loader2 } from 'lucide-solid';
-import { filter, map, switchMap, take, tap } from 'rxjs';
+import { asapScheduler, EMPTY, filter, map, observeOn, switchMap, take, tap } from 'rxjs';
 import { createSignal } from 'solid-js';
 
 import { Button } from '@/components/ui/button';
 import { TextField, TextFieldRoot } from '@/components/ui/textfield';
 import { Toast, ToastContent, ToastProgress, ToastTitle } from '@/components/ui/toast';
-import { useEvent, useLoading, useObservableRef, useUpdate } from '@/hooks';
+import { EUpdateType, useEvent, useLoading, useObservableRef, useUpdate } from '@/hooks';
 import { useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
@@ -42,12 +42,14 @@ export const CreateNewTask = () => {
 
   const handleChangeDate = (date: number | null) => setFormValue((prev) => ({ ...prev, date }));
 
-  const refresh$ = useUpdate();
+  const refresh$ = useUpdate(EUpdateType.UPDATED, formValue);
   const [setInput, input$] = useObservableRef<HTMLInputElement>();
   const [loading, handleSubmit] = useLoading<SubmitEvent & { currentTarget: HTMLFormElement }>((e) => {
     e.preventDefault();
 
     const data = formValue();
+    if (!data.title) return EMPTY;
+
     return dataService.add({ title: data.title, overdueAt: data.date?.valueOf() }).pipe(
       tap(() => {
         toaster.show((props) => (
@@ -58,17 +60,21 @@ export const CreateNewTask = () => {
             <ToastProgress />
           </Toast>
         ));
-        setFormValue(getDefaultValue());
 
         refresh$
           .pipe(
             switchMap(() => input$),
             filter((v) => !!v),
             take(1),
+            // must delay a period of time: waiting for the above toast appears.
+            observeOn(asapScheduler),
           )
           .subscribe((el) => {
             el.focus();
           });
+
+        // must after the previous section of the code, because of the sync running
+        setFormValue(getDefaultValue());
       }),
     );
   });
