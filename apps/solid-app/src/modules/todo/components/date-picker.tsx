@@ -26,7 +26,7 @@ export const DatePicker = (props: DatePickerProps) => {
   const placeholder = createMemo(() => (props.value ? dayjs(props.value).format(t('date-formatter')) : null));
   return (
     <Popover open={open()} onOpenChange={setOpen}>
-      <PopoverTrigger>
+      <PopoverTrigger disabled={props.disabled}>
         <Button
           size="lg"
           variant="outline"
