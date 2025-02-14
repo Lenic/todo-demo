@@ -28,5 +28,3 @@ export const TodoPanel = () => {
     </Tabs>
   );
 };
-
-// <TodoList type={ETodoListType.PENDING} />
