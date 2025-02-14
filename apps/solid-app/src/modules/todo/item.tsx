@@ -1,6 +1,6 @@
 import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
-import { Loader2 } from 'lucide-solid';
+import { EllipsisVertical, Loader2 } from 'lucide-solid';
 import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs';
 
 import { Checkbox, CheckboxControl } from '@/components/ui/checkbox';
@@ -8,6 +8,7 @@ import { useLoading, useObservableSignal } from '@/hooks';
 
 import { AutoTooltip } from './components/auto-tooltip';
 import { RowDatePicker } from './components/row-date-picker';
+import { RowDropdownMenu } from './components/row-dropdown-menu';
 // import { RowDropdownMenu } from './components/row-dropdown-menu';
 // import { TodoItemEditor } from './editor';
 
@@ -49,6 +50,14 @@ export const TodoItem = (props: TodoItemProps) => {
         className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 truncate"
       />
       <div class="flex-auto" />
+      <RowDropdownMenu id={item().id}>
+        {(open: boolean) => (
+          <EllipsisVertical
+            class="h-4 w-0 group-hover:w-4 group-hover:opacity-100 transition-opacity ease-in-out duration-300"
+            classList={{ 'opacity-0': !open, '!w-4': open }}
+          />
+        )}
+      </RowDropdownMenu>
       <RowDatePicker
         className="shrink-0"
         id={item().id}
