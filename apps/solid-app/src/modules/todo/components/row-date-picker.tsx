@@ -39,7 +39,10 @@ export const RowDatePicker = (props: RowDatePicker) => {
         <Button
           variant="link"
           disabled={loading() || props.disabled}
-          class={cn('font-mono justify-start text-left font-normal text-muted-foreground px-0', props.className)}
+          class={cn(
+            'font-mono justify-start text-left font-normal text-muted-foreground px-0 whitespace-nowrap',
+            props.className,
+          )}
         >
           {!loading() ? null : <Loader2 class="animate-spin mr-2" width={16} height={16} />}
           {props.value ? null : <CalendarIcon class="h-4 w-4" />}
