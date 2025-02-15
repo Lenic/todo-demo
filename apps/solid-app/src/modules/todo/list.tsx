@@ -17,12 +17,11 @@ import {
   skip,
   switchMap,
   take,
-  tap,
   toArray,
 } from 'rxjs';
 
 import { VirtualizedList } from '@/components/virtualized';
-import { EUpdateType, useObservableEffect, useObservableRef, useObservableSignal, useUpdate } from '@/hooks';
+import { useObservableEffect, useObservableRef, useObservableSignal, useUpdate } from '@/hooks';
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/libs/listen-resize';
 
@@ -85,7 +84,6 @@ export const TodoList = (props: TodoListProps) => {
     t('short-date'),
   );
 
-  const refresh$ = useUpdate(EUpdateType.ALL, ids);
   const [setScroller, distance$] = useObservableRef<number>();
   useObservableEffect(
     combineLatest([
@@ -93,30 +91,15 @@ export const TodoList = (props: TodoListProps) => {
       dataService.ends$.pipe(map((mapper) => mapper[props.type])),
     ]).pipe(
       filter(([distance, end]) => !end && distance < 400),
-      exhaustMap(([distance]) =>
-        dataService.ends[props.type]
-          ? EMPTY
-          : dataService.loadMore(props.type).pipe(
-              tap(() =>
-                refresh$
-                  .pipe(
-                    filter((v) => v === EUpdateType.UPDATED),
-                    take(1),
-                  )
-                  .subscribe(() => {
-                    setScroller(distance);
-                  }),
-              ),
-            ),
-      ),
+      exhaustMap(() => (dataService.ends[props.type] ? EMPTY : dataService.loadMore(props.type))),
     ),
   );
 
+  const refresh$ = useUpdate();
   const [containerRef, container$] = useObservableRef<HTMLDivElement>();
   const listHeight = useObservableSignal(
     merge(
       refresh$.pipe(
-        filter((v) => v === EUpdateType.MOUNTED),
         switchMap(() => windowResize$),
         take(1),
       ),

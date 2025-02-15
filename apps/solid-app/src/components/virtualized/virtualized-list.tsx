@@ -1,6 +1,6 @@
 import type { JSX } from 'solid-js';
 
-import { createComputed, splitProps } from 'solid-js';
+import { createComputed, createEffect, on, splitProps } from 'solid-js';
 
 import Range from './range';
 import { createScrollSync } from './scroll-sync';
@@ -25,6 +25,16 @@ export function VirtualizedList(props: VirtualizedListProps) {
     () => props.totalCount,
     () => scrollState().top,
     () => props.buffer,
+  );
+
+  createEffect(
+    on(
+      () => props.totalCount,
+      async () => {
+        await Promise.resolve();
+        props.onScroll?.(virtualized.margins[1]);
+      },
+    ),
   );
 
   createComputed(() => {

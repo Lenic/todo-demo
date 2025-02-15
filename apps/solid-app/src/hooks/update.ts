@@ -16,7 +16,7 @@ export function useUpdate<T>(
   target: Accessor<T>,
 ): Observable<EUpdateType>;
 
-export function useUpdate<T>(updateType: EUpdateType = EUpdateType.UPDATED, target?: Accessor<T>) {
+export function useUpdate<T>(updateType: EUpdateType = EUpdateType.MOUNTED, target?: Accessor<T>) {
   const updateTrigger = new Subject<EUpdateType>();
 
   onMount(() => {
