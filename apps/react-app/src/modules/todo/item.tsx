@@ -53,7 +53,7 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
   return (
     <div className="flex group items-center space-x-2 pr-4" style={style}>
       {loading ? (
-        <Loader2 className="animate-spin" width={16} height={16} />
+        <Loader2 className="animate-spin min-w-4" width={16} height={16} />
       ) : (
         <Checkbox checked={item.status === ETodoStatus.DONE} onCheckedChange={handleChangeChecked} />
       )}

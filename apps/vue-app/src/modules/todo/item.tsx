@@ -41,7 +41,7 @@ export const TodoItem = defineComponent({
     return () => (
       <div class="h-10 flex items-center space-x-2 pr-4 group">
         {loadingRef.value ? (
-          <Loader2 class="animate-spin" width={16} height={16} />
+          <Loader2 class="animate-spin min-w-4" width={16} height={16} />
         ) : (
           <Checkbox checked={itemRef.value.status === ETodoStatus.DONE} onUpdate:checked={handleChangeChecked} />
         )}
