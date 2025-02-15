@@ -2,6 +2,7 @@ import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/controllers';
 import { EllipsisVertical, Loader2 } from 'lucide-solid';
 import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs';
+import { createSignal } from 'solid-js';
 
 import { Checkbox, CheckboxControl } from '@/components/ui/checkbox';
 import { useLoading, useObservableSignal } from '@/hooks';
@@ -9,7 +10,7 @@ import { useLoading, useObservableSignal } from '@/hooks';
 import { AutoTooltip } from './components/auto-tooltip';
 import { RowDatePicker } from './components/row-date-picker';
 import { RowDropdownMenu } from './components/row-dropdown-menu';
-// import { TodoItemEditor } from './editor';
+import { TodoItemEditor } from './editor';
 
 const dataService = ServiceLocator.default.get(IDataService);
 
@@ -34,6 +35,7 @@ export const TodoItem = (props: TodoItemProps) => {
     ),
   );
 
+  const [editorVisible, setEditorVisible] = createSignal(false);
   return (
     <div class="h-10 flex flex-row items-center space-x-2 pr-4 group">
       {loading() ? (
@@ -45,7 +47,7 @@ export const TodoItem = (props: TodoItemProps) => {
       )}
       <AutoTooltip id={props.id} className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 truncate" />
       <div class="flex-auto" />
-      <RowDropdownMenu id={item().id}>
+      <RowDropdownMenu id={item().id} onDetail={() => setEditorVisible(true)}>
         {(open: boolean) => (
           <EllipsisVertical
             class="h-4 w-0 group-hover:w-4 group-hover:opacity-100 transition-opacity ease-in-out duration-300"
@@ -60,6 +62,7 @@ export const TodoItem = (props: TodoItemProps) => {
         formatString={props.dateFormatString}
         disabled={item().status === ETodoStatus.DONE}
       />
+      <TodoItemEditor id={props.id} open={editorVisible()} onOpenChange={setEditorVisible} />
     </div>
   );
 };

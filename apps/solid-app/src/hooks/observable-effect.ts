@@ -2,18 +2,18 @@ import type { Subscribable, Subscription } from 'rxjs';
 
 import { onCleanup } from 'solid-js';
 
-export function useObservableEffect(subscription: Subscription): void;
-export function useObservableEffect<T>(subscribable: Subscribable<T>): void;
+export function useObservableEffect<T>(...list: (Subscription | Subscribable<T>)[]) {
+  const subscriptions = list.map((value) => {
+    if ('subscribe' in value) {
+      return value.subscribe({});
+    } else {
+      return value;
+    }
+  });
 
-export function useObservableEffect<T>(value: Subscription | Subscribable<T>) {
-  if ('subscribe' in value) {
-    const subscription = value.subscribe({});
-    onCleanup(() => {
-      subscription.unsubscribe();
+  onCleanup(() => {
+    subscriptions.forEach((v) => {
+      v.unsubscribe();
     });
-  } else {
-    onCleanup(() => {
-      value.unsubscribe();
-    });
-  }
+  });
 }
