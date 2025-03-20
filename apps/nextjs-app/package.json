@@ -10,9 +10,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@trpc/client": "11.0.0-rc.840",
+    "@trpc/next": "11.0.0-rc.840",
+    "@trpc/server": "11.0.0-rc.840",
+    "next": "15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.2.3"
+    "superjson": "^2.2.2",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
