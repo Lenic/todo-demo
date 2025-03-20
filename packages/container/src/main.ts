@@ -13,7 +13,17 @@ export const injectWith = <T>(identifier: IContainerIdentifier<T>) =>
 export const injectableWith =
   <T>(identifier: IContainerIdentifier<T>) =>
   <TClass>(target: interfaces.Newable<TClass>) => {
-    container.bind(identifier.getIdentifier()).to(injectable()(target));
+    /**
+     * inject the target class.
+     *
+     * - if `key` existed, only register it when the condition is true: `target.name === value`
+     * - if `key` didn't exist, register it anyway.
+     */
+    const key = `INJECT_CLASS_${target.name}`;
+    const value = process.env[key];
+    if (!value || (value && value === target.name)) {
+      container.bind(identifier.getIdentifier()).to(injectable()(target));
+    }
 
     return target;
   };
