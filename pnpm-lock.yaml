@@ -99,6 +99,9 @@ importers:
 
   apps/nextjs-app:
     dependencies:
+      '@radix-ui/react-slot':
+        specifier: ^1.1.1
+        version: 1.1.2(@types/react@19.0.12)(react@19.0.0)
       '@trpc/client':
         specifier: 11.0.0-rc.840
         version: 11.0.0-rc.840(@trpc/server@11.0.0-rc.840(typescript@5.8.2))(typescript@5.8.2)
@@ -108,6 +111,15 @@ importers:
       '@trpc/server':
         specifier: 11.0.0-rc.840
         version: 11.0.0-rc.840(typescript@5.8.2)
+      class-variance-authority:
+        specifier: ^0.7.0
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.446.0
+        version: 0.446.0(react@19.0.0)
       next:
         specifier: 15.2.3
         version: 15.2.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -120,6 +132,12 @@ importers:
       superjson:
         specifier: ^2.2.2
         version: 2.2.2
+      tailwind-merge:
+        specifier: ^2.5.2
+        version: 2.6.0
+      tw-animate-css:
+        specifier: ^1.2.4
+        version: 1.2.4
       zod:
         specifier: ^3.24.2
         version: 3.24.2
@@ -4525,6 +4543,9 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
+  tw-animate-css@1.2.4:
+    resolution: {integrity: sha512-yt+HkJB41NAvOffe4NweJU6fLqAlVx/mBX6XmHRp15kq0JxTtOKaIw8pVSWM1Z+n2nXtyi7cW6C9f0WG/F/QAQ==}
+
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -5603,6 +5624,12 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.19
 
+  '@radix-ui/react-compose-refs@1.1.1(@types/react@19.0.12)(react@19.0.0)':
+    dependencies:
+      react: 19.0.0
+    optionalDependencies:
+      '@types/react': 19.0.12
+
   '@radix-ui/react-context-menu@2.2.6(@types/react-dom@18.3.5(@types/react@18.3.19))(@types/react@18.3.19)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@radix-ui/primitive': 1.1.1
@@ -5848,6 +5875,13 @@ snapshots:
       react: 18.3.1
     optionalDependencies:
       '@types/react': 18.3.19
+
+  '@radix-ui/react-slot@1.1.2(@types/react@19.0.12)(react@19.0.0)':
+    dependencies:
+      '@radix-ui/react-compose-refs': 1.1.1(@types/react@19.0.12)(react@19.0.0)
+      react: 19.0.0
+    optionalDependencies:
+      '@types/react': 19.0.12
 
   '@radix-ui/react-tabs@1.1.3(@types/react-dom@18.3.5(@types/react@18.3.19))(@types/react@18.3.19)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -8363,6 +8397,10 @@ snapshots:
     dependencies:
       react: 18.3.1
 
+  lucide-react@0.446.0(react@19.0.0):
+    dependencies:
+      react: 19.0.0
+
   lucide-solid@0.471.0(solid-js@1.9.5):
     dependencies:
       solid-js: 1.9.5
@@ -9194,6 +9232,8 @@ snapshots:
       strip-bom: 3.0.0
 
   tslib@2.8.1: {}
+
+  tw-animate-css@1.2.4: {}
 
   type-check@0.4.0:
     dependencies:
