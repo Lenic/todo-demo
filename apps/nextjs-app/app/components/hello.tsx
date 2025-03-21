@@ -10,7 +10,7 @@ export function Hello() {
       (result) => {
         console.table(result);
       },
-      (e) => {
+      (e: unknown) => {
         console.error(e);
       },
     );
