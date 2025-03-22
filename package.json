@@ -6,6 +6,7 @@
   "packageManager": "pnpm@9.12.3",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "dev:nextjs": "pnpm -r --filter ./apps/nextjs-app dev",
     "dev:react": "pnpm -r --filter ./apps/react-app dev",
     "build:react": "pnpm -r --filter ./apps/react-app build",
     "preview:react": "pnpm -r --filter ./apps/react-app preview",

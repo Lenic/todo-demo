@@ -11,17 +11,20 @@ export const injectWith = <T>(identifier: IContainerIdentifier<T>) =>
   inject(identifier.getIdentifier()) as TInjectedParameter<T>;
 
 export const injectableWith =
-  <T>(identifier: IContainerIdentifier<T>) =>
+  <T>(identifier: IContainerIdentifier<T>, isDefault: boolean = true) =>
   <TClass>(target: interfaces.Newable<TClass>) => {
+    const local = identifier.getIdentifier();
+    const id = typeof local === 'symbol' ? local.description : local;
     /**
-     * inject the target class.
-     *
-     * - if `key` existed, only register it when the condition is true: `target.name === value`
-     * - if `key` didn't exist, register it anyway.
+     * the config value in `process.env`
      */
-    const key = `INJECT_CLASS_${target.name}`;
-    const value = process.env[key];
-    if (!value || (value && value === target.name)) {
+    const value = process.env[`INJECT_CLASS_${id}`];
+    /**
+     * - inject if there's no config and the current target class is the default.
+     * - inject if there exists a config and the current target class is equal to the config value.
+     * - ignore other conditions.
+     */
+    if ((!value && isDefault) || (value && value === target.name)) {
       container.bind(identifier.getIdentifier()).to(injectable()(target));
     }
 

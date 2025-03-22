@@ -6,7 +6,7 @@ import { trpc } from '@/trpc/client';
 
 export function Hello() {
   const handleClick = useCallback(() => {
-    trpc.getUser.query('abc').then(
+    trpc.getUser.query().then(
       (result) => {
         console.table(result);
       },
