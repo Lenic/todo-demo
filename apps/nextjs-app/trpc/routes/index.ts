@@ -1,23 +1,9 @@
-import '../../services';
+import { router } from '../server';
 
-import { ServiceLocator } from '@todo/container';
-import { ETodoListType, IDataStorageService } from '@todo/controllers';
-import { firstValueFrom } from 'rxjs';
-
-import { publicProcedure, router } from '../server';
-
-const storageService = ServiceLocator.default.get(IDataStorageService);
+import { todoRouter } from './todo';
 
 export const appRouter = router({
-  getUser: publicProcedure.query(() =>
-    firstValueFrom(
-      storageService.query({
-        limit: 10,
-        offset: 0,
-        type: ETodoListType.PENDING,
-      }),
-    ),
-  ),
+  todo: todoRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -1,13 +1,14 @@
 import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '@todo/controllers';
 import type { SQL } from 'drizzle-orm';
 import type { Pool } from 'pg';
+import type { Observable } from 'rxjs';
 
 import { Disposable, injectableWith } from '@todo/container';
 import { ETodoListType, ETodoStatus, IDataStorageService } from '@todo/controllers';
 import dayjs from 'dayjs';
 import { and, desc, eq, gte, isNotNull, isNull, lt, or } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { concatMap, from, map, type Observable, toArray } from 'rxjs';
+import { concatMap, from, map, toArray } from 'rxjs';
 
 import { connectString } from './constants';
 import { todoTable } from './schema';
@@ -54,7 +55,7 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
       .where(operator)
       .offset(args.offset)
       .limit(args.limit)
-      .orderBy(args.type !== ETodoListType.ARCHIVE ? desc(todoTable.overdueAt) : desc(todoTable.updatedAt));
+      .orderBy(desc(args.type !== ETodoListType.ARCHIVE ? todoTable.updatedAt : todoTable.createdAt));
 
     return from(res).pipe(
       concatMap((list) =>
@@ -78,13 +79,49 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
   }
 
   add(item: ICreatedTodoItem): Observable<ITodoItem> {
-    throw new Error('ddd');
+    const res = this.db
+      .insert(todoTable)
+      .values({
+        title: item.title,
+        overdueAt: item.overdueAt ?? null,
+      })
+      .returning();
+
+    return this.convertToDomain(res).pipe(map((list) => list[0]));
   }
+
   update(item: ITodoItem): Observable<ITodoItem> {
-    throw new Error('ddd');
+    const res = this.db.update(todoTable).set(item).where(eq(todoTable.id, item.id)).returning();
+
+    return this.convertToDomain(res).pipe(map((list) => list[0]));
   }
+
   delete(id: string): Observable<void> {
-    throw new Error('ddd');
+    const res = this.db.delete(todoTable).where(eq(todoTable.id, id));
+
+    return from(res).pipe(map(() => void 0));
+  }
+
+  private convertToDomain(waitList: Promise<(typeof todoTable.$inferSelect)[]>): Observable<ITodoItem[]> {
+    return from(waitList).pipe(
+      concatMap((list) =>
+        from(list).pipe(
+          map(
+            (item) =>
+              ({
+                createdAt: item.createdAt ?? undefined,
+                id: item.id,
+                status: item.status ?? undefined,
+                title: item.title,
+                updatedAt: item.updatedAt ?? undefined,
+                description: item.description ?? undefined,
+                overdueAt: item.overdueAt ?? undefined,
+              }) as ITodoItem,
+          ),
+          toArray(),
+        ),
+      ),
+    );
   }
 }
 

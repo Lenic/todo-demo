@@ -12,14 +12,14 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col items-start">
+    <div className="flex flex-col items-start gap-2 m-2">
       <Hello />
       <Button
         onClick={() => {
           handleClick();
         }}
       >
-        Click Me
+        Click Me To Print Log In Console
       </Button>
     </div>
   );
