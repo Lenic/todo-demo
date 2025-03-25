@@ -11,6 +11,7 @@ export function Hello() {
   const handleClick = useCallback(() => {
     trpc.todo.list.query({}).then(
       (result) => {
+        console.log('finish the data loading', result);
         console.table(result);
       },
       (e: unknown) => {
