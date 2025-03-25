@@ -14,5 +14,5 @@ export const todoTable = pgTable(
     status: todoStatusEnum().default('PENDING'),
     updatedAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
   },
-  (table) => [index('overdueAt_idx').on(table.overdueAt), index('updatedAt_idx').on(table.updatedAt)],
+  (table) => [index('createdAt_idx').on(table.createdAt), index('updatedAt_idx').on(table.updatedAt)],
 );
