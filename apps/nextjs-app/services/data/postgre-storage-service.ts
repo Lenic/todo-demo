@@ -57,25 +57,7 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
       .limit(args.limit)
       .orderBy(desc(args.type !== ETodoListType.ARCHIVE ? todoTable.updatedAt : todoTable.createdAt));
 
-    return from(res).pipe(
-      concatMap((list) =>
-        from(list).pipe(
-          map(
-            (item) =>
-              ({
-                createdAt: item.createdAt ?? undefined,
-                id: item.id,
-                status: item.status ?? undefined,
-                title: item.title,
-                updatedAt: item.updatedAt ?? undefined,
-                description: item.description ?? undefined,
-                overdueAt: item.overdueAt ?? undefined,
-              }) as ITodoItem,
-          ),
-          toArray(),
-        ),
-      ),
-    );
+    return this.convertToDomain(res);
   }
 
   add(item: ICreatedTodoItem): Observable<ITodoItem> {
