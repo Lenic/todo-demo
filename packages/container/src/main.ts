@@ -62,4 +62,8 @@ export class ServiceLocator {
       return container.getAllNamed<T>(identifier.getIdentifier(), name);
     }
   }
+
+  dispose() {
+    container.unbindAll();
+  }
 }
