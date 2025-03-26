@@ -24,3 +24,5 @@ src/i18n/dist
 *.njsproj
 *.sln
 *.sw?
+
+.next/
