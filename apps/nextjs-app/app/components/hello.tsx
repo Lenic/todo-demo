@@ -2,10 +2,10 @@
 
 import type { ITodoItem } from '@todo/controllers';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { trpc } from '@/trpc/client';
+import { message$, trpc } from '@/trpc/client';
 
 export function Hello() {
   const handleClick = useCallback(() => {
@@ -64,6 +64,15 @@ export function Hello() {
       },
     );
   }, [lastItem]);
+
+  useEffect(() => {
+    const subscription = message$.subscribe((item) => {
+      console.log('receive changed item from server-sent event:', item);
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <div className="flex flex-col gap-2">

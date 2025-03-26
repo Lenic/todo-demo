@@ -1,12 +1,11 @@
-import '@/services';
-
 import { ServiceLocator } from '@todo/container';
-import { ETodoListType, ETodoStatus, IDataStorageService } from '@todo/controllers';
+import { IDataStorageService } from '@todo/controllers';
 import { firstValueFrom } from 'rxjs';
 import { z } from 'zod';
 
 import { publicProcedure, router } from '../../server';
-import { queryTodoArgs, addTodoItemArgs, updateTodoItemArgs } from './zod';
+
+import { addTodoItemArgs, queryTodoArgs, updateTodoItemArgs } from './zod';
 
 const storageService = ServiceLocator.default.get(IDataStorageService);
 

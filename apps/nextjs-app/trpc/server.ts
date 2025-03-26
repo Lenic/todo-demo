@@ -1,18 +1,18 @@
-import type { CreateNextContextOptions } from '@trpc/server/adapters/next';
-
 import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 
-export const createTRPCContext = (opts: CreateNextContextOptions) => {
-  return {
-    req: opts.req,
-    res: opts.res,
-  };
-};
-export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
-
-const t = initTRPC.context<TRPCContext>().create({
+const t = initTRPC.create({
   transformer: superjson,
+  sse: {
+    maxDurationMs: 5 * 60 * 1_000, // 5 minutes
+    ping: {
+      enabled: true,
+      intervalMs: 3_000,
+    },
+    client: {
+      reconnectAfterInactivityMs: 5_000,
+    },
+  },
 });
 
 export const router = t.router;

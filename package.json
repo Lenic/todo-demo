@@ -3,7 +3,7 @@
   "type": "module",
   "name": "todo-demo",
   "version": "3.5.12",
-  "packageManager": "pnpm@9.12.3",
+  "packageManager": "pnpm@10.6.5",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev:nextjs": "pnpm -r --filter ./apps/nextjs-app dev",
