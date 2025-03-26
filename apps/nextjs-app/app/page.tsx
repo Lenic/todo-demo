@@ -1,26 +1,14 @@
-'use client';
+'use server';
 
-import { useCallback } from 'react';
+import { Toolbar } from '@/modules/toolbar';
 
-import { Button } from '@/components/ui/button';
-
-import { Hello } from './components/hello';
-
-export default function Home() {
-  const handleClick = useCallback(() => {
-    console.log('You clicked the default button.');
-  }, []);
-
+export default async function App() {
   return (
-    <div className="flex flex-col items-start gap-2 m-2">
-      <Hello />
-      <Button
-        onClick={() => {
-          handleClick();
-        }}
-      >
-        Click Me To Print Log In Console
-      </Button>
+    <div className="@container fixed inset-0 mx-auto">
+      <Toolbar />
+      <div className="content bg-background md:min-h-64 md:w-[450px] md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 dark:md:shadow-white/20 max-w-lg max-md:max-w-full p-[0.375rem] rounded-lg md:shadow-2xl max-md:rounded-none">
+        content
+      </div>
     </div>
   );
 }
