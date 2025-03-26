@@ -18,3 +18,8 @@ export interface ITodoItemDeletedEvent {
 export type TTodoItemChangedEvent = ITodoItemAddedEvent | ITodoItemUpdateedEvent | ITodoItemDeletedEvent;
 
 export type TItemChangedEvent = TTodoItemChangedEvent;
+
+export interface IChangedItemInfo {
+  clientId: string;
+  data: TItemChangedEvent;
+}

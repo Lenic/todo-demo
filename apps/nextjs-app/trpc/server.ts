@@ -1,7 +1,9 @@
+import type { Context } from './context';
+
 import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 
-const t = initTRPC.create({
+const t = initTRPC.context<Context>().create({
   transformer: superjson,
   sse: {
     maxDurationMs: 5 * 60 * 1_000, // 5 minutes

@@ -8,9 +8,7 @@ import { ETodoListType, ETodoStatus, IDataStorageService } from '@todo/controlle
 import dayjs from 'dayjs';
 import { and, desc, eq, gte, isNotNull, isNull, lt, or } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { concatMap, from, map, tap, toArray } from 'rxjs';
-
-import { dataNotification } from '../constants';
+import { concatMap, from, map, toArray } from 'rxjs';
 
 import { connectString } from './constants';
 import { todoTable } from './schema';
@@ -89,34 +87,19 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
       })
       .returning();
 
-    return this.convertToDomain(res).pipe(
-      map((list) => list[0]),
-      tap((item) => {
-        dataNotification.next({ type: 'add-todo', item });
-      }),
-    );
+    return this.convertToDomain(res).pipe(map((list) => list[0]));
   }
 
   update(item: ITodoItem): Observable<ITodoItem> {
     const res = this.db.update(todoTable).set(item).where(eq(todoTable.id, item.id)).returning();
 
-    return this.convertToDomain(res).pipe(
-      map((list) => list[0]),
-      tap((item) => {
-        dataNotification.next({ type: 'update-todo', item });
-      }),
-    );
+    return this.convertToDomain(res).pipe(map((list) => list[0]));
   }
 
   delete(id: string): Observable<void> {
     const res = this.db.delete(todoTable).where(eq(todoTable.id, id));
 
-    return from(res).pipe(
-      map(() => void 0),
-      tap(() => {
-        dataNotification.next({ type: 'delete-todo', id });
-      }),
-    );
+    return from(res).pipe(map(() => void 0));
   }
 
   private convertToDomain(waitList: Promise<(typeof todoTable.$inferSelect)[]>): Observable<ITodoItem[]> {

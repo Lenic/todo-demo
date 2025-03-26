@@ -1,5 +1,4 @@
-import type { AppRouter } from './routes';
-import type { TItemChangedEvent } from '@/services';
+import type { AppRouter, IChangedItemInfo } from './routes';
 
 import { createTRPCClient, httpBatchLink, splitLink, unstable_httpSubscriptionLink } from '@trpc/client';
 import { Observable, share } from 'rxjs';
@@ -25,7 +24,7 @@ export const trpc = createTRPCClient<AppRouter>({
   ],
 });
 
-export const message$ = new Observable<string | TItemChangedEvent>((observer) => {
+export const message$ = new Observable<IChangedItemInfo>((observer) => {
   const subscription = trpc.sync.subscribe(void 0, {
     onData: (clientIdOrItem) => {
       if (typeof clientIdOrItem === 'string') {
