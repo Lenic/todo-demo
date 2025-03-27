@@ -1,7 +1,10 @@
 import type { Context } from './context';
+import type { TItemChangedEvent } from './notifications';
 
-import { initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
+
+import { dataNotification } from './notifications';
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -19,3 +22,17 @@ const t = initTRPC.context<Context>().create({
 
 export const router = t.router;
 export const publicProcedure = t.procedure;
+
+export const updateProcedure = publicProcedure.use((opts) => {
+  if (!opts.ctx.clientId) {
+    throw new TRPCError({ code: 'BAD_REQUEST', message: 'Unknown client.' });
+  }
+
+  return opts.next({
+    ctx: {
+      broadcast(data: TItemChangedEvent) {
+        dataNotification.next({ clientId: opts.ctx.clientId, data });
+      },
+    },
+  });
+});

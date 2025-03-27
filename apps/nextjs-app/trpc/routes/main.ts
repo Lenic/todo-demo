@@ -2,9 +2,9 @@ import { nanoid } from 'nanoid';
 import { asyncScheduler, filter, observeOn } from 'rxjs';
 import { eachValueFrom } from 'rxjs-for-await';
 
+import { dataNotification } from '../notifications';
 import { publicProcedure, router } from '../server';
 
-import { dataNotification } from './notifications';
 import { todoRouter } from './todo';
 
 const clientIds = new Set<string>();

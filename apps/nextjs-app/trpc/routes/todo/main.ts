@@ -5,8 +5,7 @@ import { IDataStorageService } from '@todo/controllers';
 import { firstValueFrom, tap } from 'rxjs';
 import { z } from 'zod';
 
-import { publicProcedure, router } from '../../server';
-import { dataNotification } from '../notifications';
+import { publicProcedure, router, updateProcedure } from '../../server';
 
 import { addTodoItemArgs, queryTodoArgs, updateTodoItemArgs } from './zod';
 
@@ -14,29 +13,29 @@ const storageService = ServiceLocator.default.get(IDataStorageService);
 
 export const todoRouter = router({
   list: publicProcedure.input(queryTodoArgs).query(({ input }) => firstValueFrom(storageService.query(input))),
-  add: publicProcedure.input(addTodoItemArgs).mutation(({ input, ctx }) =>
+  add: updateProcedure.input(addTodoItemArgs).mutation(({ input, ctx }) =>
     firstValueFrom(
       storageService.add(input).pipe(
         tap((item) => {
-          dataNotification.next({ clientId: ctx.clientId, data: { type: 'add-todo', item } });
+          ctx.broadcast({ type: 'add-todo', item });
         }),
       ),
     ),
   ),
-  update: publicProcedure.input(updateTodoItemArgs).mutation(({ input, ctx }) =>
+  update: updateProcedure.input(updateTodoItemArgs).mutation(({ input, ctx }) =>
     firstValueFrom(
       storageService.update(input).pipe(
         tap((item) => {
-          dataNotification.next({ clientId: ctx.clientId, data: { type: 'update-todo', item } });
+          ctx.broadcast({ type: 'update-todo', item });
         }),
       ),
     ),
   ),
-  delete: publicProcedure.input(z.string()).mutation(({ input, ctx }) =>
+  delete: updateProcedure.input(z.string()).mutation(({ input, ctx }) =>
     firstValueFrom(
       storageService.delete(input).pipe(
         tap(() => {
-          dataNotification.next({ clientId: ctx.clientId, data: { type: 'delete-todo', id: input } });
+          ctx.broadcast({ type: 'delete-todo', id: input });
         }),
       ),
     ),
