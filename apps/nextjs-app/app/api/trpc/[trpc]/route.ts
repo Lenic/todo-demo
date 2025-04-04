@@ -10,7 +10,7 @@ const handler = (req: Request) =>
     router: appRouter,
     endpoint: '/api/trpc',
     onError: ({ error }) => {
-      console.error('[tRPC Error]:', error); // 查看具体错误堆栈
+      console.error('[tRPC Error]:', error);
     },
   });
 
