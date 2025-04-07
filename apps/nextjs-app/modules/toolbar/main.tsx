@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
 import { LanguageToggle } from './components/language-toggle';
+import { ThemeColorToggle } from './components/theme-color-toggle';
 import { ThemeToggle } from './components/theme-toggle';
 
 export function Toolbar() {
@@ -35,6 +36,7 @@ export function Toolbar() {
       </Button>
       <LanguageToggle />
       <ThemeToggle />
+      <ThemeColorToggle />
     </div>
   );
 }
