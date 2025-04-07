@@ -7,6 +7,8 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 
+import { LanguageToggle } from './components/language-toggle';
+
 export function Toolbar() {
   useEffect(() => {
     ServiceLocator.default.get(IThemeService).initialize();
@@ -30,6 +32,7 @@ export function Toolbar() {
       >
         Show Toast
       </Button>
+      <LanguageToggle />
     </div>
   );
 }
