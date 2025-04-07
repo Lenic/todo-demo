@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
 import { LanguageToggle } from './components/language-toggle';
+import { ThemeToggle } from './components/theme-toggle';
 
 export function Toolbar() {
   useEffect(() => {
@@ -33,6 +34,7 @@ export function Toolbar() {
         Show Toast
       </Button>
       <LanguageToggle />
+      <ThemeToggle />
     </div>
   );
 }
