@@ -11,10 +11,17 @@ import {
 } from './constants';
 import { ETheme, EThemeColor, IThemeService } from './types';
 
-const getCurrentTheme = () => (localStorage.getItem(THEME_STORAGE_KEY) as ETheme | null) ?? DEFAULT_THEME;
+const getCurrentTheme = () => {
+  if (typeof window === 'undefined') return DEFAULT_THEME;
 
-const getCurrentThemeColor = () =>
-  (localStorage.getItem(THEME_COLOR_STORAGE_KEY) as EThemeColor | null) ?? DEFAULT_THEME_COLOR;
+  return (localStorage.getItem(THEME_STORAGE_KEY) as ETheme | null) ?? DEFAULT_THEME;
+};
+
+const getCurrentThemeColor = () => {
+  if (typeof window === 'undefined') return DEFAULT_THEME_COLOR;
+
+  return (localStorage.getItem(THEME_COLOR_STORAGE_KEY) as EThemeColor | null) ?? DEFAULT_THEME_COLOR;
+};
 
 @injectableWith(IThemeService)
 class ThemeService extends Disposable implements IThemeService {
