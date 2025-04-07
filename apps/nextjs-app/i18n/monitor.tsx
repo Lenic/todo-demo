@@ -2,6 +2,7 @@
 
 import type { ELocaleType } from './types';
 
+// eslint-disable-next-line import/named -- It's OK to use named imports here
 import { useLocale } from 'next-intl';
 import { useEffect } from 'react';
 import { distinctUntilChanged, ReplaySubject, shareReplay } from 'rxjs';
