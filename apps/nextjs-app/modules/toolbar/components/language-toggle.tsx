@@ -1,4 +1,4 @@
-import type { FC, MouseEventHandler } from 'react';
+import type { FC } from 'react';
 
 import { Languages } from 'lucide-react';
 import { useCallback } from 'react';
@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useObservableState } from '@/hooks';
@@ -18,11 +19,8 @@ export const LanguageToggle: FC = () => {
 
   const language = useObservableState(language$, ELocaleType.EN_US);
 
-  const handleChangeLanguage: MouseEventHandler<HTMLDivElement> = useCallback((e) => {
-    const lang = e.currentTarget.dataset.lang;
-    if (!lang) return;
-
-    setUserLocale(lang as ELocaleType).catch((e: unknown) => {
+  const handleChangeLanguage = useCallback((lang: ELocaleType) => {
+    setUserLocale(lang).catch((e: unknown) => {
       console.error(e);
     });
   }, []);
@@ -36,11 +34,13 @@ export const LanguageToggle: FC = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {LANGUAGE_LIST.map((lang) => (
-          <DropdownMenuItem key={lang} data-lang={lang} onClick={handleChangeLanguage}>
-            {t(`menu.${lang}`)}
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuRadioGroup value={language} onValueChange={handleChangeLanguage}>
+          {LANGUAGE_LIST.map((lang) => (
+            <DropdownMenuRadioItem key={lang} value={lang}>
+              {t(`menu.${lang}`)}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

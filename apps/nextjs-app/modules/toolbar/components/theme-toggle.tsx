@@ -1,17 +1,18 @@
-import type { FC, MouseEventHandler } from 'react';
+import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
 import { ETheme, IThemeService } from '@todo/controllers';
 import { Moon, Sun } from 'lucide-react';
-import { useCallback } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useObservableState } from '@/hooks';
 import { useIntl } from '@/i18n';
 
 const themeService = ServiceLocator.default.get(IThemeService);
@@ -19,12 +20,7 @@ const themeService = ServiceLocator.default.get(IThemeService);
 export const ThemeToggle: FC = () => {
   const { t } = useIntl('settings.theme');
 
-  const handleSwitchTheme: MouseEventHandler<HTMLDivElement> = useCallback((e) => {
-    const theme = e.currentTarget.dataset.theme;
-    if (!theme) return;
-
-    themeService.setTheme(theme as ETheme);
-  }, []);
+  const theme = useObservableState(themeService.theme$, themeService.theme);
 
   return (
     <DropdownMenu>
@@ -36,15 +32,11 @@ export const ThemeToggle: FC = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem data-theme={ETheme.LIGHT} onClick={handleSwitchTheme}>
-          {t('light')}
-        </DropdownMenuItem>
-        <DropdownMenuItem data-theme={ETheme.DARK} onClick={handleSwitchTheme}>
-          {t('dark')}
-        </DropdownMenuItem>
-        <DropdownMenuItem data-theme={ETheme.SYSTEM} onClick={handleSwitchTheme}>
-          {t('system')}
-        </DropdownMenuItem>
+        <DropdownMenuRadioGroup value={theme} onValueChange={themeService.setTheme}>
+          <DropdownMenuRadioItem value={ETheme.LIGHT}>{t('light')}</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value={ETheme.DARK}>{t('dark')}</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value={ETheme.SYSTEM}>{t('system')}</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
