@@ -1,3 +1,5 @@
+'use client';
+
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
@@ -50,7 +52,7 @@ export const ThemeColorToggle: FC = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
           <Palette className="h-[1.2rem] w-[1.2rem] text-primary" />
-          <span className="sr-only">{t(`labels.${themeService.color}`)}</span>
+          <span className="sr-only">Switch Theme Color</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
