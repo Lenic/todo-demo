@@ -1,3 +1,5 @@
+'use client';
+
 import type { Observable } from 'rxjs';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
