@@ -1,8 +1,9 @@
-import type { FC } from 'react';
+'use client';
 
 import { ServiceLocator } from '@todo/container';
-import { ETheme, IThemeService } from '@todo/controllers';
+import { ETheme, IThemeService } from '@todo/interface';
 import { Moon, Sun } from 'lucide-react';
+import { type FC, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -15,10 +16,9 @@ import {
 import { useObservableState } from '@/hooks';
 import { useIntl } from '@/i18n';
 
-const themeService = ServiceLocator.default.get(IThemeService);
-
 export const ThemeToggle: FC = () => {
   const { t } = useIntl('settings.theme');
+  const [themeService] = useState(() => ServiceLocator.default.get(IThemeService));
 
   const theme = useObservableState(themeService.theme$, themeService.theme);
 

@@ -8,7 +8,7 @@ import { nanoid } from 'nanoid';
 import { Observable, of } from 'rxjs';
 import { concatMap, delay, filter, finalize, map, skip, take, toArray } from 'rxjs/operators';
 
-import { ETodoListType, ETodoStatus, IDataStorageService } from './types';
+import { ETodoListType, ETodoStatus, IDataStorageService } from '@todo/interface';
 
 const TABLE_NAME = 'todo-list';
 

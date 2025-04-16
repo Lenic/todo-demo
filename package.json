@@ -33,7 +33,7 @@
   "dependencies": {
     "dayjs": "^1.11.13",
     "immer": "^10.1.1",
-    "inversify": "^6.2.1",
+    "inversify": "^7.5.0",
     "nanoid": "^5.0.9",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"

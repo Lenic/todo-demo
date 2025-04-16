@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js';
 
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
+import { IDataService } from '@todo/interface';
 import { FilePenLine, Loader2, Trash2 } from 'lucide-solid';
 import { filter, finalize, map } from 'rxjs';
 import { createSignal } from 'solid-js';

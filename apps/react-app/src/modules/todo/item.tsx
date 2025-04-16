@@ -2,7 +2,7 @@ import type { CheckedState } from '@radix-ui/react-checkbox';
 import type { CSSProperties, FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { ETodoStatus, IDataService } from '@todo/controllers';
+import { ETodoStatus, IDataService } from '@todo/interface';
 import { clsx } from 'clsx';
 import { EllipsisVertical, Loader2 } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';

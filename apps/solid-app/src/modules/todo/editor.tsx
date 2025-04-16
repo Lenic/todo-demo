@@ -1,8 +1,8 @@
-import type { ITodoItem } from '@todo/controllers';
+import type { ITodoItem } from '@todo/interface';
 
 import { toaster } from '@kobalte/core';
 import { ServiceLocator } from '@todo/container';
-import { ETodoStatus, IDataService } from '@todo/controllers';
+import { ETodoStatus, IDataService } from '@todo/interface';
 import { Loader2 } from 'lucide-solid';
 import {
   catchError,

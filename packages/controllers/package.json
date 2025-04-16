@@ -20,6 +20,7 @@
   "dependencies": {
     "@todo/container": "workspace:*",
     "@todo/indexed-db": "workspace:*",
+    "@todo/interface": "workspace:*",
     "dayjs": "catalog:",
     "immer": "catalog:",
     "nanoid": "catalog:",

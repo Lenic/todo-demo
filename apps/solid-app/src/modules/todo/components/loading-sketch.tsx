@@ -1,7 +1,7 @@
-import type { ETodoListType } from '@todo/controllers';
+import type { ETodoListType } from '@todo/interface';
 
 import { ServiceLocator } from '@todo/container';
-import { areArraysEqual, IDataService } from '@todo/controllers';
+import { areArraysEqual, IDataService } from '@todo/interface';
 import { delay, distinctUntilChanged, map, of, pairwise, startWith, switchMap } from 'rxjs';
 
 import { ContentLoader } from '@/components/content-loader';

@@ -3,9 +3,9 @@
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { IThemeService, THEME_COLOR_LIST } from '@todo/controllers';
+import { IThemeService, THEME_COLOR_LIST } from '@todo/interface';
 import { Palette } from 'lucide-react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { map } from 'rxjs';
 
 import { Button } from '@/components/ui/button';
@@ -19,10 +19,9 @@ import {
 import { useObservableState } from '@/hooks';
 import { language$, useIntl } from '@/i18n';
 
-const themeService = ServiceLocator.default.get(IThemeService);
-
 export const ThemeColorToggle: FC = () => {
   const { t } = useIntl('settings.theme-color');
+  const [themeService] = useState(() => ServiceLocator.default.get(IThemeService));
 
   const color = useObservableState(themeService.color$, themeService.color);
 

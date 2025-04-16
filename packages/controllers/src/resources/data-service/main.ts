@@ -20,11 +20,16 @@ import {
   tap,
 } from 'rxjs/operators';
 
-import { ETodoListType, ETodoStatus, IDataStorageService } from '@/api';
-
-import { TODO_LIST_PAGE_SIZE } from './constants';
-import { IDataService } from './types';
-import { areArraysEqual, emptyObservable, getInitialStatus } from './utils';
+import {
+  ETodoListType,
+  ETodoStatus,
+  IDataStorageService,
+  areArraysEqual,
+  emptyObservable,
+  getInitialStatus,
+  IDataService,
+  TODO_LIST_PAGE_SIZE,
+} from '@todo/interface';
 
 @injectableWith(IDataService)
 class DataService extends Disposable implements IDataService {

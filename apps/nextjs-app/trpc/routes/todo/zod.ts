@@ -1,4 +1,4 @@
-import { ETodoListType, ETodoStatus } from '@todo/controllers';
+import { ETodoListType, ETodoStatus } from '@todo/interface';
 import { z } from 'zod';
 
 export const queryTodoArgs = z.object({

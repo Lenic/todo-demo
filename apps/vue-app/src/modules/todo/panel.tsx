@@ -1,4 +1,4 @@
-import { ETodoListType } from '@todo/controllers';
+import { ETodoListType } from '@todo/interface';
 import { defineComponent } from 'vue';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

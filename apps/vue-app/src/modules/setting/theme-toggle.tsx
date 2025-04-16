@@ -1,5 +1,5 @@
 import { ServiceLocator } from '@todo/container';
-import { ETheme, IThemeService } from '@todo/controllers';
+import { ETheme, IThemeService } from '@todo/interface';
 import { Moon, Sun } from 'lucide-vue-next';
 import { defineComponent } from 'vue';
 

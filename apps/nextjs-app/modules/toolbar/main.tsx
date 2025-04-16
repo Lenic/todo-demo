@@ -1,7 +1,9 @@
 'use client';
 
+import '@/services/resources/theme-service';
+
 import { ServiceLocator } from '@todo/container';
-import { IThemeService } from '@todo/controllers';
+import { IThemeService } from '@todo/interface';
 import { useEffect } from 'react';
 
 import { LanguageToggle } from './components/language-toggle';

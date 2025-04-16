@@ -1,4 +1,5 @@
-/* @refresh reload */
+import '@todo/controllers';
+
 import { lazy, Suspense } from 'solid-js';
 import { render } from 'solid-js/web';
 

@@ -2,7 +2,7 @@ import type { ILocaleController, TLanguageStore } from './types';
 import type { Observable } from 'rxjs';
 
 import { flatten } from '@solid-primitives/i18n';
-import { areArraysEqual } from '@todo/controllers';
+import { areArraysEqual } from '@todo/interface';
 import {
   BehaviorSubject,
   catchError,

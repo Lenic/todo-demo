@@ -15,6 +15,7 @@
     "@todo/container": "workspace:*",
     "@todo/controllers": "workspace:*",
     "@todo/indexed-db": "workspace:*",
+    "@todo/interface": "workspace:*",
     "@vee-validate/zod": "^4.15.0",
     "@vueuse/core": "^12.3.0",
     "class-variance-authority": "^0.7.0",

@@ -1,5 +1,5 @@
 import { ServiceLocator } from '@todo/container';
-import { IThemeService } from '@todo/controllers';
+import { IThemeService } from '@todo/interface';
 
 import { ToastList, ToastRegion } from '@/components/ui/toast';
 import { LanguageToggle } from '@/modules/setting/language-toggle';

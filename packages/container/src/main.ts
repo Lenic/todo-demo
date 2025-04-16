@@ -1,7 +1,7 @@
 import type { IContainerIdentifier, TInjectedParameter } from './types';
-import type { interfaces } from 'inversify';
+import type { Newable } from 'inversify';
 
-import { Container, inject, injectable } from 'inversify';
+import { Container, inject } from 'inversify';
 
 import { CONTAINER_IDENTIFIER_KEY } from './constants';
 
@@ -11,23 +11,10 @@ export const injectWith = <T>(identifier: IContainerIdentifier<T>) =>
   inject(identifier.getIdentifier()) as TInjectedParameter<T>;
 
 export const injectableWith =
-  <T>(identifier: IContainerIdentifier<T>, isDefault: boolean = true) =>
-  <TClass>(target: interfaces.Newable<TClass>) => {
-    const local = identifier.getIdentifier();
-    const id = typeof local === 'symbol' ? local.description : local;
-    /**
-     * the config value in `process.env`
-     */
-    const value = process.env[`INJECT_CLASS_${id}`];
-    /**
-     * - inject if there's no config and the current target class is the default.
-     * - inject if there exists a config and the current target class is equal to the config value.
-     * - ignore other conditions.
-     */
-    if ((!value && isDefault) || (value && value === target.name)) {
-      container.bind(identifier.getIdentifier()).to(injectable()(target));
-    }
-
+  <T>(identifier: IContainerIdentifier<T>) =>
+  <TClass>(target: Newable<TClass>) => {
+    console.log('register class to ioc:', identifier.getIdentifier(), target.name);
+    container.bind(identifier.getIdentifier()).to(target);
     return target;
   };
 
@@ -51,7 +38,7 @@ export class ServiceLocator {
     if (name === undefined) {
       return container.get<T>(identifier.getIdentifier());
     } else {
-      return container.getNamed<T>(identifier.getIdentifier(), name);
+      return container.get<T>(identifier.getIdentifier(), { name });
     }
   }
 
@@ -59,7 +46,7 @@ export class ServiceLocator {
     if (name === undefined) {
       return container.getAll<T>(identifier.getIdentifier());
     } else {
-      return container.getAllNamed<T>(identifier.getIdentifier(), name);
+      return container.getAll<T>(identifier.getIdentifier(), { name });
     }
   }
 

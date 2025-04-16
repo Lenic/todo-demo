@@ -1,4 +1,5 @@
-import type { AppRouter, IChangedItemInfo } from './routes';
+import type { IChangedItemInfo } from './notifications';
+import type { AppRouter } from './routes';
 
 import { createTRPCClient, httpBatchLink, splitLink, unstable_httpSubscriptionLink } from '@trpc/client';
 import { Observable, share } from 'rxjs';
@@ -46,3 +47,6 @@ export const message$ = new Observable<IChangedItemInfo>((observer) => {
     subscription.unsubscribe();
   };
 }).pipe(share());
+
+// default subscriber
+message$.subscribe();

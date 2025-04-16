@@ -1,8 +1,8 @@
-import type { ETodoListType } from '@todo/controllers';
+import type { ETodoListType } from '@todo/interface';
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { areArraysEqual, IDataService } from '@todo/controllers';
+import { areArraysEqual, IDataService } from '@todo/interface';
 import { memo, useMemo, useRef } from 'react';
 import ContentLoader from 'react-content-loader';
 import { of } from 'rxjs';

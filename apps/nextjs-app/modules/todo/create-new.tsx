@@ -1,10 +1,12 @@
 'use client';
 
+import '@/services/resources/data-service';
+
 import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
+import { IDataService } from '@todo/interface';
 import { Loader2 } from 'lucide-react';
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -19,8 +21,6 @@ import { useLoading } from '@/hooks';
 import { language$, useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
-
-const dataService = ServiceLocator.default.get(IDataService);
 
 const CreateNewTaskCore: FC = () => {
   const { t } = useIntl('todo.create-new');
@@ -47,7 +47,8 @@ const CreateNewTaskCore: FC = () => {
 
   const { handleSubmit, reset, setFocus } = form;
   const [loading, handleEvent] = useLoading((data: z.infer<typeof formSchema>) => {
-    return dataService
+    return ServiceLocator.default
+      .get(IDataService)
       .add({
         title: data.title,
         overdueAt: data.date?.valueOf(),

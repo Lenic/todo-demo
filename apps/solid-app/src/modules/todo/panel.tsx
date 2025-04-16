@@ -1,4 +1,4 @@
-import { ETodoListType } from '@todo/controllers';
+import { ETodoListType } from '@todo/interface';
 
 import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIntl } from '@/i18n';

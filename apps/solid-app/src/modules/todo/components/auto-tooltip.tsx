@@ -1,5 +1,5 @@
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
+import { IDataService } from '@todo/interface';
 import { combineLatest, distinctUntilChanged, filter, map, of, shareReplay, switchMap } from 'rxjs';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';

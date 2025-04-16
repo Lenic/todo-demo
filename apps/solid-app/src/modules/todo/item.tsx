@@ -1,5 +1,5 @@
 import { ServiceLocator } from '@todo/container';
-import { ETodoStatus, IDataService } from '@todo/controllers';
+import { ETodoStatus, IDataService } from '@todo/interface';
 import { EllipsisVertical, Loader2 } from 'lucide-solid';
 import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs';
 import { createSignal } from 'solid-js';

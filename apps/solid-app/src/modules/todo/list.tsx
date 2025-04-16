@@ -1,5 +1,5 @@
 import { ServiceLocator } from '@todo/container';
-import { areArraysEqual, ETodoListType, IDataService } from '@todo/controllers';
+import { areArraysEqual, ETodoListType, IDataService } from '@todo/interface';
 import dayjs from 'dayjs';
 import {
   auditTime,

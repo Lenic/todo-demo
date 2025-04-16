@@ -1,8 +1,8 @@
-import type { ETodoListType, ITodoItem } from '@todo/controllers';
+import type { ETodoListType, ITodoItem } from '@todo/interface';
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/controllers';
+import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/interface';
 import dayjs from 'dayjs';
 import { useCallback, useMemo, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';

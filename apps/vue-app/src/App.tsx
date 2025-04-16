@@ -1,5 +1,5 @@
 import { ServiceLocator } from '@todo/container';
-import { IThemeService } from '@todo/controllers';
+import { IThemeService } from '@todo/interface';
 import { defineComponent } from 'vue';
 
 import { Toaster } from '@/components/ui/toast';

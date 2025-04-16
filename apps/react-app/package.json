@@ -27,6 +27,7 @@
     "@todo/container": "workspace:*",
     "@todo/controllers": "workspace:*",
     "@todo/indexed-db": "workspace:*",
+    "@todo/interface": "workspace:*",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

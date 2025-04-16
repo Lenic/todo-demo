@@ -5,7 +5,7 @@ catalog:
   dayjs: ^1.11.13
   globals: ^15.14.0
   immer: ^10.1.1
-  inversify: ^6.2.1
+  inversify: ^7.5.0
   nanoid: ^5.0.9
   prettier: ^3.3.3
   reflect-metadata: ^0.2.2

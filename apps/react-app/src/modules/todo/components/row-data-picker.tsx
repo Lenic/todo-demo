@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
+import { IDataService } from '@todo/interface';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, Loader2 } from 'lucide-react';
 import { useState } from 'react';

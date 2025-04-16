@@ -8,8 +8,10 @@ import {
   THEME_COLOR_LIST,
   THEME_COLOR_STORAGE_KEY,
   THEME_STORAGE_KEY,
-} from './constants';
-import { ETheme, EThemeColor, IThemeService } from './types';
+  ETheme,
+  EThemeColor,
+  IThemeService,
+} from '@todo/interface';
 
 const getCurrentTheme = () => {
   if (typeof window === 'undefined') return DEFAULT_THEME;

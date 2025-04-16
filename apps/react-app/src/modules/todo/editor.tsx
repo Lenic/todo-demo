@@ -2,7 +2,7 @@ import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ServiceLocator } from '@todo/container';
-import { ETodoStatus, IDataService } from '@todo/controllers';
+import { ETodoStatus, IDataService } from '@todo/interface';
 import { Loader2 } from 'lucide-react';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { useForm } from 'react-hook-form';

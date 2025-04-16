@@ -1,7 +1,7 @@
 import type { IFieldRendererEventArgs } from './types';
 
 import { ServiceLocator } from '@todo/container';
-import { ETodoStatus, IDataService } from '@todo/controllers';
+import { ETodoStatus, IDataService } from '@todo/interface';
 import { toTypedSchema } from '@vee-validate/zod';
 import { Loader2 } from 'lucide-vue-next';
 import { useId } from 'radix-vue';

@@ -2,7 +2,7 @@ import type { IFieldRendererEventArgs } from './types';
 import type { Observable } from 'rxjs';
 
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
+import { IDataService } from '@todo/interface';
 import { toTypedSchema } from '@vee-validate/zod';
 import { Loader2 } from 'lucide-vue-next';
 import { filter, map, switchMap, take, tap } from 'rxjs';

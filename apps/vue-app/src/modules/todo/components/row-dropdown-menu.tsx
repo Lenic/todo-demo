@@ -1,5 +1,5 @@
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
+import { IDataService } from '@todo/interface';
 import { FilePenLine, Loader2, Trash2 } from 'lucide-vue-next';
 import { filter, finalize, map } from 'rxjs';
 import { defineComponent, ref } from 'vue';

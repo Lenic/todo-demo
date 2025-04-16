@@ -1,5 +1,5 @@
 import { ServiceLocator } from '@todo/container';
-import { IThemeService } from '@todo/controllers';
+import { IThemeService } from '@todo/interface';
 import { useEffect } from 'react';
 
 import { Toaster } from '@/components/ui/toaster';

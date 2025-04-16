@@ -1,10 +1,10 @@
-import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '@todo/controllers';
+import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '@todo/interface';
 import type { SQL } from 'drizzle-orm';
 import type { Pool } from 'pg';
 import type { Observable } from 'rxjs';
 
 import { Disposable, injectableWith } from '@todo/container';
-import { ETodoListType, ETodoStatus, IDataStorageService } from '@todo/controllers';
+import { ETodoListType, ETodoStatus, IDataStorageService } from '@todo/interface';
 import dayjs from 'dayjs';
 import { and, desc, eq, gte, isNotNull, isNull, lt, or } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
@@ -13,7 +13,7 @@ import { concatMap, from, map, toArray } from 'rxjs';
 import { connectString } from './constants';
 import { todoTable } from './schema';
 
-@injectableWith(IDataStorageService, false)
+@injectableWith(IDataStorageService)
 class PostgreSQLDataStorageService extends Disposable implements IDataStorageService {
   private db: ReturnType<typeof drizzle>;
 
@@ -61,6 +61,7 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
   }
 
   add(item: ICreatedTodoItem): Observable<ITodoItem> {
+    console.log('add todo item', item);
     const res = this.db
       .insert(todoTable)
       .values({

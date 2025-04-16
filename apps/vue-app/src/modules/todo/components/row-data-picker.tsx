@@ -1,6 +1,6 @@
 import { CalendarDate, type DateValue } from '@internationalized/date';
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
+import { IDataService } from '@todo/interface';
 import dayjs from 'dayjs';
 import { Calendar as CalendarIcon, Loader2 } from 'lucide-vue-next';
 import { concatMap, map, take, tap } from 'rxjs/operators';

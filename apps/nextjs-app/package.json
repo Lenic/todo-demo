@@ -42,7 +42,7 @@
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@todo/container": "workspace:^",
-    "@todo/controllers": "workspace:^",
+    "@todo/interface": "workspace:^",
     "@types/node": "^20",
     "@types/pg": "^8.11.11",
     "@types/react": "^19",

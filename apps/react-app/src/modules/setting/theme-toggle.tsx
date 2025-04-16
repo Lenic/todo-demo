@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { ETheme, IThemeService } from '@todo/controllers';
+import { ETheme, IThemeService } from '@todo/interface';
 import { Moon, Sun } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';

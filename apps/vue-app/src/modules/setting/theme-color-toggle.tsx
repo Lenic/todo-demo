@@ -1,7 +1,7 @@
-import type { EThemeColor } from '@todo/controllers';
+import type { EThemeColor } from '@todo/interface';
 
 import { ServiceLocator } from '@todo/container';
-import { IThemeService, THEME_COLOR_LIST } from '@todo/controllers';
+import { IThemeService, THEME_COLOR_LIST } from '@todo/interface';
 import { Palette } from 'lucide-vue-next';
 import { map } from 'rxjs';
 import { defineComponent } from 'vue';

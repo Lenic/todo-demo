@@ -1,4 +1,4 @@
-import type { ITodoItem } from '@todo/controllers';
+import type { ITodoItem } from '@todo/interface';
 
 export interface ITodoItemAddedEvent {
   type: 'add-todo';

@@ -2,7 +2,7 @@ import type { FC, RefObject } from 'react';
 import type { Observable } from 'rxjs';
 
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
+import { IDataService } from '@todo/interface';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { combineLatest, distinctUntilChanged, filter, map, of, ReplaySubject, shareReplay, switchMap } from 'rxjs';
 

@@ -1,8 +1,8 @@
-import type { ETodoListType } from '@todo/controllers';
+import type { ETodoListType } from '@todo/interface';
 import type { CSSProperties, PropType } from 'vue';
 
 import { ServiceLocator } from '@todo/container';
-import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/controllers';
+import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/interface';
 import dayjs from 'dayjs';
 import {
   auditTime,

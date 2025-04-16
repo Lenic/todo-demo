@@ -1,6 +1,6 @@
 'use server';
 
-import { ETodoListType } from '@todo/controllers';
+import { ETodoListType } from '@todo/interface';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getIntl } from '@/i18n';

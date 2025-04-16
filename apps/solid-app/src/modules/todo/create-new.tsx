@@ -1,6 +1,6 @@
 import { toaster } from '@kobalte/core';
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/controllers';
+import { IDataService } from '@todo/interface';
 import { Loader2 } from 'lucide-solid';
 import { asapScheduler, EMPTY, filter, map, observeOn, switchMap, take, tap } from 'rxjs';
 import { createSignal } from 'solid-js';
