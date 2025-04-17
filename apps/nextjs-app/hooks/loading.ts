@@ -2,7 +2,7 @@
 
 import type { Observable } from 'rxjs';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   catchError,
   exhaustMap,
@@ -20,15 +20,18 @@ import {
 } from 'rxjs';
 
 export const useLoading = <T>(fn: (args: T) => Promise<unknown> | Observable<unknown>, delayTime = 300) => {
-  const eventArgsRef = useRef(new Subject<T>());
-  const handleEvent = useCallback((args: T) => {
-    eventArgsRef.current.next(args);
-  }, []);
+  const [eventArgs] = useState(() => new Subject<T>());
+  const handleEvent = useCallback(
+    (args: T) => {
+      eventArgs.next(args);
+    },
+    [eventArgs],
+  );
 
-  const actionRef = useRef(new ReplaySubject<(args: T) => Promise<unknown> | Observable<unknown>>(1));
+  const [actionFn] = useState(() => new ReplaySubject<(args: T) => Promise<unknown> | Observable<unknown>>(1));
   useEffect(() => {
-    actionRef.current.next(fn);
-  }, [fn]);
+    actionFn.next(fn);
+  }, [actionFn, fn]);
 
   const [loading, setLoading] = useState(false);
   const [loadingTrigger] = useState(() => new Subject<boolean>());
@@ -40,11 +43,11 @@ export const useLoading = <T>(fn: (args: T) => Promise<unknown> | Observable<unk
   }, [loadingTrigger]);
 
   useEffect(() => {
-    const subscription = eventArgsRef.current
+    const subscription = eventArgs
       .pipe(
-        withLatestFrom(actionRef.current),
-        exhaustMap(([eventArgs, action]) => {
-          const waiter = action(eventArgs);
+        withLatestFrom(actionFn),
+        exhaustMap(([e, fn]) => {
+          const waiter = fn(e);
           const waiter$ = waiter instanceof Promise ? from(waiter) : waiter.pipe(take(1));
 
           const false$ = waiter$.pipe(
@@ -63,7 +66,7 @@ export const useLoading = <T>(fn: (args: T) => Promise<unknown> | Observable<unk
     return () => {
       subscription.unsubscribe();
     };
-  }, [delayTime, loadingTrigger]);
+  }, [actionFn, delayTime, eventArgs, loadingTrigger]);
 
   return [loading, handleEvent, loadingTrigger] as const;
 };

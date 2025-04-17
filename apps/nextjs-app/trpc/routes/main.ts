@@ -12,9 +12,9 @@ const clientIds = new Set<string>();
 export const appRouter = router({
   todo: todoRouter,
   sync: publicProcedure.subscription(async function* (opts) {
+    let clientId = nanoid();
     opts.signal?.addEventListener('abort', () => clientIds.delete(clientId));
 
-    let clientId = nanoid();
     while (clientIds.has(clientId)) {
       clientId = nanoid();
     }

@@ -12,6 +12,7 @@ const handler = (req: Request) =>
     onError: ({ error }) => {
       console.error('[tRPC Error]:', error);
     },
+    allowBatching: true,
   });
 
 export { handler as GET, handler as POST };

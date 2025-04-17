@@ -1,5 +1,3 @@
-import '@/services/api';
-
 import { ServiceLocator } from '@todo/container';
 import { IDataStorageService } from '@todo/interface';
 import { firstValueFrom, tap } from 'rxjs';

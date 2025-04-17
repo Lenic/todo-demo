@@ -61,7 +61,6 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
   }
 
   add(item: ICreatedTodoItem): Observable<ITodoItem> {
-    console.log('add todo item', item);
     const res = this.db
       .insert(todoTable)
       .values({
