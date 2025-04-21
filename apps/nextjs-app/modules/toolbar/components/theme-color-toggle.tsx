@@ -7,7 +7,8 @@ import { ServiceLocator } from '@todo/container';
 import { IThemeService, THEME_COLOR_LIST } from '@todo/interface';
 import { Palette } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
-import { map } from 'rxjs';
+import { map, skip } from 'rxjs';
+import { toast } from 'sonner';
 
 import { setThemeColor } from '@/app/actions';
 import { Button } from '@/components/ui/button';
@@ -28,13 +29,15 @@ export const ThemeColorToggle: FC = () => {
   const color = useObservableState(themeService.color$, themeService.color);
 
   useObservableEffect(
-    themeService.color$,
-    useCallback((color: EThemeColor) => {
-      setThemeColor(color).catch(() => {
-        // TODO: i18n.
-        console.error('set theme color error');
-      });
-    }, []),
+    useMemo(() => themeService.color$.pipe(skip(1)), [themeService]),
+    useCallback(
+      (color: EThemeColor) => {
+        setThemeColor(color).catch(() => {
+          toast(t('switch-error'));
+        });
+      },
+      [t],
+    ),
   );
 
   const colorList = useObservableState(
