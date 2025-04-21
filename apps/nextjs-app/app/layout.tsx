@@ -9,6 +9,8 @@ import { getLocale } from 'next-intl/server';
 import { Toaster } from '@/components/ui/sonner';
 import { LocaleChangeMonitor } from '@/i18n';
 
+import { getTheme, getThemeColor } from './actions';
+
 import './globals.css';
 
 const geistSans = Geist({
@@ -29,8 +31,11 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
 
+  const theme = await getTheme();
+  const color = await getThemeColor();
+
   return (
-    <html lang={locale}>
+    <html lang={locale} className={`${theme} theme-${color}`}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider>
           <LocaleChangeMonitor />

@@ -12,18 +12,6 @@ import {
 } from '@todo/interface';
 import { filter, ReplaySubject, Subscription } from 'rxjs';
 
-const getCurrentTheme = () => {
-  if (typeof window === 'undefined') return DEFAULT_THEME;
-
-  return (localStorage.getItem(THEME_STORAGE_KEY) as ETheme | null) ?? DEFAULT_THEME;
-};
-
-const getCurrentThemeColor = () => {
-  if (typeof window === 'undefined') return DEFAULT_THEME_COLOR;
-
-  return (localStorage.getItem(THEME_COLOR_STORAGE_KEY) as EThemeColor | null) ?? DEFAULT_THEME_COLOR;
-};
-
 @injectableWith(IThemeService)
 class ThemeService extends Disposable implements IThemeService {
   private subscription: Subscription | null = null;
@@ -31,10 +19,10 @@ class ThemeService extends Disposable implements IThemeService {
 
   private colorTrigger = new ReplaySubject<EThemeColor>(1);
 
-  color = getCurrentThemeColor();
+  color = DEFAULT_THEME_COLOR;
   color$ = this.colorTrigger.asObservable();
 
-  theme = getCurrentTheme();
+  theme = DEFAULT_THEME;
   theme$ = this.themeSubject.asObservable();
 
   constructor() {
@@ -58,9 +46,19 @@ class ThemeService extends Disposable implements IThemeService {
     this.initialize();
   }
 
-  initialize() {
-    this.setTheme(getCurrentTheme());
-    this.setColor(getCurrentThemeColor());
+  initialize(): void {
+    if (typeof window === 'undefined') return;
+
+    const list = Array.from(document.documentElement.classList);
+
+    const themeSet = new Set(Object.values(ETheme) as string[]);
+    const theme = list.find((item) => themeSet.has(item));
+    this.setTheme(theme as ETheme);
+
+    const color = list.find((item) => item.startsWith('theme-'));
+    if (color) {
+      this.setColor(color.slice(6) as EThemeColor);
+    }
   }
 
   setTheme = (theme: ETheme) => {

@@ -16,3 +16,13 @@ export const todoTable = pgTable(
   },
   (table) => [index('createdAt_idx').on(table.createdAt), index('updatedAt_idx').on(table.updatedAt)],
 );
+
+export const systemDictionaryTable = pgTable(
+  'system-dictionary',
+  {
+    id: uuid().defaultRandom().primaryKey().unique(),
+    key: varchar({ length: 255 }).notNull(),
+    value: text().notNull(),
+  },
+  (table) => [index('key_idx').on(table.key)],
+);

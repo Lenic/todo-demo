@@ -1,31 +1,20 @@
 import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '@todo/interface';
 import type { SQL } from 'drizzle-orm';
-import type { Pool } from 'pg';
 import type { Observable } from 'rxjs';
 
-import { Disposable, injectableWith } from '@todo/container';
+import { Disposable, injectableWith, injectWith } from '@todo/container';
 import { ETodoListType, ETodoStatus, IDataStorageService } from '@todo/interface';
 import dayjs from 'dayjs';
 import { and, desc, eq, gte, isNotNull, isNull, lt, or } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/node-postgres';
 import { concatMap, from, map, toArray } from 'rxjs';
 
-import { connectString } from './constants';
+import { IPostgreSQLConnectionService } from './database-service';
 import { todoTable } from './schema';
 
 @injectableWith(IDataStorageService)
 class PostgreSQLDataStorageService extends Disposable implements IDataStorageService {
-  private db: ReturnType<typeof drizzle>;
-
-  constructor() {
+  constructor(@injectWith(IPostgreSQLConnectionService) private db: IPostgreSQLConnectionService) {
     super();
-
-    this.db = drizzle(connectString);
-    this.disposeWithMe(() => {
-      (this.db.$client as Pool).end().catch((e: unknown) => {
-        console.error('close database error', e);
-      });
-    });
   }
 
   query(args: ITodoListQueryArgs): Observable<ITodoItem[]> {
@@ -49,7 +38,7 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
       operator = eq(todoTable.status, ETodoStatus.DONE);
     }
 
-    const res = this.db
+    const res = this.db.instance
       .select()
       .from(todoTable)
       .where(operator)
@@ -61,7 +50,7 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
   }
 
   add(item: ICreatedTodoItem): Observable<ITodoItem> {
-    const res = this.db
+    const res = this.db.instance
       .insert(todoTable)
       .values({
         title: item.title,
@@ -73,13 +62,13 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
   }
 
   update(item: ITodoItem): Observable<ITodoItem> {
-    const res = this.db.update(todoTable).set(item).where(eq(todoTable.id, item.id)).returning();
+    const res = this.db.instance.update(todoTable).set(item).where(eq(todoTable.id, item.id)).returning();
 
     return this.convertToDomain(res).pipe(map((list) => list[0]));
   }
 
   delete(id: string): Observable<void> {
-    const res = this.db.delete(todoTable).where(eq(todoTable.id, id));
+    const res = this.db.instance.delete(todoTable).where(eq(todoTable.id, id));
 
     return from(res).pipe(map(() => void 0));
   }

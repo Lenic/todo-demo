@@ -1,3 +1,4 @@
+import type { ISystemDictionaryItem } from '@/services/api';
 import type { ITodoItem } from '@todo/interface';
 
 export interface ITodoItemAddedEvent {
@@ -17,7 +18,12 @@ export interface ITodoItemDeletedEvent {
 
 export type TTodoItemChangedEvent = ITodoItemAddedEvent | ITodoItemUpdateedEvent | ITodoItemDeletedEvent;
 
-export type TItemChangedEvent = TTodoItemChangedEvent;
+export interface ISystemDictionaryUpdatedEvent {
+  type: 'set-system-dictionary-item';
+  item: ISystemDictionaryItem;
+}
+
+export type TItemChangedEvent = TTodoItemChangedEvent | ISystemDictionaryUpdatedEvent;
 
 export interface IChangedItemInfo {
   clientId: string;
