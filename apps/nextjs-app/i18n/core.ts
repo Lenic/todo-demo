@@ -111,51 +111,49 @@ const refreshConfig = (singleLanguageConfig: LangConfig, partialMixedConfig: Mix
   });
 };
 
-export const languageFilesIntegrationPlugin = {
-  name: 'language-files-integration',
-  buildStart() {
-    const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-    const rootPath = path.resolve(__dirname, 'locales');
+const build = () => {
+  const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+  const rootPath = path.resolve(__dirname, 'locales');
 
-    /**
-     * @type MixedLangConfig
-     *
-     * - 初始定义时不包含任何内容
-     * - 经过了 `refreshJSON` 方法处理后，就形成了 `MixedLangConfig` 类型的对象
-     */
-    const result: MixedLangConfig = {};
-    refreshJSON(rootPath, result);
+  /**
+   * @type MixedLangConfig
+   *
+   * - 初始定义时不包含任何内容
+   * - 经过了 `refreshJSON` 方法处理后，就形成了 `MixedLangConfig` 类型的对象
+   */
+  const result: MixedLangConfig = {};
+  refreshJSON(rootPath, result);
 
-    /**
-     * 转换所有的 `MixedLangConfig` 类型的配置
-     */
-    const allOfLanguage = LANGUAGE_LIST.reduce<LangConfig>((acc, lang, i) => {
-      let language = acc[lang] as string | LangConfig | null | undefined;
-      if (typeof language === 'string') {
-        throw new Error(`data structure is error: ${lang}`);
-      } else if (language === null || language === undefined) {
-        language = {} as LangConfig;
-        acc[lang] = language;
-      }
-      refreshConfig(language, result, i);
-
-      return acc;
-    }, {});
-
-    /**
-     * 检查输出文件夹是否存在，存在则删除后新建一个空的输出文件夹
-     */
-    const outputDir = path.resolve(__dirname, 'dist');
-    if (fs.existsSync(outputDir)) {
-      fs.rmSync(outputDir, { recursive: true, force: true });
+  /**
+   * 转换所有的 `MixedLangConfig` 类型的配置
+   */
+  const allOfLanguage = LANGUAGE_LIST.reduce<LangConfig>((acc, lang, i) => {
+    let language = acc[lang] as string | LangConfig | null | undefined;
+    if (typeof language === 'string') {
+      throw new Error(`data structure is error: ${lang}`);
+    } else if (language === null || language === undefined) {
+      language = {} as LangConfig;
+      acc[lang] = language;
     }
-    fs.mkdirSync(outputDir, { recursive: true });
+    refreshConfig(language, result, i);
 
-    /**
-     * 将 `LANGUAGE_LIST` 中指定输出的语言配置，写入到输出文件夹的独立文件中
-     */
-    LANGUAGE_LIST.forEach((lang) => {
-      fs.writeFileSync(path.resolve(outputDir, `${lang}.json`), JSON.stringify(allOfLanguage[lang], null, 2), 'utf-8');
-    });
-  },
+    return acc;
+  }, {});
+
+  /**
+   * 检查输出文件夹是否存在，存在则删除后新建一个空的输出文件夹
+   */
+  const outputDir = path.resolve(__dirname, 'dist');
+  if (fs.existsSync(outputDir)) {
+    fs.rmSync(outputDir, { recursive: true, force: true });
+  }
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  /**
+   * 将 `LANGUAGE_LIST` 中指定输出的语言配置，写入到输出文件夹的独立文件中
+   */
+  LANGUAGE_LIST.forEach((lang) => {
+    fs.writeFileSync(path.resolve(outputDir, `${lang}.json`), JSON.stringify(allOfLanguage[lang], null, 2), 'utf-8');
+  });
 };
+build();

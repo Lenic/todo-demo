@@ -36,7 +36,7 @@ class ThemeService extends Disposable implements IThemeService {
     this.disposeWithMe(() => this.subscription?.unsubscribe());
 
     this.disposeWithMe(
-      this.color$.pipe(filter((theme) => this.color !== theme)).subscribe((theme) => {
+      this.color$.pipe(filter((color) => this.color !== color)).subscribe((theme) => {
         this.color = theme;
       }),
     );
