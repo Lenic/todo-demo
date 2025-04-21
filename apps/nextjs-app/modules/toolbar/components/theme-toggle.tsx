@@ -3,9 +3,8 @@
 import { ServiceLocator } from '@todo/container';
 import { ETheme, IThemeService } from '@todo/interface';
 import { Moon, Sun } from 'lucide-react';
-import { type FC, useCallback, useState } from 'react';
+import { type FC, useState } from 'react';
 
-import { setTheme } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,7 +13,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useObservableEffect, useObservableState } from '@/hooks';
+import { useObservableState } from '@/hooks';
 import { useIntl } from '@/i18n';
 
 export const ThemeToggle: FC = () => {
@@ -22,17 +21,6 @@ export const ThemeToggle: FC = () => {
   const [themeService] = useState(() => ServiceLocator.default.get(IThemeService));
 
   const theme = useObservableState(themeService.theme$, themeService.theme);
-
-  useObservableEffect(
-    themeService.theme$,
-    useCallback((theme: ETheme) => {
-      setTheme(theme).catch(() => {
-        // TODO: i18n.
-        console.error('set theme error');
-      });
-    }, []),
-  );
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

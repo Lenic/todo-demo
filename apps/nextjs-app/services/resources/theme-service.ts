@@ -7,7 +7,6 @@ import {
   IThemeService,
   preferColorScheme$,
   THEME_COLOR_LIST,
-  THEME_COLOR_STORAGE_KEY,
   THEME_STORAGE_KEY,
 } from '@todo/interface';
 import { filter, ReplaySubject, Subscription } from 'rxjs';
@@ -39,7 +38,6 @@ class ThemeService extends Disposable implements IThemeService {
     this.disposeWithMe(
       this.color$.pipe(filter((theme) => this.color !== theme)).subscribe((theme) => {
         this.color = theme;
-        localStorage.setItem(THEME_COLOR_STORAGE_KEY, theme);
       }),
     );
 
@@ -49,15 +47,12 @@ class ThemeService extends Disposable implements IThemeService {
   initialize(): void {
     if (typeof window === 'undefined') return;
 
+    this.setTheme((localStorage.getItem(THEME_STORAGE_KEY) as ETheme | null) ?? DEFAULT_THEME);
+
     const list = Array.from(document.documentElement.classList);
-
-    const themeSet = new Set(Object.values(ETheme) as string[]);
-    const theme = list.find((item) => themeSet.has(item));
-    this.setTheme(theme as ETheme);
-
     const color = list.find((item) => item.startsWith('theme-'));
     if (color) {
-      this.setColor(color.slice(6) as EThemeColor);
+      this.color = color.slice(6) as EThemeColor;
     }
   }
 

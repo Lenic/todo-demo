@@ -9,7 +9,7 @@ import { getLocale } from 'next-intl/server';
 import { Toaster } from '@/components/ui/sonner';
 import { LocaleChangeMonitor } from '@/i18n';
 
-import { getTheme, getThemeColor } from './actions';
+import { getThemeColor } from './actions';
 
 import './globals.css';
 
@@ -30,12 +30,13 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
-
-  const theme = await getTheme();
   const color = await getThemeColor();
 
   return (
-    <html lang={locale} className={`${theme} theme-${color}`}>
+    <html lang={locale} className={`theme-${color}`} suppressHydrationWarning>
+      <head>
+        <script type="text/javascript" src="/theme.js" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider>
           <LocaleChangeMonitor />
