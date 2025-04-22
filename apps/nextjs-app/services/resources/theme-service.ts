@@ -47,7 +47,7 @@ class ThemeService extends Disposable implements IThemeService {
   initialize(): void {
     if (typeof window === 'undefined') return;
 
-    this.setTheme((localStorage.getItem(THEME_STORAGE_KEY) as ETheme | null) ?? DEFAULT_THEME);
+    this.setThemeCore((localStorage.getItem(THEME_STORAGE_KEY) as ETheme | null) ?? DEFAULT_THEME);
 
     const list = Array.from(document.documentElement.classList);
     const color = list.find((item) => item.startsWith('theme-'));
@@ -62,6 +62,11 @@ class ThemeService extends Disposable implements IThemeService {
     const root = window.document.documentElement;
     if (root.classList.contains(theme)) return;
 
+    this.setThemeCore(theme);
+  };
+
+  private setThemeCore = (theme: ETheme) => {
+    const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
 
     if (theme === ETheme.SYSTEM) {
