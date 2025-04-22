@@ -1,10 +1,12 @@
+'use client';
+
 import type { ETodoListType } from '@todo/interface';
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
 import { areArraysEqual, IDataService } from '@todo/interface';
+import dynamic from 'next/dynamic';
 import { memo, useMemo, useRef } from 'react';
-import ContentLoader from 'react-content-loader';
 import { of } from 'rxjs';
 import { delay, distinctUntilChanged, map, pairwise, startWith, switchMap } from 'rxjs/operators';
 
@@ -14,6 +16,11 @@ import { getElementResize$ } from '@/lib/utils';
 export interface ILoadingSketchProps {
   type: ETodoListType;
 }
+
+const ContentLoader = dynamic(
+  () => import('react-content-loader').then((v) => v.default),
+  { ssr: false }, // 关键配置
+);
 
 const defaultRowWidth = [364, 300, 332] as [number, number, number];
 
