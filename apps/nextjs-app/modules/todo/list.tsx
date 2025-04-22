@@ -1,3 +1,5 @@
+'use client';
+
 import type { ETodoListType, ITodoItem } from '@todo/interface';
 import type { FC } from 'react';
 
@@ -26,15 +28,21 @@ import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
 
 import { LoadingSketch } from './components/loading-sketch';
-import { TodoItem } from './item';
 
 export interface ITodoListProps {
   type: ETodoListType;
+  data?: ITodoItem[];
 }
 
 const dataService = ServiceLocator.default.get(IDataService);
 
-export const TodoList: FC<ITodoListProps> = ({ type }) => {
+let isFirstLoaded = false;
+export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
+  if (isFirstLoaded) {
+    isFirstLoaded = true;
+    dataService.append(data || []);
+  }
+
   const ids$ = useMemo(
     () =>
       dataService.ids$.pipe(
@@ -121,7 +129,7 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
                   </div>
                 );
               } else {
-                return <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />;
+                return <div>{ids[index]}</div>;
               }
             }}
           </List>
@@ -130,3 +138,5 @@ export const TodoList: FC<ITodoListProps> = ({ type }) => {
     </InfiniteLoader>
   );
 };
+
+// <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />;
