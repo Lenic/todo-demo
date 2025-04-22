@@ -7,10 +7,10 @@ import { ServiceLocator } from '@todo/container';
 import { IThemeService, THEME_COLOR_LIST } from '@todo/interface';
 import { Palette } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
-import { map, skip } from 'rxjs';
+import { map } from 'rxjs';
 import { toast } from 'sonner';
 
-import { setThemeColor } from '@/app/actions';
+import { setThemeColor } from '@/app/server/theme-color';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -29,7 +29,7 @@ export const ThemeColorToggle: FC = () => {
   const color = useObservableState(themeService.color$, themeService.color);
 
   useObservableEffect(
-    useMemo(() => themeService.color$.pipe(skip(1)), [themeService]),
+    themeService.color$,
     useCallback(
       (color: EThemeColor) => {
         setThemeColor(color).catch(() => {

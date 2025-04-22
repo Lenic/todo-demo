@@ -9,7 +9,7 @@ import { getLocale } from 'next-intl/server';
 import { Toaster } from '@/components/ui/sonner';
 import { LocaleChangeMonitor } from '@/i18n';
 
-import { getThemeColor } from './actions';
+import { getThemeColor } from './server/theme-color';
 
 import './globals.css';
 
