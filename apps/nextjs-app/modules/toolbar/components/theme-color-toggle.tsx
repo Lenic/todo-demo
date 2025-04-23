@@ -1,16 +1,14 @@
 'use client';
 
-import type { EThemeColor } from '@todo/interface';
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
 import { IThemeService, THEME_COLOR_LIST } from '@todo/interface';
 import { Palette } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { map } from 'rxjs';
-import { toast } from 'sonner';
 
-import { setThemeColor } from '@/app/server/theme-color';
+import { language$ } from '@/components/monitor';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -19,26 +17,14 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useObservableEffect, useObservableState } from '@/hooks';
-import { language$, useIntl } from '@/i18n';
+import { useObservableState } from '@/hooks';
+import { useIntl } from '@/i18n';
 
 export const ThemeColorToggle: FC = () => {
   const { t } = useIntl('settings.theme-color');
   const [themeService] = useState(() => ServiceLocator.default.get(IThemeService));
 
   const color = useObservableState(themeService.color$, themeService.color);
-
-  useObservableEffect(
-    themeService.color$,
-    useCallback(
-      (color: EThemeColor) => {
-        setThemeColor(color).catch(() => {
-          toast(t('switch-error'));
-        });
-      },
-      [t],
-    ),
-  );
 
   const colorList = useObservableState(
     useMemo(

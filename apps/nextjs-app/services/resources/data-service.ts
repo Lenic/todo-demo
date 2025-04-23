@@ -1,4 +1,4 @@
-import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '@todo/interface';
+import type { ICreatedTodoItem, IDataService, ITodoItem, ITodoListQueryArgs } from '@todo/interface';
 import type { Observable } from 'rxjs';
 
 import { Disposable, injectableWith } from '@todo/container';
@@ -8,7 +8,6 @@ import {
   ETodoListType,
   ETodoStatus,
   getInitialStatus,
-  IDataService,
   TODO_LIST_PAGE_SIZE,
 } from '@todo/interface';
 import dayjs from 'dayjs';
@@ -29,9 +28,9 @@ import {
   tap,
 } from 'rxjs/operators';
 
-import { trpc } from '@/trpc/client';
+import { addTodoItem, deleteTodoItem, queryTodoList, updateTodoItem } from '@/app/server/todo';
 
-@injectableWith(IDataService)
+@injectableWith()
 class DataService extends Disposable implements IDataService {
   private appendSubject = new Subject<ITodoItem[]>();
   private updateSubject = new Subject<ITodoItem>();
@@ -71,7 +70,7 @@ class DataService extends Disposable implements IDataService {
 
       const args: ITodoListQueryArgs = { type, limit: TODO_LIST_PAGE_SIZE, offset: this.ids[type].length };
       console.log(args);
-      return from(trpc.todo.list.query(args)).pipe(
+      return from(queryTodoList(args)).pipe(
         map((list) => {
           this.endsSubject.next([type, list.length < TODO_LIST_PAGE_SIZE]);
           this.append(list);
@@ -88,7 +87,7 @@ class DataService extends Disposable implements IDataService {
   }
 
   add(item: ICreatedTodoItem): Observable<ITodoItem> {
-    return from(trpc.todo.add.mutate(item)).pipe(
+    return from(addTodoItem(item)).pipe(
       tap((value) => {
         this.addSubject.next(value);
       }),
@@ -96,7 +95,7 @@ class DataService extends Disposable implements IDataService {
   }
 
   update(item: ITodoItem): Observable<ITodoItem> {
-    return from(trpc.todo.update.mutate(item)).pipe(
+    return from(updateTodoItem(item)).pipe(
       tap((value) => {
         this.updateSubject.next(value);
       }),
@@ -108,7 +107,7 @@ class DataService extends Disposable implements IDataService {
       this.clearSubject.next(void 0);
       return EMPTY;
     } else {
-      return from(trpc.todo.delete.mutate(id)).pipe(
+      return from(deleteTodoItem(id)).pipe(
         tap(() => {
           this.clearSubject.next(id);
         }),

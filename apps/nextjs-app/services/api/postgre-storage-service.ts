@@ -1,9 +1,9 @@
-import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '@todo/interface';
+import type { ICreatedTodoItem, IDataStorageService, ITodoItem, ITodoListQueryArgs } from '@todo/interface';
 import type { SQL } from 'drizzle-orm';
 import type { Observable } from 'rxjs';
 
 import { Disposable, injectableWith, injectWith } from '@todo/container';
-import { ETodoListType, ETodoStatus, IDataStorageService } from '@todo/interface';
+import { ETodoListType, ETodoStatus } from '@todo/interface';
 import dayjs from 'dayjs';
 import { and, desc, eq, gte, isNotNull, isNull, lt, or } from 'drizzle-orm';
 import { concatMap, from, map, toArray } from 'rxjs';
@@ -11,7 +11,7 @@ import { concatMap, from, map, toArray } from 'rxjs';
 import { IPostgreSQLConnectionService } from './database-service';
 import { todoTable } from './schema';
 
-@injectableWith(IDataStorageService)
+@injectableWith()
 class PostgreSQLDataStorageService extends Disposable implements IDataStorageService {
   constructor(@injectWith(IPostgreSQLConnectionService) private db: IPostgreSQLConnectionService) {
     super();

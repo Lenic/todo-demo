@@ -1,7 +1,5 @@
 'use client';
 
-import '@/services/resources/data-service';
-
 import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,11 +12,12 @@ import { asyncScheduler, observeOn, tap } from 'rxjs';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { language$ } from '@/components/monitor';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useLoading } from '@/hooks';
-import { language$, useIntl } from '@/i18n';
+import { useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
 

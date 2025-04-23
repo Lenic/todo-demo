@@ -1,21 +1,30 @@
 import type { IContainerIdentifier, TInjectedParameter } from './types';
 import type { Newable } from 'inversify';
 
-import { Container, inject } from 'inversify';
+import { Container, inject, injectable } from 'inversify';
 
 import { CONTAINER_IDENTIFIER_KEY } from './constants';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
+export function register<TInterface, TClass>(identifier: IContainerIdentifier<TInterface>, target: Newable<TClass>) {
+  const key = identifier.getIdentifier();
+  if (!container.isBound(key)) {
+    container.bind(key).to(target);
+  }
+}
+
 export const injectWith = <T>(identifier: IContainerIdentifier<T>) =>
   inject(identifier.getIdentifier()) as TInjectedParameter<T>;
 
 export const injectableWith =
-  <T>(identifier: IContainerIdentifier<T>) =>
+  <T>(identifier?: IContainerIdentifier<T>) =>
   <TClass>(target: Newable<TClass>) => {
-    console.log('register class to ioc:', identifier.getIdentifier(), target.name);
-    container.bind(identifier.getIdentifier()).to(target);
-    return target;
+    const decoratedTarget = injectable()(target);
+
+    if (identifier && decoratedTarget) register(identifier, decoratedTarget);
+
+    return decoratedTarget;
   };
 
 export function createIdentifier<T>(key: string | symbol) {

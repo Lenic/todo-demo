@@ -6,7 +6,7 @@ export interface ITodoItemAddedEvent {
   item: ITodoItem;
 }
 
-export interface ITodoItemUpdateedEvent {
+export interface ITodoItemUpdatedEvent {
   type: 'update-todo';
   item: ITodoItem;
 }
@@ -16,7 +16,7 @@ export interface ITodoItemDeletedEvent {
   id: string;
 }
 
-export type TTodoItemChangedEvent = ITodoItemAddedEvent | ITodoItemUpdateedEvent | ITodoItemDeletedEvent;
+export type TTodoItemChangedEvent = ITodoItemAddedEvent | ITodoItemUpdatedEvent | ITodoItemDeletedEvent;
 
 export interface ISystemDictionaryUpdatedEvent {
   type: 'set-system-dictionary-item';

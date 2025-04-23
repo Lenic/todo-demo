@@ -1,4 +1,4 @@
-import type { ICreatedSystemDictionaryItem, ISystemDictionaryItem } from './types';
+import type { ICreatedSystemDictionaryItem, ISystemDictionaryItem, ISystemDictionaryService } from './types';
 
 import { Disposable, injectableWith, injectWith } from '@todo/container';
 import { eq, inArray } from 'drizzle-orm';
@@ -7,9 +7,7 @@ import { concatMap, from, map, Observable, toArray } from 'rxjs';
 import { IPostgreSQLConnectionService } from '../database-service';
 import { systemDictionaryTable } from '../schema';
 
-import { ISystemDictionaryService } from './types';
-
-@injectableWith(ISystemDictionaryService)
+@injectableWith()
 class SystemDictionaryService extends Disposable implements ISystemDictionaryService {
   constructor(@injectWith(IPostgreSQLConnectionService) private db: IPostgreSQLConnectionService) {
     super();

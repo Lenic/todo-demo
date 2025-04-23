@@ -1,12 +1,12 @@
+import type { IPostgreSQLConnectionService } from './types';
 import type { Pool } from 'pg';
 
 import { Disposable, injectableWith } from '@todo/container';
 import { drizzle } from 'drizzle-orm/node-postgres';
 
 import { connectString } from './constants';
-import { IPostgreSQLConnectionService } from './types';
 
-@injectableWith(IPostgreSQLConnectionService)
+@injectableWith()
 class PostgreSQLConnectionService extends Disposable implements IPostgreSQLConnectionService {
   instance: ReturnType<typeof drizzle>;
 

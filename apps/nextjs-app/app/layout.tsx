@@ -6,8 +6,9 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 
+import { GlobalMonitor } from '@/components/monitor';
 import { Toaster } from '@/components/ui/sonner';
-import { LocaleChangeMonitor } from '@/i18n';
+import { initialize } from '@/services/register-server';
 
 import { getThemeColor } from './server/theme-color';
 
@@ -29,6 +30,8 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  initialize();
+
   const locale = await getLocale();
   const color = await getThemeColor();
 
@@ -39,7 +42,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider>
-          <LocaleChangeMonitor />
+          <GlobalMonitor />
           {children}
         </NextIntlClientProvider>
         <Toaster />

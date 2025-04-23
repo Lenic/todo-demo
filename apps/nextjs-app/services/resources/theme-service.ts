@@ -1,17 +1,22 @@
+import type { IThemeService } from '@todo/interface';
+
 import { Disposable, injectableWith } from '@todo/container';
 import {
   DEFAULT_THEME,
   DEFAULT_THEME_COLOR,
   ETheme,
   EThemeColor,
-  IThemeService,
   preferColorScheme$,
   THEME_COLOR_LIST,
   THEME_STORAGE_KEY,
 } from '@todo/interface';
-import { filter, ReplaySubject, Subscription } from 'rxjs';
+import { filter, ReplaySubject, Subscription, withLatestFrom } from 'rxjs';
+import { toast } from 'sonner';
 
-@injectableWith(IThemeService)
+import { setThemeColor } from '@/app/server/theme-color';
+import { t$ } from '@/components/monitor';
+
+@injectableWith()
 class ThemeService extends Disposable implements IThemeService {
   private subscription: Subscription | null = null;
   private themeSubject = new ReplaySubject<ETheme>(1);
@@ -38,6 +43,14 @@ class ThemeService extends Disposable implements IThemeService {
     this.disposeWithMe(
       this.color$.pipe(filter((color) => this.color !== color)).subscribe((color) => {
         this.color = color;
+      }),
+    );
+
+    this.disposeWithMe(
+      this.color$.pipe(withLatestFrom(t$)).subscribe(([color, t]) => {
+        setThemeColor(color).catch(() => {
+          toast(t('settings.theme-color.switch-error'));
+        });
       }),
     );
 

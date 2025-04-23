@@ -5,6 +5,7 @@ import type { FC } from 'react';
 import { Languages } from 'lucide-react';
 import { useCallback } from 'react';
 
+import { language$ } from '@/components/monitor';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useObservableState } from '@/hooks';
-import { ELocaleType, LANGUAGE_LIST, language$, setUserLocale, useIntl } from '@/i18n';
+import { ELocaleType, LANGUAGE_LIST, setUserLocale, useIntl } from '@/i18n';
 
 export const LanguageToggle: FC = () => {
   const { t } = useIntl('settings.language');

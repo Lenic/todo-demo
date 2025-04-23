@@ -1,7 +1,5 @@
 'use client';
 
-import '@/services/resources/theme-service';
-
 import { LanguageToggle } from './components/language-toggle';
 import { ThemeColorToggle } from './components/theme-color-toggle';
 import { ThemeToggle } from './components/theme-toggle';
