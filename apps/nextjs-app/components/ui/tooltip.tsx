@@ -3,7 +3,6 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import * as React from 'react';
 
-import { useClient } from '@/hooks';
 import { cn } from '@/lib/utils';
 
 function TooltipProvider({ delayDuration = 300, ...props }: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
@@ -28,11 +27,7 @@ function TooltipContent({
   children,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Content>) {
-  const isClient = useClient();
-
-  return !isClient ? (
-    <div suppressHydrationWarning>{children}</div>
-  ) : (
+  return (
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Content
         data-slot="tooltip-content"
