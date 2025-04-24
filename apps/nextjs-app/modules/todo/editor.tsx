@@ -90,11 +90,11 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
             })
             .pipe(
               finalize(() => {
-                toast({ title: t('update-success'), duration: 1_000 });
+                toast(t('update-success'), { duration: 1_000 });
                 onOpenChange(false);
               }),
               catchError(() => {
-                toast({ title: t('update-failure'), duration: 0 });
+                toast(t('update-failure'), { duration: 0 });
                 return EMPTY;
               }),
             ),
