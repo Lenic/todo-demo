@@ -31,7 +31,7 @@ function TooltipContent({
   const isClient = useClient();
 
   return !isClient ? (
-    children
+    <div suppressHydrationWarning>{children}</div>
   ) : (
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Content

@@ -29,7 +29,7 @@ function ScrollBar({
   const isClient = useClient();
 
   return isClient ? (
-    props.children
+    <div suppressHydrationWarning>{props.children}</div>
   ) : (
     <ScrollAreaPrimitive.ScrollAreaScrollbar
       data-slot="scroll-area-scrollbar"

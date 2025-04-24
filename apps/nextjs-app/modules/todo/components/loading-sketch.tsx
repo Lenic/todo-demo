@@ -60,7 +60,9 @@ const LoadingSketchCore: FC<ILoadingSketchProps> = ({ type }) => {
 
   return (
     <div ref={containerRef}>
-      {isClient && (
+      {!isClient ? (
+        <div suppressHydrationWarning />
+      ) : (
         <ContentLoader
           speed={0.5}
           width={rowWidth[0]}
