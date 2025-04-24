@@ -2,7 +2,7 @@ import type { Observable } from 'rxjs';
 
 import { NEVER } from 'rxjs';
 
-import { ETodoListType } from '@/api';
+import { ETodoListType } from '../../api';
 
 export function areArraysEqual<T>(arr1: T[], arr2: T[]): boolean {
   if (arr1.length !== arr2.length) {

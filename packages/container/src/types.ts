@@ -1,6 +1,6 @@
 import type { CONTAINER_IDENTIFIER_KEY } from './constants';
 
-// @ts-expect-error 6133 - This is for definition of identifier
+// @ts-ignore 6133 - This is for definition of identifier
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
 export interface IContainerIdentifier<T> {
   [CONTAINER_IDENTIFIER_KEY]: string | symbol;
