@@ -22,7 +22,7 @@ export const injectableWith =
   <TClass>(target: Newable<TClass>) => {
     const decoratedTarget = injectable()(target);
 
-    if (identifier && decoratedTarget) register(identifier, decoratedTarget);
+    if (identifier) register(identifier, target);
 
     return decoratedTarget;
   };
