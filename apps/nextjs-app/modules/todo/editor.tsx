@@ -167,7 +167,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
                 <FormItem>
                   <FormControl>
                     <Textarea
-                      rows={6}
+                      className="h-[138px]"
                       placeholder={t('description-placeholder')}
                       {...field}
                       disabled={isSubmissionForbidden}
