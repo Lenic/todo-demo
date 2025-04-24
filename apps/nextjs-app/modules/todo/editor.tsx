@@ -28,10 +28,9 @@ export interface ITodoItemEditorProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const dataService = ServiceLocator.default.get(IDataService);
-
 export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChange }) => {
   const { t } = useIntl('todo.editor');
+  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
 
   const form = useForm({
     resolver: zodResolver(
@@ -67,7 +66,7 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
     return () => {
       subscription.unsubscribe();
     };
-  }, [reset, id]);
+  }, [reset, id, dataService]);
 
   const handleClose = useCallback(() => {
     reset();

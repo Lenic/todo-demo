@@ -6,7 +6,7 @@ import type { FC } from 'react';
 import { ServiceLocator } from '@todo/container';
 import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/interface';
 import dayjs from 'dayjs';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { firstValueFrom, from } from 'rxjs';
@@ -35,13 +35,12 @@ export interface ITodoListProps {
   data?: ITodoItem[];
 }
 
-const dataService = ServiceLocator.default.get(IDataService);
-
 let isFirstLoading = true;
 export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
+  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
   if (isFirstLoading) {
     isFirstLoading = false;
-    dataService.append(data || []);
+    dataService.append(data ?? []);
   }
 
   const ids$ = useMemo(
@@ -51,7 +50,7 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
         distinctUntilChanged(areArraysEqual),
         shareReplay(1),
       ),
-    [type],
+    [type, dataService],
   );
   const ids = useObservableState(ids$, dataService.ids[type]);
 
@@ -78,15 +77,15 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
             ),
           ),
         ),
-      [ids$, t],
+      [ids$, t, dataService],
     ),
     t('short-date'),
   );
 
-  const handleLoadMore = useCallback(() => firstValueFrom(dataService.loadMore(type)), [type]);
+  const handleLoadMore = useCallback(() => firstValueFrom(dataService.loadMore(type)), [type, dataService]);
 
   const isEnd = useObservableState(
-    useMemo(() => dataService.ends$.pipe(map((ends) => ends[type])), [type]),
+    useMemo(() => dataService.ends$.pipe(map((ends) => ends[type])), [type, dataService]),
     dataService.ends[type],
   );
 

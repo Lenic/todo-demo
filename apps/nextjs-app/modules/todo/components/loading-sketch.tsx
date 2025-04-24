@@ -5,7 +5,7 @@ import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
 import { areArraysEqual, IDataService } from '@todo/interface';
-import { memo, useMemo, useRef } from 'react';
+import { memo, useMemo, useRef, useState } from 'react';
 import ContentLoader from 'react-content-loader';
 import { of } from 'rxjs';
 import { delay, distinctUntilChanged, map, pairwise, startWith, switchMap } from 'rxjs/operators';
@@ -19,10 +19,9 @@ export interface ILoadingSketchProps {
 
 const defaultRowWidth = [364, 300, 332] as [number, number, number];
 
-const dataService = ServiceLocator.default.get(IDataService);
-
 const LoadingSketchCore: FC<ILoadingSketchProps> = ({ type }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
 
   const rowWidth = useObservableState(
     useMemo(
@@ -51,7 +50,7 @@ const LoadingSketchCore: FC<ILoadingSketchProps> = ({ type }) => {
                 ),
           ),
         ),
-      [type],
+      [type, dataService],
     ),
     defaultRowWidth,
     areArraysEqual,

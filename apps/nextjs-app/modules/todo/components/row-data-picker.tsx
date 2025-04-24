@@ -20,10 +20,9 @@ export interface IRowDatePickerProps {
   formatString: string;
 }
 
-const dataService = ServiceLocator.default.get(IDataService);
-
 export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, formatString }) => {
   const [open, setOpen] = useState(false);
+  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
 
   const [loading, handleChangeDate] = useLoading((value?: Date) =>
     dataService.dataMapper$.pipe(

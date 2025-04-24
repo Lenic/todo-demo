@@ -31,10 +31,9 @@ function useObservableRef<T>(): [RefObject<T | null>, Observable<T | null>] {
   return [targetRef, trigger];
 }
 
-const dataService = ServiceLocator.default.get(IDataService);
-
 export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
   const { className, id } = props;
+  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
 
   const item$ = useMemo(
     () =>
@@ -43,7 +42,7 @@ export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
         filter((v) => !!v),
         shareReplay(1),
       ),
-    [id],
+    [id, dataService],
   );
   const item = useObservableState(item$, dataService.dataMapper[id]);
 

@@ -31,10 +31,9 @@ export interface IRowDropdownMenuProps {
   onDetail?: (id: string) => void;
 }
 
-const dataService = ServiceLocator.default.get(IDataService);
-
 export const RowDropdownMenu: FC<IRowDropdownMenuProps> = ({ id, children, onDetail }) => {
   const { t } = useIntl('todo.item-context-menu');
+  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
 
   const title = useObservableState(
     useMemo(
@@ -44,7 +43,7 @@ export const RowDropdownMenu: FC<IRowDropdownMenuProps> = ({ id, children, onDet
           filter((v) => !!v),
           map((item) => item.title),
         ),
-      [id],
+      [id, dataService],
     ),
     '',
   );

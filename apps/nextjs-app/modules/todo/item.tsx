@@ -22,9 +22,8 @@ export interface ITodoItemProps {
   dateFormatString: string;
 }
 
-const dataService = ServiceLocator.default.get(IDataService);
-
 const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
+  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
   const item$ = useMemo(
     () =>
       dataService.dataMapper$.pipe(
@@ -33,7 +32,7 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
         filter((v) => !!v),
         shareReplay(1),
       ),
-    [id],
+    [id, dataService],
   );
   const item = useObservableState(item$, dataService.dataMapper[id]);
 
