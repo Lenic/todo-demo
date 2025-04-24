@@ -28,6 +28,7 @@ import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
 
 import { LoadingSketch } from './components/loading-sketch';
+import { TodoItem } from './item';
 
 export interface ITodoListProps {
   type: ETodoListType;
@@ -36,10 +37,10 @@ export interface ITodoListProps {
 
 const dataService = ServiceLocator.default.get(IDataService);
 
-let isFirstLoaded = false;
+let isFirstLoading = true;
 export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
-  if (isFirstLoaded) {
-    isFirstLoaded = true;
+  if (isFirstLoading) {
+    isFirstLoading = false;
     dataService.append(data || []);
   }
 
@@ -129,7 +130,7 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
                   </div>
                 );
               } else {
-                return <div>{ids[index]}</div>;
+                return <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />;
               }
             }}
           </List>
@@ -138,5 +139,3 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
     </InfiniteLoader>
   );
 };
-
-// <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />;
