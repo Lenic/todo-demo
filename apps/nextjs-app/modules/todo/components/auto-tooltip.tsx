@@ -16,7 +16,7 @@ export interface IAutoTooltipWithDescriptionProps {
 }
 
 const defaultStoreValue = Symbol('default_store_value');
-function useObservableRef<T>(): [RefObject<T>, Observable<T | null>] {
+function useObservableRef<T>(): [RefObject<T | null>, Observable<T | null>] {
   const targetRef = useRef<T>(null);
   const storeRef = useRef<T | null | symbol>(defaultStoreValue);
   const [trigger] = useState(() => new ReplaySubject<T | null>(1));

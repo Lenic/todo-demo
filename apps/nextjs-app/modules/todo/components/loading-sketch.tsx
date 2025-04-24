@@ -5,12 +5,12 @@ import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
 import { areArraysEqual, IDataService } from '@todo/interface';
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useMemo, useRef } from 'react';
 import ContentLoader from 'react-content-loader';
 import { of } from 'rxjs';
 import { delay, distinctUntilChanged, map, pairwise, startWith, switchMap } from 'rxjs/operators';
 
-import { useObservableState } from '@/hooks';
+import { useClient, useObservableState } from '@/hooks';
 import { getElementResize$ } from '@/lib/utils';
 
 export interface ILoadingSketchProps {
@@ -57,10 +57,7 @@ const LoadingSketchCore: FC<ILoadingSketchProps> = ({ type }) => {
     areArraysEqual,
   );
 
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const isClient = useClient();
 
   return (
     <div ref={containerRef}>
