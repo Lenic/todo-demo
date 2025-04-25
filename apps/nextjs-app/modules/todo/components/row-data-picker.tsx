@@ -10,7 +10,7 @@ import { concatMap, map, take, tap } from 'rxjs/operators';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useLoading } from '@/hooks';
+import { useClient, useLoading } from '@/hooks';
 import { cn } from '@/lib/utils';
 
 export interface IRowDatePickerProps {
@@ -34,6 +34,9 @@ export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, f
       concatMap((item) => dataService.update({ ...item, overdueAt: value?.valueOf() })),
     ),
   );
+
+  const isClient = useClient();
+  if (!isClient) return <div>{value ? format(value, formatString) : null}</div>;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
