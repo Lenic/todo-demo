@@ -6,7 +6,6 @@ import { IDataService } from '@todo/interface';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { combineLatest, distinctUntilChanged, filter, map, of, ReplaySubject, shareReplay, switchMap } from 'rxjs';
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useClient, useObservableState } from '@/hooks';
 import { listenResize$ } from '@/lib/listen-resize';
 
@@ -84,14 +83,16 @@ export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
 
   const isClient = useClient();
   if (!isClient || disabled) return trigger;
-  return (
-    <TooltipProvider disableHoverableContent={disabled}>
-      <Tooltip>
-        <TooltipTrigger className={containerClassName}>{trigger}</TooltipTrigger>
-        <TooltipContent>
-          <div className="max-w-lg whitespace-break-spaces">{item.description ?? item.title}</div>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
+
+  return trigger;
+  // return (
+  //   <TooltipProvider disableHoverableContent={disabled}>
+  //     <Tooltip>
+  //       <TooltipTrigger className={containerClassName}>{trigger}</TooltipTrigger>
+  //       <TooltipContent>
+  //         <div className="max-w-lg whitespace-break-spaces">{item.description ?? item.title}</div>
+  //       </TooltipContent>
+  //     </Tooltip>
+  //   </TooltipProvider>
+  // );
 };
