@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useLoading, useObservableState } from '@/hooks';
 
 import { AutoTooltip } from './components/auto-tooltip';
+import { RowDatePicker } from './components/row-data-picker';
 import { RowDropdownMenu } from './components/row-dropdown-menu';
 
 export interface ITodoItemProps {
@@ -69,6 +70,7 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
           />
         )}
       </RowDropdownMenu>
+      <RowDatePicker className="flex-initial" id={id} value={overdueAt} formatString={dateFormatString} />
     </div>
   );
 };
