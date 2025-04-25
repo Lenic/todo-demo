@@ -3,12 +3,15 @@ import type { CSSProperties, FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/interface';
+import { clsx } from 'clsx';
+import { EllipsisVertical } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs/operators';
 
 import { useLoading, useObservableState } from '@/hooks';
 
 import { AutoTooltip } from './components/auto-tooltip';
+import { RowDropdownMenu } from './components/row-dropdown-menu';
 
 export interface ITodoItemProps {
   id: string;
@@ -50,6 +53,16 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
         className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
       />
       <div className="flex-auto" />
+      <RowDropdownMenu id={id} onDetail={handleOpenEditor}>
+        {(open: boolean) => (
+          <EllipsisVertical
+            className={clsx('h-4 w-0 group-hover:w-4 group-hover:opacity-100 transition-all ease-in-out duration-300', {
+              'opacity-0 w-0': !open,
+              '!w-4': open,
+            })}
+          />
+        )}
+      </RowDropdownMenu>
     </div>
   );
 };
