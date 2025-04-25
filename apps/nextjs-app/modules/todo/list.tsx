@@ -27,8 +27,6 @@ import { useObservableState } from '@/hooks';
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
 
-import { TodoItem } from './item';
-
 const LoadingSketch = dynamic(() => import('./components/loading-sketch').then((v) => v.LoadingSketch), {
   ssr: false,
   loading: () => <div>Item Loading Sketch</div>,
@@ -133,7 +131,7 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
                   </div>
                 );
               } else {
-                return <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />;
+                return <div key={ids[index]}>{ids[index]}</div>;
               }
             }}
           </List>
@@ -142,3 +140,5 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
     </InfiniteLoader>
   );
 };
+
+// <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />;
