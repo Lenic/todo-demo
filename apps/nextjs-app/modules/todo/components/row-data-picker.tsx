@@ -36,7 +36,7 @@ export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, f
   );
 
   const isClient = useClient();
-  if (!isClient) return null;
+  if (!isClient) return <div suppressHydrationWarning>{value ? format(value, formatString) : null}</div>;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
