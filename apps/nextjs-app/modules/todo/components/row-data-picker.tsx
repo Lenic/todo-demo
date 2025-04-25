@@ -36,7 +36,7 @@ export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, f
   );
 
   const isClient = useClient();
-  if (!isClient) return <button type="button">{value ? format(value, formatString) : null}</button>;
+  if (!isClient) return null;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
