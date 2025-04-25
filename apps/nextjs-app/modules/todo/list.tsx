@@ -22,7 +22,6 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useObservableState } from '@/hooks';
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
@@ -111,7 +110,7 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
   return (
     <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemCount} loadMoreItems={handleLoadMore} threshold={3}>
       {({ onItemsRendered, ref }) => (
-        <ScrollArea ref={containerRef}>
+        <div id="abc" ref={containerRef}>
           <List
             ref={ref}
             width="100%"
@@ -133,7 +132,7 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
               }
             }}
           </List>
-        </ScrollArea>
+        </div>
       )}
     </InfiniteLoader>
   );
