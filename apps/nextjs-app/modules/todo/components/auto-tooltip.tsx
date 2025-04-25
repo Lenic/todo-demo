@@ -72,15 +72,6 @@ export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
     true,
   );
 
-  const isClient = useClient();
-  if (!isClient) {
-    return (
-      <div ref={targetRef} className="absolute invisible top-0 left-0 text-wrap">
-        {item.title}
-      </div>
-    );
-  }
-
   const containerClassName = ['relative overflow-hidden', className ?? ''].join(' ');
   const trigger = (
     <div ref={containerRef} className={disabled ? containerClassName : ''}>
@@ -91,7 +82,8 @@ export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
     </div>
   );
 
-  if (disabled) return trigger;
+  const isClient = useClient();
+  if (!isClient || disabled) return trigger;
   return (
     <TooltipProvider disableHoverableContent={disabled}>
       <Tooltip>
