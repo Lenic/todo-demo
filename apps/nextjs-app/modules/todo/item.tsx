@@ -4,10 +4,11 @@ import type { CSSProperties, FC } from 'react';
 import { ServiceLocator } from '@todo/container';
 import { ETodoStatus, IDataService } from '@todo/interface';
 import { clsx } from 'clsx';
-import { EllipsisVertical } from 'lucide-react';
+import { EllipsisVertical, Loader2 } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 'rxjs/operators';
 
+import { Checkbox } from '@/components/ui/checkbox';
 import { useLoading, useObservableState } from '@/hooks';
 
 import { AutoTooltip } from './components/auto-tooltip';
@@ -48,6 +49,11 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
   const overdueAt = useMemo(() => (item.overdueAt ? new Date(item.overdueAt) : undefined), [item.overdueAt]);
   return (
     <div className="flex group items-center space-x-2 pr-4" style={style}>
+      {loading ? (
+        <Loader2 className="animate-spin min-w-4" width={16} height={16} />
+      ) : (
+        <Checkbox checked={item.status === ETodoStatus.DONE} onCheckedChange={handleChangeChecked} />
+      )}
       <AutoTooltip
         id={item.id}
         className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer truncate"
