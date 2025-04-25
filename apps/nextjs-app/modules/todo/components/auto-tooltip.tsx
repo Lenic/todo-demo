@@ -83,7 +83,9 @@ export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
   );
 
   const isClient = useClient();
-  if (!isClient || disabled) return trigger;
+  if (!isClient) return <div suppressHydrationWarning>{item.title}</div>;
+
+  if (disabled) return trigger;
 
   return (
     <TooltipProvider disableHoverableContent={disabled}>
