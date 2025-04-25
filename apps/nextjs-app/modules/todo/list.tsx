@@ -6,7 +6,6 @@ import type { FC } from 'react';
 import { ServiceLocator } from '@todo/container';
 import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/interface';
 import dayjs from 'dayjs';
-import dynamic from 'next/dynamic';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
@@ -27,10 +26,7 @@ import { useObservableState } from '@/hooks';
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
 
-const LoadingSketch = dynamic(() => import('./components/loading-sketch').then((v) => v.LoadingSketch), {
-  ssr: false,
-  loading: () => <div>Item Loading Sketch</div>,
-});
+import { LoadingSketch } from './components/loading-sketch';
 
 export interface ITodoListProps {
   type: ETodoListType;
