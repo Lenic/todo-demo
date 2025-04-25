@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { combineLatest, distinctUntilChanged, filter, map, of, ReplaySubject, shareReplay, switchMap } from 'rxjs';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { useObservableState } from '@/hooks';
+import { useClient, useObservableState } from '@/hooks';
 import { listenResize$ } from '@/lib/listen-resize';
 
 export interface IAutoTooltipWithDescriptionProps {
@@ -71,6 +71,15 @@ export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
     ),
     true,
   );
+
+  const isClient = useClient();
+  if (!isClient) {
+    return (
+      <div ref={targetRef} className="absolute invisible top-0 left-0 text-wrap">
+        {item.title}
+      </div>
+    );
+  }
 
   const containerClassName = ['relative overflow-hidden', className ?? ''].join(' ');
   const trigger = (

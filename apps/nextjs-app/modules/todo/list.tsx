@@ -27,6 +27,7 @@ import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
 
 import { LoadingSketch } from './components/loading-sketch';
+import { TodoItem } from './item';
 
 export interface ITodoListProps {
   type: ETodoListType;
@@ -127,7 +128,7 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
                   </div>
                 );
               } else {
-                return <div key={ids[index]}>{ids[index]}</div>;
+                return <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />;
               }
             }}
           </List>
@@ -136,5 +137,3 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
     </InfiniteLoader>
   );
 };
-
-// <TodoItem style={style} key={ids[index]} id={ids[index]} dateFormatString={dateFormatString} />;
