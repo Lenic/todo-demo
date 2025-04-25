@@ -18,6 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useClient } from '@/hooks';
 import { useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
@@ -103,6 +104,9 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
   );
 
   const checkboxKey = useId();
+  const isClient = useClient();
+  if (!isClient) return null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-md:w-full max-md:inset-0 max-md:top-[unset] max-md:transform-none">
