@@ -14,6 +14,7 @@ import { useLoading, useObservableState } from '@/hooks';
 import { AutoTooltip } from './components/auto-tooltip';
 import { RowDatePicker } from './components/row-data-picker';
 import { RowDropdownMenu } from './components/row-dropdown-menu';
+import { TodoItemEditor } from './editor';
 
 export interface ITodoItemProps {
   id: string;
@@ -71,6 +72,7 @@ const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
         )}
       </RowDropdownMenu>
       <RowDatePicker className="flex-initial" id={id} value={overdueAt} formatString={dateFormatString} />
+      <TodoItemEditor id={id} open={open} onOpenChange={setOpen} />
     </div>
   );
 };
