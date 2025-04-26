@@ -7,6 +7,8 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev:nextjs": "pnpm -r --filter ./apps/nextjs-app dev",
+    "build:nextjs": "pnpm -r --filter ./apps/nextjs-app build",
+    "preview:nextjs": "pnpm -r --filter ./apps/nextjs-app start",
     "dev:react": "pnpm -r --filter ./apps/react-app dev",
     "build:react": "pnpm -r --filter ./apps/react-app build",
     "preview:react": "pnpm -r --filter ./apps/react-app preview",
