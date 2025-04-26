@@ -16,10 +16,22 @@ const pusher = new Pusher({
 
 dataNotification.subscribe((v) => {
   const key = process.env.NEXT_PUBLIC_PUSHER_CHANNEL;
-  console.log('[Pusher Info]: push new message', v);
-  pusher.trigger(key, key, v).catch((e: unknown) => {
-    console.log('[Pusher Error]: push new message error.', v, e);
-  });
+  console.log(
+    '[Pusher Info]: push new message',
+    v,
+    process.env.PUSHER_ID,
+    process.env.NEXT_PUBLIC_PUSHER_KEY,
+    process.env.PUSHER_SECRET,
+    process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+  );
+  pusher.trigger(key, key, v).then(
+    (res) => {
+      console.log('[Pusher Result]: push new message result', res);
+    },
+    (e: unknown) => {
+      console.log('[Pusher Error]: push new message error.', v, e);
+    },
+  );
 });
 
 export const publish = () =>
