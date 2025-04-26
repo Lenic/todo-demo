@@ -24,22 +24,9 @@ export const publish = () =>
         const v: IChangedItemInfo = { clientId, data };
 
         const key = process.env.NEXT_PUBLIC_PUSHER_CHANNEL;
-        console.log(
-          '[Pusher Info]: push new message',
-          v,
-          process.env.PUSHER_ID,
-          process.env.NEXT_PUBLIC_PUSHER_KEY,
-          process.env.PUSHER_SECRET,
-          process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
-        );
-        const waiter = pusher.trigger(key, key, v).then(
-          (res) => {
-            console.log('[Pusher Result]: push new message result', res);
-          },
-          (e: unknown) => {
-            console.log('[Pusher Error]: push new message error.', v, e);
-          },
-        );
+        const waiter = pusher.trigger(key, key, v).catch((e: unknown) => {
+          console.log('[Pusher Error]: push new message error.', v, e);
+        });
 
         return from(waiter).pipe(map(() => result));
       };
