@@ -62,7 +62,11 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
   }
 
   update(item: ITodoItem): Observable<ITodoItem> {
-    const res = this.db.instance.update(todoTable).set(item).where(eq(todoTable.id, item.id)).returning();
+    const res = this.db.instance
+      .update(todoTable)
+      .set({ ...item, description: item.description ?? null, overdueAt: item.overdueAt ?? null })
+      .where(eq(todoTable.id, item.id))
+      .returning();
 
     return this.convertToDomain(res).pipe(map((list) => list[0]));
   }
