@@ -221,14 +221,14 @@ importers:
         specifier: ^19
         version: 19.1.2(@types/react@19.1.2)
       dotenv:
-        specifier: ^16.4.7
+        specifier: ^16.5.0
         version: 16.5.0
       drizzle-kit:
         specifier: ^0.30.5
         version: 0.30.6
       drizzle-orm:
         specifier: ^0.41.0
-        version: 0.41.0(@types/pg@8.11.13)(gel@2.0.2)(pg@8.15.1)
+        version: 0.41.0(@types/pg@8.11.13)(gel@2.0.2)(pg@8.15.1)(postgres@3.4.5)
       eslint:
         specifier: ^9
         version: 9.25.1(jiti@2.4.2)
@@ -250,12 +250,12 @@ importers:
       nanoid:
         specifier: 'catalog:'
         version: 5.1.5
-      node-postgres:
-        specifier: ^0.6.2
-        version: 0.6.2
       pg:
         specifier: ^8.14.1
         version: 8.15.1
+      postgres:
+        specifier: ^3.4.5
+        version: 3.4.5
       rxjs-for-await:
         specifier: ^1.0.0
         version: 1.0.0(rxjs@7.8.2)
@@ -4689,9 +4689,6 @@ packages:
   node-mock-http@1.0.0:
     resolution: {integrity: sha512-0uGYQ1WQL1M5kKvGRXWQ3uZCHtLTO8hln3oBjIusM75WoesZ909uQJs/Hb946i2SS+Gsrhkaa6iAO17jRIv6DQ==}
 
-  node-postgres@0.6.2:
-    resolution: {integrity: sha512-wjaW+KutPOFemtBDuogyy6OMMOs2vpSOwuqbUhFUbrDEOTk66K2lmRyvOdO4t26qGtnPyZXQ4bAuF17cBhi5aQ==}
-
   node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
 
@@ -4958,6 +4955,10 @@ packages:
 
   postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
+
+  postgres@3.4.5:
+    resolution: {integrity: sha512-cDWgoah1Gez9rN3H4165peY9qfpEo+SA61oQv65O3cRUE1pOEoJWwddwcqKE8XZYjbblOJlYDlLV4h67HrEVDg==}
+    engines: {node: '>=12'}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -9072,11 +9073,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.41.0(@types/pg@8.11.13)(gel@2.0.2)(pg@8.15.1):
+  drizzle-orm@0.41.0(@types/pg@8.11.13)(gel@2.0.2)(pg@8.15.1)(postgres@3.4.5):
     optionalDependencies:
       '@types/pg': 8.11.13
       gel: 2.0.2
       pg: 8.15.1
+      postgres: 3.4.5
 
   dunder-proto@1.0.1:
     dependencies:
@@ -10245,8 +10247,6 @@ snapshots:
 
   node-mock-http@1.0.0: {}
 
-  node-postgres@0.6.2: {}
-
   node-releases@2.0.19: {}
 
   normalize-path@3.0.0: {}
@@ -10499,6 +10499,8 @@ snapshots:
   postgres-interval@3.0.0: {}
 
   postgres-range@1.1.4: {}
+
+  postgres@3.4.5: {}
 
   prelude-ls@1.2.1: {}
 

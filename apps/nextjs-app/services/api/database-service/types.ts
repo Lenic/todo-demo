@@ -1,5 +1,5 @@
 import type { IDisposable } from '@todo/container';
-import type { drizzle } from 'drizzle-orm/node-postgres';
+import type { drizzle } from 'drizzle-orm/postgres-js';
 
 import { createIdentifier } from '@todo/container';
 
