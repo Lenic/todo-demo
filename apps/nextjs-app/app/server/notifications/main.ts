@@ -1,13 +1,26 @@
 import type { IChangedItemInfo, TItemChangedEvent } from './types';
 
 import { cookies } from 'next/headers';
+import Pusher from 'pusher';
 import { from, map, Subject } from 'rxjs';
 
 export const dataNotification = new Subject<IChangedItemInfo>();
 
-// dataNotification.subscribe((v) => {
-//   console.log('broadcast item changed:', v);
-// });
+const pusher = new Pusher({
+  appId: process.env.PUSHER_ID,
+  key: process.env.NEXT_PUBLIC_PUSHER_KEY,
+  secret: process.env.PUSHER_SECRET,
+  cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+  useTLS: true,
+});
+
+dataNotification.subscribe((v) => {
+  const key = process.env.NEXT_PUBLIC_PUSHER_CHANNEL;
+  console.log('[Pusher Info]: push new message', v);
+  pusher.trigger(key, key, v).catch((e: unknown) => {
+    console.log('[Pusher Error]: push new message error.', v, e);
+  });
+});
 
 export const publish = () =>
   from(cookies()).pipe(

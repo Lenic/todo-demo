@@ -29,6 +29,7 @@ import {
 } from 'rxjs/operators';
 
 import { addTodoItem, deleteTodoItem, queryTodoList, updateTodoItem } from '@/app/server/todo';
+import { message$ } from '@/components/monitor';
 
 @injectableWith()
 class DataService extends Disposable implements IDataService {
@@ -224,6 +225,29 @@ class DataService extends Disposable implements IDataService {
     );
     this.disposeWithMe(this.loading$.subscribe((loading) => void (this.loading = loading)));
     this.disposeWithMe(() => void (this.loading = {} as Record<ETodoListType, boolean>));
+
+    this.disposeWithMe(
+      message$.pipe(filter((v) => v.type === 'add-todo')).subscribe(({ item }) => {
+        this.addSubject.next(item);
+      }),
+    );
+
+    this.disposeWithMe(
+      message$
+        .pipe(
+          filter((v) => v.type === 'update-todo'),
+          filter((v) => v.item.id in this.dataMapper),
+        )
+        .subscribe(({ item }) => {
+          this.updateSubject.next(item);
+        }),
+    );
+
+    this.disposeWithMe(
+      message$.pipe(filter((v) => v.type === 'delete-todo')).subscribe(({ id }) => {
+        this.clearSubject.next(id);
+      }),
+    );
   }
 }
 

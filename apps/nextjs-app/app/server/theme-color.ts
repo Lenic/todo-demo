@@ -2,9 +2,11 @@
 
 import { ServiceLocator } from '@todo/container';
 import { EThemeColor } from '@todo/interface';
-import { concatMap, firstValueFrom, map, of } from 'rxjs';
+import { combineLatest, concatMap, firstValueFrom, map, of, tap } from 'rxjs';
 
 import { ISystemDictionaryService } from '@/services/api';
+
+import { publish } from './notifications';
 
 const THEME_COLOR_KEY = 'SYSTEM_THEME_COLOR';
 
@@ -29,19 +31,28 @@ export async function getThemeColor() {
 export async function setThemeColor(theme: EThemeColor) {
   const service = ServiceLocator.default.get(ISystemDictionaryService);
 
-  const theme$ = service.get(THEME_COLOR_KEY).pipe(
-    concatMap((item) => {
-      if (item) {
-        return item.value === theme.toString() ? of(0) : service.update({ ...item, value: theme });
-      }
+  return firstValueFrom(
+    combineLatest([
+      service.get(THEME_COLOR_KEY).pipe(
+        concatMap((item) => {
+          if (item) {
+            return item.value === theme.toString() ? of(0) : service.update({ ...item, value: theme });
+          }
 
-      return service.add({
-        key: THEME_COLOR_KEY,
-        value: theme,
-      });
-    }),
-    map(() => void 0),
+          return service.add({
+            key: THEME_COLOR_KEY,
+            value: theme,
+          });
+        }),
+      ),
+      publish(),
+    ]).pipe(
+      tap(([item, fn]) => {
+        if (typeof item === 'number') return;
+
+        fn({ type: 'set-system-dictionary-item', item });
+      }),
+      map(() => void 0),
+    ),
   );
-
-  return firstValueFrom(theme$);
 }

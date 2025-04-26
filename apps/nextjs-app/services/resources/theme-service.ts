@@ -14,7 +14,7 @@ import { filter, ReplaySubject, Subscription, withLatestFrom } from 'rxjs';
 import { toast } from 'sonner';
 
 import { setThemeColor } from '@/app/server/theme-color';
-import { t$ } from '@/components/monitor';
+import { message$, t$ } from '@/components/monitor';
 
 @injectableWith()
 class ThemeService extends Disposable implements IThemeService {
@@ -52,6 +52,17 @@ class ThemeService extends Disposable implements IThemeService {
           toast(t('settings.theme-color.switch-error'));
         });
       }),
+    );
+
+    this.disposeWithMe(
+      message$
+        .pipe(
+          filter((v) => v.type === 'set-system-dictionary-item'),
+          filter((v) => v.item.key === 'SYSTEM_THEME_COLOR'),
+        )
+        .subscribe(({ item }) => {
+          this.setColorCore(item.value as EThemeColor);
+        }),
     );
 
     this.initialize();
@@ -108,6 +119,11 @@ class ThemeService extends Disposable implements IThemeService {
   setColor = (theme: EThemeColor) => {
     if (typeof window === 'undefined') return;
 
+    this.setColorCore(theme);
+    this.colorTrigger.next(theme);
+  };
+
+  private setColorCore = (theme: EThemeColor) => {
     const className = `theme-${theme}`;
     const root = window.document.documentElement;
     if (root.classList.contains(className)) return;
@@ -117,7 +133,6 @@ class ThemeService extends Disposable implements IThemeService {
     });
 
     root.classList.add(className);
-    this.colorTrigger.next(theme);
   };
 }
 
