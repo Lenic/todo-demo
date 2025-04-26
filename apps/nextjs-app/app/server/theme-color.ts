@@ -2,7 +2,7 @@
 
 import { ServiceLocator } from '@todo/container';
 import { EThemeColor } from '@todo/interface';
-import { combineLatest, concatMap, firstValueFrom, map, of, tap } from 'rxjs';
+import { combineLatest, concatMap, firstValueFrom, map, of } from 'rxjs';
 
 import { ISystemDictionaryService } from '@/services/api';
 
@@ -47,12 +47,11 @@ export async function setThemeColor(theme: EThemeColor) {
       ),
       publish(),
     ]).pipe(
-      tap(([item, fn]) => {
-        if (typeof item === 'number') return;
+      concatMap(([item, fn]) => {
+        if (typeof item === 'number') return of(void 0);
 
-        fn({ type: 'set-system-dictionary-item', item });
+        return fn({ type: 'set-system-dictionary-item', item }, void 0);
       }),
-      map(() => void 0),
     ),
   );
 }

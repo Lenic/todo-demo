@@ -2,9 +2,7 @@ import type { IChangedItemInfo, TItemChangedEvent } from './types';
 
 import { cookies } from 'next/headers';
 import Pusher from 'pusher';
-import { from, map, Subject } from 'rxjs';
-
-export const dataNotification = new Subject<IChangedItemInfo>();
+import { from, map } from 'rxjs';
 
 const pusher = new Pusher({
   appId: process.env.PUSHER_ID,
@@ -12,26 +10,6 @@ const pusher = new Pusher({
   secret: process.env.PUSHER_SECRET,
   cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
   useTLS: true,
-});
-
-dataNotification.subscribe((v) => {
-  const key = process.env.NEXT_PUBLIC_PUSHER_CHANNEL;
-  console.log(
-    '[Pusher Info]: push new message',
-    v,
-    process.env.PUSHER_ID,
-    process.env.NEXT_PUBLIC_PUSHER_KEY,
-    process.env.PUSHER_SECRET,
-    process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
-  );
-  pusher.trigger(key, key, v).then(
-    (res) => {
-      console.log('[Pusher Result]: push new message result', res);
-    },
-    (e: unknown) => {
-      console.log('[Pusher Error]: push new message error.', v, e);
-    },
-  );
 });
 
 export const publish = () =>
@@ -42,8 +20,28 @@ export const publish = () =>
         throw new Error('[Cookie]: can not find the client id.');
       }
 
-      return (data: TItemChangedEvent) => {
-        dataNotification.next({ clientId, data });
+      return <T>(data: TItemChangedEvent, result: T) => {
+        const v: IChangedItemInfo = { clientId, data };
+
+        const key = process.env.NEXT_PUBLIC_PUSHER_CHANNEL;
+        console.log(
+          '[Pusher Info]: push new message',
+          v,
+          process.env.PUSHER_ID,
+          process.env.NEXT_PUBLIC_PUSHER_KEY,
+          process.env.PUSHER_SECRET,
+          process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+        );
+        const waiter = pusher.trigger(key, key, v).then(
+          (res) => {
+            console.log('[Pusher Result]: push new message result', res);
+          },
+          (e: unknown) => {
+            console.log('[Pusher Error]: push new message error.', v, e);
+          },
+        );
+
+        return from(waiter).pipe(map(() => result));
       };
     }),
   );
