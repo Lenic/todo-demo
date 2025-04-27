@@ -1,0 +1,1 @@
+export const THEME_COLOR_KEY = 'SYSTEM_THEME_COLOR';

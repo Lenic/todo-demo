@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 
 import { setThemeColor } from '@/app/server/theme-color';
 import { message$, t$ } from '@/components/monitor';
+import { THEME_COLOR_KEY } from '@/constants';
 
 @injectableWith()
 class ThemeService extends Disposable implements IThemeService {
@@ -58,7 +59,7 @@ class ThemeService extends Disposable implements IThemeService {
       message$
         .pipe(
           filter((v) => v.type === 'set-system-dictionary-item'),
-          filter((v) => v.item.key === 'SYSTEM_THEME_COLOR'),
+          filter((v) => v.item.key === THEME_COLOR_KEY),
         )
         .subscribe(({ item }) => {
           this.setColorCore(item.value as EThemeColor);

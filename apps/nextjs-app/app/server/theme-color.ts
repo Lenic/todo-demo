@@ -4,11 +4,10 @@ import { ServiceLocator } from '@todo/container';
 import { EThemeColor } from '@todo/interface';
 import { combineLatest, concatMap, firstValueFrom, map, of } from 'rxjs';
 
+import { THEME_COLOR_KEY } from '@/constants';
 import { ISystemDictionaryService } from '@/services/api';
 
 import { publish } from './notifications';
-
-const THEME_COLOR_KEY = 'SYSTEM_THEME_COLOR';
 
 export async function getThemeColor() {
   const service = ServiceLocator.default.get(ISystemDictionaryService);
