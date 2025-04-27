@@ -250,9 +250,6 @@ importers:
       globals:
         specifier: 'catalog:'
         version: 15.15.0
-      nanoid:
-        specifier: 'catalog:'
-        version: 5.1.5
       pg:
         specifier: ^8.14.1
         version: 8.15.1

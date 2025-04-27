@@ -1,6 +1,6 @@
 import type { IChangedItemInfo, TItemChangedEvent } from './types';
 
-import { cookies } from 'next/headers';
+import { headers } from 'next/headers';
 import Pusher from 'pusher';
 import { from, map } from 'rxjs';
 
@@ -13,18 +13,18 @@ const pusher = new Pusher({
 });
 
 export const publish = () =>
-  from(cookies()).pipe(
+  from(headers()).pipe(
     map((store) => {
-      const clientId = store.get('clientId')?.value ?? '';
+      const clientId = store.get('Socket-Id') ?? '';
       if (!clientId) {
-        throw new Error('[Cookie]: can not find the client id.');
+        throw new Error('[Request Headers]: can not find the client id.');
       }
 
       return <T>(data: TItemChangedEvent, result: T) => {
         const v: IChangedItemInfo = { clientId, data };
 
         const key = process.env.NEXT_PUBLIC_PUSHER_CHANNEL;
-        const waiter = pusher.trigger(key, key, v).catch((e: unknown) => {
+        const waiter = pusher.trigger(key, key, v, { socket_id: clientId }).catch((e: unknown) => {
           console.log('[Pusher Error]: push new message error.', v, e);
         });
 

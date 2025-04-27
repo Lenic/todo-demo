@@ -7,41 +7,68 @@ import type { ELocaleType } from '@/i18n';
 import { useLocale, useTranslations } from 'next-intl';
 import Pusher from 'pusher-js';
 import { useEffect, useMemo } from 'react';
-import { distinctUntilChanged, filter, from, map, Observable, ReplaySubject, shareReplay, switchMap } from 'rxjs';
+import { distinctUntilChanged, firstValueFrom, Observable, ReplaySubject, shareReplay } from 'rxjs';
 
 import { initialize } from '@/services/register-client';
 
+const socketIdSubject = new ReplaySubject<string>(1);
 const localeSubject = new ReplaySubject<ELocaleType>(1);
 const translationFormattingSubject = new ReplaySubject<ReturnType<typeof useTranslations>>(1);
 
 // Pusher.logToConsole = true;
-export const message$ = from(typeof window === 'undefined' ? '' : document.cookie.split(';')).pipe(
-  filter((v) => v.startsWith('clientId=')),
-  map((v) => v.split('=')[1]),
-  filter((v) => !!v),
-  switchMap(
-    (clientId) =>
-      new Observable<TItemChangedEvent>((observer) => {
-        const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, { cluster: 'ap3' });
+export const message$ = new Observable<TItemChangedEvent>((observer) => {
+  if (typeof window === 'undefined') return;
 
-        const key = process.env.NEXT_PUBLIC_PUSHER_CHANNEL;
-        const channel = pusher.subscribe(key).bind(key, (info: IChangedItemInfo) => {
-          console.log(clientId, info);
-          if (clientId === info.clientId) return;
+  const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
+    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+  });
 
-          observer.next(info.data);
-        });
+  let clientId = '';
+  const manager = pusher.connection.bind('connected', () => {
+    clientId = pusher.connection.socket_id;
+    socketIdSubject.next(clientId);
+  });
 
-        return () => {
-          channel.cancelSubscription();
+  const key = process.env.NEXT_PUBLIC_PUSHER_CHANNEL;
+  const channel = pusher.subscribe(key).bind(key, (info: IChangedItemInfo) => {
+    if (clientId === info.clientId) return;
 
-          pusher.unsubscribe(key);
-          pusher.disconnect();
-        };
-      }),
-  ),
-  shareReplay(1),
-);
+    observer.next(info.data);
+  });
+
+  return () => {
+    manager.unbind_all();
+    manager.disconnect();
+
+    channel.unbind_all();
+    channel.cancelSubscription();
+    channel.disconnect();
+
+    pusher.unsubscribe(key);
+    pusher.disconnect();
+  };
+}).pipe(shareReplay(1));
+
+// add socket id header to server actions
+if (typeof window !== 'undefined') {
+  const originalFetch = window.fetch;
+  window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+    if (
+      init?.headers instanceof Object &&
+      'Accept' in init.headers &&
+      init.headers.Accept === 'text/x-component' &&
+      'Next-Action' in init.headers
+    ) {
+      const socketId = await firstValueFrom(socketIdSubject);
+      return await originalFetch(input, {
+        ...init,
+        headers: { ...init.headers, 'Socket-Id': socketId },
+      });
+    }
+
+    return await originalFetch(input, init);
+  };
+}
 
 /**
  * user language changed notification
