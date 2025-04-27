@@ -10,7 +10,7 @@ import ContentLoader from 'react-content-loader';
 import { of } from 'rxjs';
 import { delay, distinctUntilChanged, map, pairwise, startWith, switchMap } from 'rxjs/operators';
 
-import { useClient, useObservableState } from '@/hooks';
+import { useMounted, useObservableState } from '@/hooks';
 import { getElementResize$ } from '@/lib/utils';
 
 export interface ILoadingSketchProps {
@@ -56,8 +56,8 @@ const LoadingSketchCore: FC<ILoadingSketchProps> = ({ type }) => {
     areArraysEqual,
   );
 
-  const isClient = useClient();
-  if (!isClient) return <div ref={containerRef}>Todo Item Loading Sketch</div>;
+  const isMounted = useMounted();
+  if (!isMounted) return <div ref={containerRef}>Todo Item Loading Sketch</div>;
 
   return (
     <div ref={containerRef}>

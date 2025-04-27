@@ -18,7 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useClient } from '@/hooks';
+import { useMounted } from '@/hooks';
 import { useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
@@ -104,8 +104,8 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
   );
 
   const checkboxKey = useId();
-  const isClient = useClient();
-  if (!isClient) return null;
+  const isMounted = useMounted();
+  if (!isMounted) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

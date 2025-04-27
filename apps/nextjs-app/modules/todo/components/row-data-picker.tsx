@@ -10,7 +10,7 @@ import { concatMap, map, take, tap } from 'rxjs/operators';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useClient, useLoading } from '@/hooks';
+import { useLoading, useMounted } from '@/hooks';
 import { cn } from '@/lib/utils';
 
 export interface IRowDatePickerProps {
@@ -35,8 +35,8 @@ export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, f
     ),
   );
 
-  const isClient = useClient();
-  if (!isClient) return <div suppressHydrationWarning>{value ? format(value, formatString) : null}</div>;
+  const isMounted = useMounted();
+  if (!isMounted) return <div suppressHydrationWarning>{value ? format(value, formatString) : null}</div>;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

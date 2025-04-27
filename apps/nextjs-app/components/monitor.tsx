@@ -48,7 +48,7 @@ export const message$ = from(typeof window === 'undefined' ? '' : document.cooki
  */
 export const language$ = localeSubject.pipe(distinctUntilChanged(), shareReplay(1));
 /**
- * global
+ * global i18n translation notification
  */
 export const t$ = translationFormattingSubject.pipe(distinctUntilChanged(), shareReplay(1));
 

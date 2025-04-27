@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { combineLatest, distinctUntilChanged, filter, map, of, ReplaySubject, shareReplay, switchMap } from 'rxjs';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { useClient, useObservableState } from '@/hooks';
+import { useMounted, useObservableState } from '@/hooks';
 import { listenResize$ } from '@/lib/listen-resize';
 
 export interface IAutoTooltipWithDescriptionProps {
@@ -82,8 +82,8 @@ export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
     </div>
   );
 
-  const isClient = useClient();
-  if (!isClient) return <div suppressHydrationWarning>{item.title}</div>;
+  const isMounted = useMounted();
+  if (!isMounted) return <div suppressHydrationWarning>{item.title}</div>;
 
   if (disabled) return trigger;
 

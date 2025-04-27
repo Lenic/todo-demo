@@ -9,8 +9,10 @@ import { ISystemDictionaryService } from '@/services/api';
 
 import { publish } from './notifications';
 
+const getService = () => ServiceLocator.default.get(ISystemDictionaryService);
+
 export async function getThemeColor() {
-  const service = ServiceLocator.default.get(ISystemDictionaryService);
+  const service = getService();
 
   const color$ = service.get(THEME_COLOR_KEY).pipe(
     concatMap((item) => {
@@ -28,7 +30,7 @@ export async function getThemeColor() {
 }
 
 export async function setThemeColor(theme: EThemeColor) {
-  const service = ServiceLocator.default.get(ISystemDictionaryService);
+  const service = getService();
 
   return firstValueFrom(
     combineLatest([
@@ -46,11 +48,9 @@ export async function setThemeColor(theme: EThemeColor) {
       ),
       publish(),
     ]).pipe(
-      concatMap(([item, fn]) => {
-        if (typeof item === 'number') return of(void 0);
-
-        return fn({ type: 'set-system-dictionary-item', item }, void 0);
-      }),
+      concatMap(([item, fn]) =>
+        typeof item === 'number' ? of(void 0) : fn({ type: 'set-system-dictionary-item', item }, void 0),
+      ),
     ),
   );
 }
