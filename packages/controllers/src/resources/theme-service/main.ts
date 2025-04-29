@@ -1,17 +1,17 @@
-import { Disposable, injectableWith } from '@todo/container';
-import { filter, ReplaySubject, Subscription } from 'rxjs';
+import type { EThemeColor, IThemeService } from '@todo/interface';
+import type { Subscription } from 'rxjs';
 
+import { Disposable } from '@todo/container';
 import {
   DEFAULT_THEME,
   DEFAULT_THEME_COLOR,
+  ETheme,
   preferColorScheme$,
   THEME_COLOR_LIST,
   THEME_COLOR_STORAGE_KEY,
   THEME_STORAGE_KEY,
-  ETheme,
-  EThemeColor,
-  IThemeService,
 } from '@todo/interface';
+import { filter, ReplaySubject } from 'rxjs';
 
 const getCurrentTheme = () => {
   if (typeof window === 'undefined') return DEFAULT_THEME;
@@ -25,7 +25,6 @@ const getCurrentThemeColor = () => {
   return (localStorage.getItem(THEME_COLOR_STORAGE_KEY) as EThemeColor | null) ?? DEFAULT_THEME_COLOR;
 };
 
-@injectableWith(IThemeService)
 class ThemeService extends Disposable implements IThemeService {
   private subscription: Subscription | null = null;
   private themeSubject = new ReplaySubject<ETheme>(1);

@@ -1,18 +1,16 @@
-import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from './types';
 import type { IIndexedDBService } from '@todo/indexed-db';
+import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '@todo/interface';
+import type { IDataStorageService } from '@todo/interface';
 
-import { injectableWith } from '@todo/container';
 import { connect$, fromDBRequest } from '@todo/indexed-db';
+import { ETodoListType, ETodoStatus } from '@todo/interface';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { Observable, of } from 'rxjs';
 import { concatMap, delay, filter, finalize, map, skip, take, toArray } from 'rxjs/operators';
 
-import { ETodoListType, ETodoStatus, IDataStorageService } from '@todo/interface';
-
 const TABLE_NAME = 'todo-list';
 
-@injectableWith(IDataStorageService)
 class IndexedDBDataStorageService implements IDataStorageService {
   private storage$: Observable<IIndexedDBService>;
 

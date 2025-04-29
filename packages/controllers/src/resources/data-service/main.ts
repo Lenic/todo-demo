@@ -1,7 +1,21 @@
-import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '@/api';
+import type {
+  ICreatedTodoItem,
+  IDataService,
+  IDataStorageService,
+  ITodoItem,
+  ITodoListQueryArgs,
+} from '@todo/interface';
 import type { Observable } from 'rxjs';
 
-import { Disposable, injectableWith, injectWith } from '@todo/container';
+import { Disposable } from '@todo/container';
+import {
+  areArraysEqual,
+  emptyObservable,
+  ETodoListType,
+  ETodoStatus,
+  getInitialStatus,
+  TODO_LIST_PAGE_SIZE,
+} from '@todo/interface';
 import dayjs from 'dayjs';
 import { produce } from 'immer';
 import { BehaviorSubject, combineLatest, EMPTY, Subject, timer } from 'rxjs';
@@ -20,18 +34,6 @@ import {
   tap,
 } from 'rxjs/operators';
 
-import {
-  ETodoListType,
-  ETodoStatus,
-  IDataStorageService,
-  areArraysEqual,
-  emptyObservable,
-  getInitialStatus,
-  IDataService,
-  TODO_LIST_PAGE_SIZE,
-} from '@todo/interface';
-
-@injectableWith(IDataService)
 class DataService extends Disposable implements IDataService {
   private appendSubject = new Subject<ITodoItem[]>();
   private updateSubject = new Subject<ITodoItem>();
@@ -52,7 +54,7 @@ class DataService extends Disposable implements IDataService {
   ends = getInitialStatus(false);
   ends$ = emptyObservable<Record<ETodoListType, boolean>>();
 
-  constructor(@injectWith(IDataStorageService) private storageService: IDataStorageService) {
+  constructor(private storageService: IDataStorageService) {
     super();
 
     this.build();

@@ -1,8 +1,5 @@
 import type { IDisposable, SubscriptionLike } from './types';
 
-import { injectable } from 'inversify';
-
-@injectable()
 class Disposable implements IDisposable {
   private subscriptionList: ((() => void) | SubscriptionLike)[] = [];
 

@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import '@todo/controllers';
 
 import { lazy, Suspense } from 'react';

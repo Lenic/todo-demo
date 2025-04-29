@@ -21,9 +21,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    /* Inversify */
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "types": ["node", "reflect-metadata"]
+    "types": ["node"]
   }
 }

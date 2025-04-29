@@ -24,7 +24,6 @@
     "dayjs": "catalog:",
     "immer": "catalog:",
     "nanoid": "catalog:",
-    "reflect-metadata": "catalog:",
     "rxjs": "catalog:"
   },
   "devDependencies": {
