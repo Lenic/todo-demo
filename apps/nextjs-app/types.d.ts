@@ -8,6 +8,10 @@ declare global {
       PUSHER_SECRET: string;
       NEXT_PUBLIC_PUSHER_CLUSTER: string;
       NEXT_PUBLIC_PUSHER_CHANNEL: string;
+
+      AUTH_SECRET: string;
+      AUTH_GITHUB_ID: string;
+      AUTH_GITHUB_SECRET: string;
     }
   }
 }

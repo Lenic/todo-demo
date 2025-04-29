@@ -6,8 +6,8 @@
   "author": "",
   "license": "ISC",
   "description": "",
-  "dependencies": {
-    "inversify": "catalog:",
-    "reflect-metadata": "catalog:"
+  "devDependencies": {
+    "globals": "catalog:",
+    "typescript-eslint": "catalog:"
   }
 }

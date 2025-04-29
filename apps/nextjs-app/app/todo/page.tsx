@@ -4,7 +4,7 @@ import { CreateNewTask, TodoPanel } from '@/modules/todo';
 import { Toolbar } from '@/modules/toolbar';
 
 // eslint-disable-next-line @typescript-eslint/require-await -- this is the page component, must be async component.
-export default async function App() {
+export default async function TodoPage() {
   return (
     <div className="@container fixed inset-0 mx-auto">
       <Toolbar />

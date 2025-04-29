@@ -1,31 +1,18 @@
-import type { IContainerIdentifier, TInjectedParameter } from './types';
-import type { Newable } from 'inversify';
-
-import { Container, inject, injectable } from 'inversify';
+import type { IContainerIdentifier, TConstructor } from './types';
 
 import { CONTAINER_IDENTIFIER_KEY } from './constants';
+import { Container } from './container';
 
-const container = new Container({ defaultScope: 'Singleton' });
+const container = new Container();
 
-export function register<TInterface, TClass>(identifier: IContainerIdentifier<TInterface>, target: Newable<TClass>) {
-  const key = identifier.getIdentifier();
-  if (!container.isBound(key)) {
-    container.bind(key).to(target);
-  }
+export function register<TInterface, TClass extends TInterface>(
+  identifier: IContainerIdentifier<TInterface>,
+  target: TConstructor<TClass>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
+  dependencies: IContainerIdentifier<any>[] = [],
+) {
+  container.add(identifier, target, dependencies);
 }
-
-export const injectWith = <T>(identifier: IContainerIdentifier<T>) =>
-  inject(identifier.getIdentifier()) as TInjectedParameter<T>;
-
-export const injectableWith =
-  <T>(identifier?: IContainerIdentifier<T>) =>
-  <TClass>(target: Newable<TClass>) => {
-    const decoratedTarget = injectable()(target);
-
-    if (identifier) register(identifier, target);
-
-    return decoratedTarget;
-  };
 
 export function createIdentifier<T>(key: string | symbol) {
   const idendifier: IContainerIdentifier<T> = {
@@ -43,23 +30,11 @@ export function createIdentifier<T>(key: string | symbol) {
 export class ServiceLocator {
   static default = new ServiceLocator();
 
-  get<T>(identifier: IContainerIdentifier<T>, name?: string | number | symbol) {
-    if (name === undefined) {
-      return container.get<T>(identifier.getIdentifier());
-    } else {
-      return container.get<T>(identifier.getIdentifier(), { name });
-    }
+  get<T>(identifier: IContainerIdentifier<T>) {
+    return container.get<T>(identifier);
   }
 
-  getAll<T>(identifier: IContainerIdentifier<T>, name?: string | number | symbol) {
-    if (name === undefined) {
-      return container.getAll<T>(identifier.getIdentifier());
-    } else {
-      return container.getAll<T>(identifier.getIdentifier(), { name });
-    }
-  }
-
-  dispose() {
-    container.unbindAll();
+  clear() {
+    container.clear();
   }
 }

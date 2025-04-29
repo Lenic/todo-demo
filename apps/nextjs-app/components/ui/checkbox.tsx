@@ -4,9 +4,15 @@ import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { CheckIcon } from 'lucide-react';
 import * as React from 'react';
 
+import { useMounted } from '@/hooks';
 import { cn } from '@/lib/utils';
 
 function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
+  const isMounted = useMounted();
+  if (!isMounted) {
+    return <input type="checkbox" suppressHydrationWarning />;
+  }
+
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"

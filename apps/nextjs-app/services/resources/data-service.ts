@@ -1,7 +1,7 @@
 import type { ICreatedTodoItem, IDataService, ITodoItem, ITodoListQueryArgs } from '@todo/interface';
 import type { Observable } from 'rxjs';
 
-import { Disposable, injectableWith } from '@todo/container';
+import { Disposable } from '@todo/container';
 import {
   areArraysEqual,
   emptyObservable,
@@ -31,7 +31,6 @@ import {
 import { addTodoItem, deleteTodoItem, queryTodoList, updateTodoItem } from '@/app/server/todo';
 import { message$ } from '@/components/monitor';
 
-@injectableWith()
 class DataService extends Disposable implements IDataService {
   private appendSubject = new Subject<ITodoItem[]>();
   private updateSubject = new Subject<ITodoItem>();

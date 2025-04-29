@@ -1,12 +1,9 @@
 import type { IPostgreSQLConnectionService } from './types';
 
-import { Disposable, injectableWith } from '@todo/container';
+import { Disposable } from '@todo/container';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
-import { connectString } from './constants';
-
-@injectableWith()
 class PostgreSQLConnectionService extends Disposable implements IPostgreSQLConnectionService {
   instance: ReturnType<typeof drizzle>;
 
@@ -14,7 +11,7 @@ class PostgreSQLConnectionService extends Disposable implements IPostgreSQLConne
     super();
 
     // Disable prefetch as it is not supported for "Transaction" pool mode
-    const client = postgres(connectString, { prepare: false });
+    const client = postgres(process.env.DATABASE_URL, { prepare: false });
     this.instance = drizzle(client);
     this.disposeWithMe(() => {
       this.instance.$client.end().catch((e: unknown) => {

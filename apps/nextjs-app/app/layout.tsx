@@ -1,4 +1,5 @@
-import 'reflect-metadata';
+import '@/services/register-server';
+import '@/services/register-client';
 
 import type { Metadata } from 'next';
 
@@ -8,7 +9,6 @@ import { getLocale } from 'next-intl/server';
 
 import { GlobalMonitor } from '@/components/monitor';
 import { Toaster } from '@/components/ui/sonner';
-import { initialize } from '@/services/register-server';
 
 import { getThemeColor } from './server/theme-color';
 
@@ -30,8 +30,6 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  initialize();
-
   const locale = await getLocale();
   const color = await getThemeColor();
 

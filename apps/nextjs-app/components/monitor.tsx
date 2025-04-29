@@ -1,5 +1,7 @@
 'use client';
 
+import '@/services/register-client';
+
 import type { IChangedItemInfo, TItemChangedEvent } from '@/app/server/notifications';
 import type { ELocaleType } from '@/i18n';
 
@@ -8,8 +10,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import Pusher from 'pusher-js';
 import { useEffect, useMemo } from 'react';
 import { distinctUntilChanged, firstValueFrom, Observable, ReplaySubject, shareReplay } from 'rxjs';
-
-import { initialize } from '@/services/register-client';
 
 const socketIdSubject = new ReplaySubject<string>(1);
 const localeSubject = new ReplaySubject<ELocaleType>(1);
@@ -80,8 +80,6 @@ export const language$ = localeSubject.pipe(distinctUntilChanged(), shareReplay(
 export const t$ = translationFormattingSubject.pipe(distinctUntilChanged(), shareReplay(1));
 
 export const GlobalMonitor = () => {
-  initialize();
-
   const locale = useLocale();
   useEffect(() => {
     localeSubject.next(locale as ELocaleType);

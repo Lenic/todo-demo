@@ -1,5 +1,5 @@
 import { register } from '@todo/container';
-import { IDataService, IDataStorageService, IThemeService } from '@todo/interface';
+import { IDataStorageService } from '@todo/interface';
 
 import {
   IPostgreSQLConnectionService,
@@ -8,13 +8,7 @@ import {
   PostgreSQLDataStorageService,
   SystemDictionaryService,
 } from './api';
-import { DataService, ThemeService } from './resources';
 
-export function initialize() {
-  register(IPostgreSQLConnectionService, PostgreSQLConnectionService);
-  register(IDataStorageService, PostgreSQLDataStorageService);
-  register(ISystemDictionaryService, SystemDictionaryService);
-
-  register(IDataService, DataService);
-  register(IThemeService, ThemeService);
-}
+register(IPostgreSQLConnectionService, PostgreSQLConnectionService);
+register(IDataStorageService, PostgreSQLDataStorageService, [IPostgreSQLConnectionService]);
+register(ISystemDictionaryService, SystemDictionaryService, [IPostgreSQLConnectionService]);
