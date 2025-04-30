@@ -18,7 +18,7 @@ const pusher = new Pusher({
 export const publish = () =>
   combineLatest([
     from(auth()).pipe(
-      map((session) => session?.user?.email ?? ''),
+      map((session) => session?.user?.id ?? ''),
       filter((v) => !!v),
     ),
     from(headers()).pipe(

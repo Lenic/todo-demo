@@ -42,7 +42,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider>
-          <GlobalMonitor channelId={session?.user?.email ?? ''} />
+          <GlobalMonitor channelId={session?.user?.id ?? ''} />
           {children}
         </NextIntlClientProvider>
         <Toaster />
