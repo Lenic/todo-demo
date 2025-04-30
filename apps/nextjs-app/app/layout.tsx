@@ -7,6 +7,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 
+import { auth } from '@/auth';
 import { GlobalMonitor } from '@/components/monitor';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -32,6 +33,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
   const color = await getThemeColor();
+  const session = await auth();
 
   return (
     <html lang={locale} className={`theme-${color}`} suppressHydrationWarning>
@@ -40,7 +42,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider>
-          <GlobalMonitor />
+          <GlobalMonitor channelId={session?.user?.email ?? ''} />
           {children}
         </NextIntlClientProvider>
         <Toaster />
