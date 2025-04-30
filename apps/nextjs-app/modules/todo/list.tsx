@@ -110,7 +110,7 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
   return (
     <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemCount} loadMoreItems={handleLoadMore} threshold={3}>
       {({ onItemsRendered, ref }) => (
-        <div id="abc" ref={containerRef}>
+        <div ref={containerRef}>
           <List
             ref={ref}
             width="100%"
