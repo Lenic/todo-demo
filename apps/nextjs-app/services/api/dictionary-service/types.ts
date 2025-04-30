@@ -1,18 +1,19 @@
+import type { ICreatedItem, IItem } from '../types';
 import type { Observable } from 'rxjs';
 
 import { createIdentifier } from '@todo/container';
 
-export interface ICreatedSystemDictionaryItem {
+export interface ICreatedSystemDictionaryItem extends ICreatedItem {
   key: string;
   value: string;
+  userId: string;
 }
 
-export interface ISystemDictionaryItem extends ICreatedSystemDictionaryItem {
+export interface ISystemDictionaryItem extends ICreatedSystemDictionaryItem, IItem {
   id: string;
 }
 
 export interface ISystemDictionaryService {
-  query(ids: string[]): Observable<ISystemDictionaryItem[]>;
   get(key: string): Observable<ISystemDictionaryItem | undefined>;
 
   add(item: ICreatedSystemDictionaryItem): Observable<ISystemDictionaryItem>;

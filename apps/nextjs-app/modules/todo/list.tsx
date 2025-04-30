@@ -1,10 +1,11 @@
 'use client';
 
-import type { ETodoListType, ITodoItem } from '@todo/interface';
+import type { IDBTodoItem } from '@/services/api';
+import type { ETodoListType } from '@todo/interface';
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { areArraysEqual, IDataService, TODO_LIST_PAGE_SIZE } from '@todo/interface';
+import { areArraysEqual, TODO_LIST_PAGE_SIZE } from '@todo/interface';
 import dayjs from 'dayjs';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FixedSizeList as List } from 'react-window';
@@ -25,18 +26,19 @@ import {
 import { useObservableState } from '@/hooks';
 import { useIntl } from '@/i18n';
 import { windowResize$ } from '@/lib/utils';
+import { IDBDataService } from '@/services/resources';
 
 import { LoadingSketch } from './components/loading-sketch';
 import { TodoItem } from './item';
 
 export interface ITodoListProps {
   type: ETodoListType;
-  data?: ITodoItem[];
+  data?: IDBTodoItem[];
 }
 
 let isFirstLoading = true;
 export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
-  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
+  const [dataService] = useState(() => ServiceLocator.default.get(IDBDataService));
   if (isFirstLoading) {
     isFirstLoading = false;
     dataService.append(data ?? []);
@@ -58,7 +60,7 @@ export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
     useMemo(
       () =>
         dataService.dataMapper$.pipe(
-          withLatestFrom(ids$, (mapper: Record<string, ITodoItem>, ids) =>
+          withLatestFrom(ids$, (mapper: Record<string, IDBTodoItem>, ids) =>
             ids
               .map((id) => mapper[id].overdueAt)
               .filter((v) => !!v)

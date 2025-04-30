@@ -3,9 +3,9 @@ import type { Observable } from 'rxjs';
 
 import { createIdentifier } from '@todo/container';
 
-export interface IDataService {
-  dataMapper: Record<string, ITodoItem>;
-  dataMapper$: Observable<Record<string, ITodoItem>>;
+export interface IDataService<IItem extends ITodoItem = ITodoItem> {
+  dataMapper: Record<string, IItem>;
+  dataMapper$: Observable<Record<string, IItem>>;
 
   ids: Record<ETodoListType, string[]>;
   ids$: Observable<Record<ETodoListType, string[]>>;
@@ -18,9 +18,9 @@ export interface IDataService {
 
   loadMore(type: ETodoListType): Observable<void>;
 
-  append(list: ITodoItem[]): void;
-  add(item: ICreatedTodoItem): Observable<ITodoItem>;
-  update(item: ITodoItem): Observable<ITodoItem>;
+  append(list: IItem[]): void;
+  add(item: ICreatedTodoItem): Observable<IItem>;
+  update(item: IItem): Observable<IItem>;
   delete(id?: string): Observable<void>;
 }
 

@@ -2,13 +2,13 @@ import type { FC, RefObject } from 'react';
 import type { Observable } from 'rxjs';
 
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/interface';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { combineLatest, distinctUntilChanged, filter, map, of, ReplaySubject, shareReplay, switchMap } from 'rxjs';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useMounted, useObservableState } from '@/hooks';
 import { listenResize$ } from '@/lib/listen-resize';
+import { IDBDataService } from '@/services/resources';
 
 export interface IAutoTooltipWithDescriptionProps {
   id: string;
@@ -33,7 +33,7 @@ function useObservableRef<T>(): [RefObject<T | null>, Observable<T | null>] {
 
 export const AutoTooltip: FC<IAutoTooltipWithDescriptionProps> = (props) => {
   const { className, id } = props;
-  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
+  const [dataService] = useState(() => ServiceLocator.default.get(IDBDataService));
 
   const item$ = useMemo(
     () =>

@@ -2,7 +2,7 @@ import type { CheckedState } from '@radix-ui/react-checkbox';
 import type { CSSProperties, FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { ETodoStatus, IDataService } from '@todo/interface';
+import { ETodoStatus } from '@todo/interface';
 import { clsx } from 'clsx';
 import { EllipsisVertical, Loader2 } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';
@@ -10,6 +10,7 @@ import { concatMap, distinctUntilChanged, filter, map, shareReplay, take } from 
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { useLoading, useObservableState } from '@/hooks';
+import { IDBDataService } from '@/services/resources';
 
 import { AutoTooltip } from './components/auto-tooltip';
 import { RowDatePicker } from './components/row-data-picker';
@@ -23,7 +24,7 @@ export interface ITodoItemProps {
 }
 
 const TodoItemCore: FC<ITodoItemProps> = ({ id, dateFormatString, style }) => {
-  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
+  const [dataService] = useState(() => ServiceLocator.default.get(IDBDataService));
   const item$ = useMemo(
     () =>
       dataService.dataMapper$.pipe(

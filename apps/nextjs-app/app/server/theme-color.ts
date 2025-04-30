@@ -2,7 +2,7 @@
 
 import { ServiceLocator } from '@todo/container';
 import { EThemeColor } from '@todo/interface';
-import { combineLatest, concatMap, firstValueFrom, map, of } from 'rxjs';
+import { concatMap, firstValueFrom, map, of } from 'rxjs';
 
 import { THEME_COLOR_KEY } from '@/constants';
 import { ISystemDictionaryService } from '@/services/api';
@@ -14,16 +14,23 @@ const getService = () => ServiceLocator.default.get(ISystemDictionaryService);
 export async function getThemeColor() {
   const service = getService();
 
-  const color$ = service.get(THEME_COLOR_KEY).pipe(
-    concatMap((item) => {
-      if (item) return of(item);
+  const color$ = publish().pipe(
+    concatMap(({ userId }) =>
+      service.get(THEME_COLOR_KEY).pipe(
+        concatMap((item) => {
+          if (item) return of(item);
 
-      return service.add({
-        key: THEME_COLOR_KEY,
-        value: EThemeColor.NEUTRAL,
-      });
-    }),
-    map((item) => item.value as EThemeColor),
+          return service.add({
+            userId,
+            createdBy: userId,
+            updatedBy: userId,
+            key: THEME_COLOR_KEY,
+            value: EThemeColor.NEUTRAL,
+          });
+        }),
+        map((item) => item.value as EThemeColor),
+      ),
+    ),
   );
 
   return firstValueFrom(color$);
@@ -33,23 +40,28 @@ export async function setThemeColor(theme: EThemeColor) {
   const service = getService();
 
   return firstValueFrom(
-    combineLatest([
-      service.get(THEME_COLOR_KEY).pipe(
-        concatMap((item) => {
-          if (item) {
-            return item.value === theme.toString() ? of(0) : service.update({ ...item, value: theme });
-          }
+    publish().pipe(
+      concatMap(({ userId, sync }) =>
+        service.get(THEME_COLOR_KEY).pipe(
+          concatMap((item) => {
+            if (item) {
+              return item.value === theme.toString()
+                ? of(0)
+                : service.update({ ...item, value: theme, updatedBy: userId });
+            }
 
-          return service.add({
-            key: THEME_COLOR_KEY,
-            value: theme,
-          });
-        }),
-      ),
-      publish(),
-    ]).pipe(
-      concatMap(([item, fn]) =>
-        typeof item === 'number' ? of(void 0) : fn({ type: 'set-system-dictionary-item', item }, void 0),
+            return service.add({
+              key: THEME_COLOR_KEY,
+              value: theme,
+              userId,
+              createdBy: userId,
+              updatedBy: userId,
+            });
+          }),
+          concatMap((item) =>
+            typeof item === 'number' ? of(void 0) : sync({ type: 'set-system-dictionary-item', item }, void 0),
+          ),
+        ),
       ),
     ),
   );

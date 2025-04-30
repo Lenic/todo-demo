@@ -21,23 +21,22 @@ export const publish = () =>
       map((session) => session?.user?.id ?? ''),
       filter((v) => !!v),
     ),
-    from(headers()).pipe(
-      map((store) => {
-        const clientId = store.get('Socket-Id') ?? '';
+    from(headers()).pipe(map((store) => store.get('Socket-Id') ?? '')),
+  ]).pipe(
+    map(([userId, clientId]) => ({
+      userId,
+      sync: <T>(data: TItemChangedEvent, result: T) => {
         if (!clientId) {
           throw new Error('[Request Headers]: can not find the client id.');
         }
-        return clientId;
-      }),
-    ),
-  ]).pipe(
-    map(([channelId, clientId]) => <T>(data: TItemChangedEvent, result: T) => {
-      const v: IChangedItemInfo = { clientId, data };
 
-      const waiter = pusher.trigger(channelId, PUSHER_EVENT, v, { socket_id: clientId }).catch((e: unknown) => {
-        console.log('[Pusher Error]: push new message error.', v, e);
-      });
+        const v: IChangedItemInfo = { clientId, data };
 
-      return from(waiter).pipe(map(() => result));
-    }),
+        const waiter = pusher.trigger(userId, PUSHER_EVENT, v, { socket_id: clientId }).catch((e: unknown) => {
+          console.log('[Pusher Error]: push new message error.', v, e);
+        });
+
+        return from(waiter).pipe(map(() => result));
+      },
+    })),
   );

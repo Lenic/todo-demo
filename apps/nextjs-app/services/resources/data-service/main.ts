@@ -1,4 +1,5 @@
-import type { ICreatedTodoItem, IDataService, ITodoItem, ITodoListQueryArgs } from '@todo/interface';
+import type { IDBCreatedTodoItem, IDBTodoItem } from '../../api';
+import type { IDataService, ITodoListQueryArgs } from '@todo/interface';
 import type { Observable } from 'rxjs';
 
 import { Disposable } from '@todo/container';
@@ -31,10 +32,10 @@ import {
 import { addTodoItem, deleteTodoItem, queryTodoList, updateTodoItem } from '@/app/server/todo';
 import { message$ } from '@/components/monitor';
 
-class DataService extends Disposable implements IDataService {
-  private appendSubject = new Subject<ITodoItem[]>();
-  private updateSubject = new Subject<ITodoItem>();
-  private addSubject = new Subject<ITodoItem>();
+class DataService extends Disposable implements IDataService<IDBTodoItem> {
+  private appendSubject = new Subject<IDBTodoItem[]>();
+  private updateSubject = new Subject<IDBTodoItem>();
+  private addSubject = new Subject<IDBTodoItem>();
   private clearSubject = new Subject<string | undefined>();
   private loadingSubject = new BehaviorSubject<ETodoListType | null>(null);
   private endsSubject = new Subject<[ETodoListType, boolean]>();
@@ -42,8 +43,8 @@ class DataService extends Disposable implements IDataService {
   loading = getInitialStatus(false);
   loading$ = emptyObservable<Record<ETodoListType, boolean>>();
 
-  dataMapper: Record<string, ITodoItem> = {};
-  dataMapper$ = emptyObservable<Record<string, ITodoItem>>();
+  dataMapper: Record<string, IDBTodoItem> = {};
+  dataMapper$ = emptyObservable<Record<string, IDBTodoItem>>();
 
   ids = getInitialStatus<string[]>([]);
   ids$ = emptyObservable<Record<ETodoListType, string[]>>();
@@ -82,11 +83,11 @@ class DataService extends Disposable implements IDataService {
     }
   }
 
-  append(list: ITodoItem[]): void {
+  append(list: IDBTodoItem[]): void {
     this.appendSubject.next(list);
   }
 
-  add(item: ICreatedTodoItem): Observable<ITodoItem> {
+  add(item: IDBCreatedTodoItem): Observable<IDBTodoItem> {
     return from(addTodoItem(item)).pipe(
       tap((value) => {
         this.addSubject.next(value);
@@ -94,7 +95,7 @@ class DataService extends Disposable implements IDataService {
     );
   }
 
-  update(item: ITodoItem): Observable<ITodoItem> {
+  update(item: IDBTodoItem): Observable<IDBTodoItem> {
     return from(updateTodoItem(item)).pipe(
       tap((value) => {
         this.updateSubject.next(value);
@@ -145,7 +146,7 @@ class DataService extends Disposable implements IDataService {
           }
           return acc;
         },
-        {} as Record<string, ITodoItem>,
+        {} as Record<string, IDBTodoItem>,
       ),
       shareReplay(1),
     );

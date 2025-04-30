@@ -1,7 +1,6 @@
 import type { FC, ReactNode } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/interface';
 import { FilePenLine, Loader2, Trash2 } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { filter, finalize, map } from 'rxjs';
@@ -24,6 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useLoading, useObservableState } from '@/hooks';
 import { useIntl } from '@/i18n';
+import { IDBDataService } from '@/services/resources';
 
 export interface IRowDropdownMenuProps {
   id: string;
@@ -33,7 +33,7 @@ export interface IRowDropdownMenuProps {
 
 export const RowDropdownMenu: FC<IRowDropdownMenuProps> = ({ id, children, onDetail }) => {
   const { t } = useIntl('todo.item-context-menu');
-  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
+  const [dataService] = useState(() => ServiceLocator.default.get(IDBDataService));
 
   const title = useObservableState(
     useMemo(

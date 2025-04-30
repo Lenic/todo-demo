@@ -1,7 +1,7 @@
 import { register } from '@todo/container';
-import { IDataService, IThemeService } from '@todo/interface';
+import { IThemeService } from '@todo/interface';
 
-import { DataService, ThemeService } from './resources';
+import { DataService, IDBDataService, ThemeService } from './resources';
 
-register(IDataService, DataService);
+register(IDBDataService, DataService);
 register(IThemeService, ThemeService);

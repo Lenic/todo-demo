@@ -26,6 +26,8 @@ export const todoTable = pgTable(
     createdAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
     status: todoStatusEnum().default('PENDING'),
     updatedAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
+    createdBy: uuid().notNull(),
+    updatedBy: uuid().notNull(),
   },
   (table) => [index('createdAt_idx').on(table.createdAt), index('updatedAt_idx').on(table.updatedAt)],
 );
@@ -34,6 +36,11 @@ export const systemDictionaryTable = pgTable('system-dictionary', {
   id: uuid().defaultRandom().primaryKey().unique(),
   key: varchar({ length: 255 }).notNull(),
   value: text().notNull(),
+  userId: uuid().notNull(),
+  createdBy: uuid().notNull(),
+  createdAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
+  updatedBy: uuid().notNull(),
+  updatedAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
 });
 
 export const usersTable = pgTable(

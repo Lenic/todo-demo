@@ -3,8 +3,11 @@ import type { ICreatedSystemDictionaryItem, ISystemDictionaryItem, ISystemDictio
 import type { Observable } from 'rxjs';
 
 import { Disposable } from '@todo/container';
-import { eq, inArray } from 'drizzle-orm';
-import { concatMap, from, map, toArray } from 'rxjs';
+import { sql } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
+import { concatMap, filter, from, map, toArray } from 'rxjs';
+
+import { auth } from '@/auth';
 
 import { systemDictionaryTable } from '../schema';
 
@@ -13,16 +16,19 @@ class SystemDictionaryService extends Disposable implements ISystemDictionarySer
     super();
   }
 
-  query(ids: string[]): Observable<ISystemDictionaryItem[]> {
-    const res = this.db.instance.select().from(systemDictionaryTable).where(inArray(systemDictionaryTable.id, ids));
-
-    return this.convertToDomain(res);
-  }
-
   get(key: string): Observable<ISystemDictionaryItem | undefined> {
-    const res = this.db.instance.select().from(systemDictionaryTable).where(eq(systemDictionaryTable.key, key));
+    return from(auth()).pipe(
+      map((v) => v?.user?.id ?? ''),
+      filter((v) => !!v),
+      concatMap((userId) => {
+        const res = this.db.instance
+          .select()
+          .from(systemDictionaryTable)
+          .where(and(eq(systemDictionaryTable.key, key), eq(systemDictionaryTable.userId, userId)));
 
-    return this.convertToDomain(res).pipe(map((list) => list[0]));
+        return this.convertToDomain(res).pipe(map((list) => list[0]));
+      }),
+    );
   }
 
   add(item: ICreatedSystemDictionaryItem): Observable<ISystemDictionaryItem> {
@@ -31,6 +37,9 @@ class SystemDictionaryService extends Disposable implements ISystemDictionarySer
       .values({
         key: item.key,
         value: item.value,
+        userId: item.userId,
+        createdBy: item.createdBy,
+        updatedBy: item.updatedBy,
       })
       .returning();
 
@@ -40,7 +49,7 @@ class SystemDictionaryService extends Disposable implements ISystemDictionarySer
   update(item: ISystemDictionaryItem): Observable<ISystemDictionaryItem> {
     const res = this.db.instance
       .update(systemDictionaryTable)
-      .set(item)
+      .set({ ...item, updatedAt: sql`EXTRACT(EPOCH FROM NOW()) * 1000` })
       .where(eq(systemDictionaryTable.id, item.id))
       .returning();
 

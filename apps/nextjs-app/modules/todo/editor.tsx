@@ -2,7 +2,7 @@ import type { FC } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ServiceLocator } from '@todo/container';
-import { ETodoStatus, IDataService } from '@todo/interface';
+import { ETodoStatus } from '@todo/interface';
 import { Loader2 } from 'lucide-react';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -20,6 +20,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useMounted } from '@/hooks';
 import { useIntl } from '@/i18n';
+import { IDBDataService } from '@/services/resources';
 
 import { DatePicker } from './components/date-picker';
 
@@ -31,7 +32,7 @@ export interface ITodoItemEditorProps {
 
 export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChange }) => {
   const { t } = useIntl('todo.editor');
-  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
+  const [dataService] = useState(() => ServiceLocator.default.get(IDBDataService));
 
   const form = useForm({
     resolver: zodResolver(

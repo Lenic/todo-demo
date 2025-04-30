@@ -1,18 +1,19 @@
 'use server';
 
 import { ServiceLocator } from '@todo/container';
-import { ETodoListType, IDataStorageService } from '@todo/interface';
+import { ETodoListType } from '@todo/interface';
 import { firstValueFrom } from 'rxjs';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getIntl } from '@/i18n';
+import { IDBDataStorageService } from '@/services/api';
 
 import { TodoList } from './list';
 
 export const TodoPanel = async () => {
   const { t } = await getIntl('todo.panel');
   const dataSource = await firstValueFrom(
-    ServiceLocator.default.get(IDataStorageService).query({ limit: 10, offset: 0, type: ETodoListType.PENDING }),
+    ServiceLocator.default.get(IDBDataStorageService).query({ limit: 10, offset: 0, type: ETodoListType.PENDING }),
   );
 
   return (

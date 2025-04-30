@@ -1,14 +1,14 @@
 import type { ISystemDictionaryItem } from '@/services/api';
-import type { ITodoItem } from '@todo/interface';
+import type { IDBTodoItem } from '@/services/api';
 
 export interface ITodoItemAddedEvent {
   type: 'add-todo';
-  item: ITodoItem;
+  item: IDBTodoItem;
 }
 
 export interface ITodoItemUpdatedEvent {
   type: 'update-todo';
-  item: ITodoItem;
+  item: IDBTodoItem;
 }
 
 export interface ITodoItemDeletedEvent {

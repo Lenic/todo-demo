@@ -1,14 +1,16 @@
 'use server';
 
-import type { ICreatedTodoItem, ITodoItem, ITodoListQueryArgs } from '@todo/interface';
+import type { IDBCreatedTodoItem, IDBTodoItem } from '@/services/api';
+import type { ITodoListQueryArgs } from '@todo/interface';
 
 import { ServiceLocator } from '@todo/container';
-import { IDataStorageService } from '@todo/interface';
-import { combineLatest, concatMap, firstValueFrom } from 'rxjs';
+import { concatMap, firstValueFrom } from 'rxjs';
+
+import { IDBDataStorageService } from '@/services/api';
 
 import { publish } from './notifications';
 
-const getService = () => ServiceLocator.default.get(IDataStorageService);
+const getService = () => ServiceLocator.default.get(IDBDataStorageService);
 
 export async function queryTodoList(args: ITodoListQueryArgs) {
   const list$ = getService().query(args);
@@ -16,26 +18,38 @@ export async function queryTodoList(args: ITodoListQueryArgs) {
   return firstValueFrom(list$);
 }
 
-export async function addTodoItem(partialItem: ICreatedTodoItem) {
-  const item$ = combineLatest([getService().add(partialItem), publish()]).pipe(
-    concatMap(([item, fn]) => fn({ type: 'add-todo', item }, item)),
+export async function addTodoItem(partialItem: IDBCreatedTodoItem) {
+  const item$ = publish().pipe(
+    concatMap(({ userId, sync }) =>
+      getService()
+        .add({ ...partialItem, createdBy: userId, updatedBy: userId })
+        .pipe(concatMap((item) => sync({ type: 'add-todo', item }, item))),
+    ),
   );
 
   return firstValueFrom(item$);
 }
 
-export async function updateTodoItem(wholeItem: ITodoItem) {
-  const item$ = combineLatest([getService().update(wholeItem), publish()]).pipe(
-    concatMap(([item, fn]) => fn({ type: 'update-todo', item }, item)),
+export async function updateTodoItem(wholeItem: IDBTodoItem) {
+  const item$ = publish().pipe(
+    concatMap(({ userId, sync }) =>
+      getService()
+        .update({ ...wholeItem, updatedBy: userId })
+        .pipe(concatMap((item) => sync({ type: 'update-todo', item }, item))),
+    ),
   );
 
   return firstValueFrom(item$);
 }
 
 export async function deleteTodoItem(id: string) {
-  const item$ = combineLatest([getService().delete(id), publish()]).pipe(
-    concatMap(([, fn]) => fn({ type: 'delete-todo', id }, void 0)),
+  const res$ = publish().pipe(
+    concatMap(({ sync }) =>
+      getService()
+        .delete(id)
+        .pipe(concatMap(() => sync({ type: 'delete-todo', id }, void 0))),
+    ),
   );
 
-  return firstValueFrom(item$);
+  return firstValueFrom(res$);
 }

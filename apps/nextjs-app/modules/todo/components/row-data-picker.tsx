@@ -1,7 +1,6 @@
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { IDataService } from '@todo/interface';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, Loader2 } from 'lucide-react';
 import { useState } from 'react';
@@ -12,6 +11,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useLoading, useMounted } from '@/hooks';
 import { cn } from '@/lib/utils';
+import { IDBDataService } from '@/services/resources';
 
 export interface IRowDatePickerProps {
   id: string;
@@ -22,7 +22,7 @@ export interface IRowDatePickerProps {
 
 export const RowDatePicker: FC<IRowDatePickerProps> = ({ id, value, className, formatString }) => {
   const [open, setOpen] = useState(false);
-  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
+  const [dataService] = useState(() => ServiceLocator.default.get(IDBDataService));
 
   const [loading, handleChangeDate] = useLoading((value?: Date) =>
     dataService.dataMapper$.pipe(

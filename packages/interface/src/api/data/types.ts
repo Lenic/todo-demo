@@ -32,11 +32,14 @@ export interface ITodoListQueryArgs {
   limit: number;
 }
 
-export interface IDataStorageService {
-  query(args: ITodoListQueryArgs): Observable<ITodoItem[]>;
+export interface IDataStorageService<
+  TCreatedItem extends ICreatedTodoItem = ICreatedTodoItem,
+  IItem extends ITodoItem = ITodoItem,
+> {
+  query(args: ITodoListQueryArgs): Observable<IItem[]>;
 
-  add(item: ICreatedTodoItem): Observable<ITodoItem>;
-  update(item: ITodoItem): Observable<ITodoItem>;
+  add(item: TCreatedItem): Observable<IItem>;
+  update(item: IItem): Observable<IItem>;
   delete(id: string): Observable<void>;
 }
 export const IDataStorageService = createIdentifier<IDataStorageService>(Symbol('IDataStorageService'));

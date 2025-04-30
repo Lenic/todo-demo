@@ -4,7 +4,7 @@ import type { ETodoListType } from '@todo/interface';
 import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
-import { areArraysEqual, IDataService } from '@todo/interface';
+import { areArraysEqual } from '@todo/interface';
 import { memo, useMemo, useRef, useState } from 'react';
 import ContentLoader from 'react-content-loader';
 import { of } from 'rxjs';
@@ -12,6 +12,7 @@ import { delay, distinctUntilChanged, map, pairwise, startWith, switchMap } from
 
 import { useMounted, useObservableState } from '@/hooks';
 import { getElementResize$ } from '@/lib/utils';
+import { IDBDataService } from '@/services/resources';
 
 export interface ILoadingSketchProps {
   type: ETodoListType;
@@ -21,7 +22,7 @@ const defaultRowWidth = [364, 300, 332] as [number, number, number];
 
 const LoadingSketchCore: FC<ILoadingSketchProps> = ({ type }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dataService] = useState(() => ServiceLocator.default.get(IDataService));
+  const [dataService] = useState(() => ServiceLocator.default.get(IDBDataService));
 
   const rowWidth = useObservableState(
     useMemo(
