@@ -49,6 +49,7 @@ export default [
       ...react.configs['jsx-runtime'].rules,
       'react-refresh/only-export-components': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
     },
   },
   // ...compat.extends('next/core-web-vitals', 'next/typescript'),
