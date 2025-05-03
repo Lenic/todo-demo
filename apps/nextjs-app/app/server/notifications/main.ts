@@ -5,7 +5,7 @@ import Pusher from 'pusher';
 import { combineLatest, filter, from, map } from 'rxjs';
 
 import { auth } from '@/auth';
-import { PUSHER_EVENT } from '@/constants';
+import { PUSHER_EVENT, SOCKET_ID_HEADER_KEY } from '@/constants';
 
 const pusher = new Pusher({
   appId: process.env.PUSHER_ID,
@@ -21,7 +21,7 @@ export const publish = () =>
       map((session) => session?.user?.id ?? ''),
       filter((v) => !!v),
     ),
-    from(headers()).pipe(map((store) => store.get('Socket-Id') ?? '')),
+    from(headers()).pipe(map((store) => store.get(SOCKET_ID_HEADER_KEY) ?? '')),
   ]).pipe(
     map(([userId, clientId]) => ({
       userId,
