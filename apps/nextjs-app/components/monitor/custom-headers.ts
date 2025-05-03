@@ -1,6 +1,6 @@
 import { firstValueFrom } from 'rxjs';
 
-import { SOCKET_ID_HEADER_KEY } from '@/constants';
+import { SOCKET_ID_HEADER_KEY, TIME_ZONE_HEADER_KEY } from '@/constants';
 
 import { socketIdSubject } from './constants';
 
@@ -13,7 +13,11 @@ if (typeof window !== 'undefined') {
         const socketId = await firstValueFrom(socketIdSubject);
         return await originalFetch(input, {
           ...init,
-          headers: { ...init.headers, [SOCKET_ID_HEADER_KEY]: socketId },
+          headers: {
+            ...init.headers,
+            [SOCKET_ID_HEADER_KEY]: socketId,
+            [TIME_ZONE_HEADER_KEY]: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          },
         });
       }
     }

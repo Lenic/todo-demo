@@ -33,16 +33,10 @@ import { TodoItem } from './item';
 
 export interface ITodoListProps {
   type: ETodoListType;
-  data?: IDBTodoItem[];
 }
 
-let isFirstLoading = true;
-export const TodoList: FC<ITodoListProps> = ({ type, data }) => {
+export const TodoList: FC<ITodoListProps> = ({ type }) => {
   const [dataService] = useState(() => ServiceLocator.default.get(IDBDataService));
-  if (isFirstLoading) {
-    isFirstLoading = false;
-    dataService.append(data ?? []);
-  }
 
   const ids$ = useMemo(
     () =>

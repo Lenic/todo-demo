@@ -7,13 +7,19 @@ import type { Observable } from 'rxjs';
 import { Disposable } from '@todo/container';
 import { ETodoListType, ETodoStatus } from '@todo/interface';
 import dayjs from 'dayjs';
-import { sql } from 'drizzle-orm';
-import { and, desc, eq, gte, isNotNull, isNull, lt, or } from 'drizzle-orm';
-import { concatMap, filter, from, map, toArray } from 'rxjs';
+import timeZonePlugin from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import { and, desc, eq, gte, isNotNull, isNull, lt, or, sql } from 'drizzle-orm';
+import { headers } from 'next/headers';
+import { combineLatest, concatMap, filter, from, map, toArray } from 'rxjs';
 
 import { auth } from '@/auth';
+import { TIME_ZONE_HEADER_KEY } from '@/constants';
 
 import { todoTable } from '../schema';
+
+dayjs.extend(utc);
+dayjs.extend(timeZonePlugin);
 
 class PostgreSQLDataStorageService extends Disposable implements IDataStorageService<IDBCreatedTodoItem, IDBTodoItem> {
   constructor(private db: IPostgreSQLConnectionService) {
@@ -21,30 +27,42 @@ class PostgreSQLDataStorageService extends Disposable implements IDataStorageSer
   }
 
   query(args: ITodoListQueryArgs): Observable<IDBTodoItem[]> {
-    const todayStartTimeValue = dayjs().startOf('day').valueOf();
-
-    let operator: SQL | undefined = undefined;
-    if (args.type === ETodoListType.PENDING) {
-      operator = and(
-        eq(todoTable.status, ETodoStatus.PENDING),
-        or(
-          isNull(todoTable.overdueAt),
-          and(isNotNull(todoTable.overdueAt), gte(todoTable.overdueAt, todayStartTimeValue)),
-        ),
-      );
-    } else if (args.type === ETodoListType.OVERDUE) {
-      operator = and(
-        eq(todoTable.status, ETodoStatus.PENDING),
-        and(isNotNull(todoTable.overdueAt), lt(todoTable.overdueAt, todayStartTimeValue)),
-      );
-    } else {
-      operator = eq(todoTable.status, ETodoStatus.DONE);
-    }
-
-    return from(auth()).pipe(
-      map((v) => v?.user?.id ?? ''),
+    const operator$ = from(headers()).pipe(
+      map((store) => store.get(TIME_ZONE_HEADER_KEY) ?? ''),
       filter((v) => !!v),
-      concatMap((userId) => {
+      map((timeZone) => {
+        const todayStartTimeValue = dayjs().tz(timeZone, true).startOf('day').valueOf();
+
+        let operator: SQL | undefined = undefined;
+        if (args.type === ETodoListType.PENDING) {
+          operator = and(
+            eq(todoTable.status, ETodoStatus.PENDING),
+            or(
+              isNull(todoTable.overdueAt),
+              and(isNotNull(todoTable.overdueAt), gte(todoTable.overdueAt, todayStartTimeValue)),
+            ),
+          );
+        } else if (args.type === ETodoListType.OVERDUE) {
+          operator = and(
+            eq(todoTable.status, ETodoStatus.PENDING),
+            and(isNotNull(todoTable.overdueAt), lt(todoTable.overdueAt, todayStartTimeValue)),
+          );
+        } else {
+          operator = eq(todoTable.status, ETodoStatus.DONE);
+        }
+
+        return operator;
+      }),
+    );
+
+    return combineLatest([
+      from(auth()).pipe(
+        map((v) => v?.user?.id ?? ''),
+        filter((v) => !!v),
+      ),
+      operator$,
+    ]).pipe(
+      concatMap(([userId, operator]) => {
         const res = this.db.instance
           .select()
           .from(todoTable)
