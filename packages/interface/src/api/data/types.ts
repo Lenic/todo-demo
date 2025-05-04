@@ -35,8 +35,9 @@ export interface ITodoListQueryArgs {
 export interface IDataStorageService<
   TCreatedItem extends ICreatedTodoItem = ICreatedTodoItem,
   IItem extends ITodoItem = ITodoItem,
+  IQueryArgs extends ITodoListQueryArgs = ITodoListQueryArgs,
 > {
-  query(args: ITodoListQueryArgs): Observable<IItem[]>;
+  query(args: IQueryArgs): Observable<IItem[]>;
 
   add(item: TCreatedItem): Observable<IItem>;
   update(item: IItem): Observable<IItem>;

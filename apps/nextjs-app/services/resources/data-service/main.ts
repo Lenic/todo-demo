@@ -1,5 +1,5 @@
-import type { IDBCreatedTodoItem, IDBTodoItem } from '../../api';
-import type { IDataService, ITodoListQueryArgs } from '@todo/interface';
+import type { IDBCreatedTodoItem, IDBTodoItem, IDBTodoListQueryArgs } from '../../api';
+import type { IDataService } from '@todo/interface';
 import type { Observable } from 'rxjs';
 
 import { Disposable } from '@todo/container';
@@ -69,7 +69,12 @@ class DataService extends Disposable implements IDataService<IDBTodoItem> {
     } else {
       this.loadingSubject.next(type);
 
-      const args: ITodoListQueryArgs = { type, limit: TODO_LIST_PAGE_SIZE, offset: this.ids[type].length };
+      const args: IDBTodoListQueryArgs = {
+        type,
+        limit: TODO_LIST_PAGE_SIZE,
+        offset: this.ids[type].length,
+        todyZero: dayjs().startOf('day').valueOf(),
+      };
       console.log(args);
       return from(queryTodoList(args)).pipe(
         map((list) => {

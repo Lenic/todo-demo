@@ -1,6 +1,6 @@
 import { firstValueFrom } from 'rxjs';
 
-import { SOCKET_ID_HEADER_KEY, TIME_ZONE_HEADER_KEY } from '@/constants';
+import { SOCKET_ID_HEADER_KEY } from '@/constants';
 
 import { socketIdSubject } from './constants';
 
@@ -16,7 +16,6 @@ if (typeof window !== 'undefined') {
           headers: {
             ...init.headers,
             [SOCKET_ID_HEADER_KEY]: socketId,
-            [TIME_ZONE_HEADER_KEY]: Intl.DateTimeFormat().resolvedOptions().timeZone,
           },
         });
       }

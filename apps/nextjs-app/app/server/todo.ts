@@ -1,7 +1,6 @@
 'use server';
 
-import type { IDBCreatedTodoItem, IDBTodoItem } from '@/services/api';
-import type { ITodoListQueryArgs } from '@todo/interface';
+import type { IDBCreatedTodoItem, IDBTodoItem, IDBTodoListQueryArgs } from '@/services/api';
 
 import { ServiceLocator } from '@todo/container';
 import { concatMap, firstValueFrom } from 'rxjs';
@@ -12,7 +11,7 @@ import { publish } from './notifications';
 
 const getService = () => ServiceLocator.default.get(IDBDataStorageService);
 
-export async function queryTodoList(args: ITodoListQueryArgs) {
+export async function queryTodoList(args: IDBTodoListQueryArgs) {
   const list$ = getService().query(args);
 
   return firstValueFrom(list$);
