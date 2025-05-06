@@ -1,7 +1,11 @@
+'use server';
+
 import { register } from '@todo/container';
 
 import {
+  DrizzleAdapter,
   IDBDataStorageService,
+  INextAuthAdapter,
   IPostgreSQLConnectionService,
   ISystemDictionaryService,
   PostgreSQLConnectionService,
@@ -10,5 +14,6 @@ import {
 } from './api';
 
 register(IPostgreSQLConnectionService, PostgreSQLConnectionService);
-register(IDBDataStorageService, PostgreSQLDataStorageService, [IPostgreSQLConnectionService]);
+register(INextAuthAdapter, DrizzleAdapter, [IPostgreSQLConnectionService]);
 register(ISystemDictionaryService, SystemDictionaryService, [IPostgreSQLConnectionService]);
+register(IDBDataStorageService, PostgreSQLDataStorageService, [IPostgreSQLConnectionService]);

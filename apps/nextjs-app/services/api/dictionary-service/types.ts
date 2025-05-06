@@ -14,7 +14,7 @@ export interface ISystemDictionaryItem extends ICreatedSystemDictionaryItem, IIt
 }
 
 export interface ISystemDictionaryService {
-  get(key: string): Observable<ISystemDictionaryItem | undefined>;
+  get(key: string, userId: string): Observable<ISystemDictionaryItem | undefined>;
 
   add(item: ICreatedSystemDictionaryItem): Observable<ISystemDictionaryItem>;
   update(item: ISystemDictionaryItem): Observable<ISystemDictionaryItem>;

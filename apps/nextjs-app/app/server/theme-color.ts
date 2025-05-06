@@ -16,7 +16,7 @@ export async function getThemeColor() {
 
   const color$ = publish().pipe(
     concatMap(({ userId }) =>
-      service.get(THEME_COLOR_KEY).pipe(
+      service.get(THEME_COLOR_KEY, userId).pipe(
         concatMap((item) => {
           if (item) return of(item);
 
@@ -42,7 +42,7 @@ export async function setThemeColor(theme: EThemeColor) {
   return firstValueFrom(
     publish().pipe(
       concatMap(({ userId, sync }) =>
-        service.get(THEME_COLOR_KEY).pipe(
+        service.get(THEME_COLOR_KEY, userId).pipe(
           concatMap((item) => {
             if (item) {
               return item.value === theme.toString()

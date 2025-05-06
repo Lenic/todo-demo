@@ -10,6 +10,7 @@ export interface IDBTodoItem extends ITodoItem, IItem {}
 
 export interface IDBTodoListQueryArgs extends ITodoListQueryArgs {
   todyZero: number;
+  userId: string;
 }
 
 export const IDBDataStorageService = createIdentifier<

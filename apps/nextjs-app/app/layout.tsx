@@ -1,5 +1,4 @@
 import '@/services/register-server';
-import '@/services/register-client';
 
 import type { Metadata } from 'next';
 

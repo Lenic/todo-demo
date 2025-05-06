@@ -11,8 +11,8 @@ import { publish } from './notifications';
 
 const getService = () => ServiceLocator.default.get(IDBDataStorageService);
 
-export async function queryTodoList(args: IDBTodoListQueryArgs) {
-  const list$ = getService().query(args);
+export async function queryTodoList(args: Omit<IDBTodoListQueryArgs, 'userId'>) {
+  const list$ = publish().pipe(concatMap(({ userId }) => getService().query({ ...args, userId })));
 
   return firstValueFrom(list$);
 }

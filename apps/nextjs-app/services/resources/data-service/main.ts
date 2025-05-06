@@ -69,7 +69,7 @@ class DataService extends Disposable implements IDataService<IDBTodoItem> {
     } else {
       this.loadingSubject.next(type);
 
-      const args: IDBTodoListQueryArgs = {
+      const args: Omit<IDBTodoListQueryArgs, 'userId'> = {
         type,
         limit: TODO_LIST_PAGE_SIZE,
         offset: this.ids[type].length,

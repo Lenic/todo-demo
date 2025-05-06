@@ -10,9 +10,7 @@ import dayjs from 'dayjs';
 import timeZonePlugin from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { and, desc, eq, gte, isNotNull, isNull, lt, or, sql } from 'drizzle-orm';
-import { concatMap, filter, from, map, toArray } from 'rxjs';
-
-import { auth } from '@/auth';
+import { concatMap, from, map, toArray } from 'rxjs';
 
 import { todoTable } from '../schema';
 
@@ -43,21 +41,15 @@ class PostgreSQLDataStorageService
       operator = eq(todoTable.status, ETodoStatus.DONE);
     }
 
-    return from(auth()).pipe(
-      map((v) => v?.user?.id ?? ''),
-      filter((v) => !!v),
-      concatMap((userId) => {
-        const res = this.db.instance
-          .select()
-          .from(todoTable)
-          .where(and(operator, eq(todoTable.createdBy, userId)))
-          .offset(args.offset)
-          .limit(args.limit)
-          .orderBy(desc(args.type !== ETodoListType.ARCHIVE ? todoTable.updatedAt : todoTable.createdAt));
+    const res = this.db.instance
+      .select()
+      .from(todoTable)
+      .where(and(operator, eq(todoTable.createdBy, args.userId)))
+      .offset(args.offset)
+      .limit(args.limit)
+      .orderBy(desc(args.type !== ETodoListType.ARCHIVE ? todoTable.updatedAt : todoTable.createdAt));
 
-        return this.convertToDomain(res);
-      }),
-    );
+    return this.convertToDomain(res);
   }
 
   add(item: IDBCreatedTodoItem): Observable<IDBTodoItem> {

@@ -6,7 +6,8 @@
   "scripts": {
     "i18n": "tsx ./i18n/core",
     "db:init": "drizzle-kit push",
-    "dev": "next dev --turbopack",
+    "dev": "NODE_OPTIONS='--inspect' next dev --turbopack",
+    "debug": "NODE_OPTIONS='--inspect-brk' next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -47,6 +48,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@auth/core": "^0.39.0",
     "@auth/neon-adapter": "^1.9.0",
     "@eslint/eslintrc": "^3",
     "@neondatabase/serverless": "^1.0.0",

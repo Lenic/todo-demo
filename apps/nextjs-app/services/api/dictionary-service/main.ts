@@ -5,30 +5,22 @@ import type { Observable } from 'rxjs';
 import { Disposable } from '@todo/container';
 import { sql } from 'drizzle-orm';
 import { and, eq } from 'drizzle-orm';
-import { concatMap, filter, from, map, toArray } from 'rxjs';
-
-import { auth } from '@/auth';
+import { concatMap, from, map, toArray } from 'rxjs';
 
 import { systemDictionaryTable } from '../schema';
 
-class SystemDictionaryService extends Disposable implements ISystemDictionaryService {
+export class SystemDictionaryService extends Disposable implements ISystemDictionaryService {
   constructor(private db: IPostgreSQLConnectionService) {
     super();
   }
 
-  get(key: string): Observable<ISystemDictionaryItem | undefined> {
-    return from(auth()).pipe(
-      map((v) => v?.user?.id ?? ''),
-      filter((v) => !!v),
-      concatMap((userId) => {
-        const res = this.db.instance
-          .select()
-          .from(systemDictionaryTable)
-          .where(and(eq(systemDictionaryTable.key, key), eq(systemDictionaryTable.userId, userId)));
+  get(key: string, userId: string): Observable<ISystemDictionaryItem | undefined> {
+    const res = this.db.instance
+      .select()
+      .from(systemDictionaryTable)
+      .where(and(eq(systemDictionaryTable.key, key), eq(systemDictionaryTable.userId, userId)));
 
-        return this.convertToDomain(res).pipe(map((list) => list[0]));
-      }),
-    );
+    return this.convertToDomain(res).pipe(map((list) => list[0]));
   }
 
   add(item: ICreatedSystemDictionaryItem): Observable<ISystemDictionaryItem> {
@@ -82,4 +74,4 @@ class SystemDictionaryService extends Disposable implements ISystemDictionarySer
     );
   }
 }
-export { SystemDictionaryService };
+// export { SystemDictionaryService };

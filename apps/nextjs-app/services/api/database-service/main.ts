@@ -1,23 +1,14 @@
 import type { IPostgreSQLConnectionService } from './types';
 
-import { Disposable } from '@todo/container';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
+import { Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 
-class PostgreSQLConnectionService extends Disposable implements IPostgreSQLConnectionService {
+class PostgreSQLConnectionService implements IPostgreSQLConnectionService {
   instance: ReturnType<typeof drizzle>;
 
   constructor() {
-    super();
-
-    // Disable prefetch as it is not supported for "Transaction" pool mode
-    const client = postgres(process.env.DATABASE_URL, { prepare: false });
-    this.instance = drizzle(client);
-    this.disposeWithMe(() => {
-      this.instance.$client.end().catch((e: unknown) => {
-        console.error('close database error', e);
-      });
-    });
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    this.instance = drizzle({ client: pool });
   }
 }
 
