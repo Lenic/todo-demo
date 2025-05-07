@@ -2,7 +2,7 @@
 
 import type { Observable } from 'rxjs';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export const defaultEqualComparer = <T>(prev: T, next: T) => prev === next;
 
@@ -14,18 +14,23 @@ export function useObservableState<T>(
   const [state, setState] = useState(valueOrGetter);
   const currentValueRef = useRef(state);
 
-  useEffect(() => {
-    const subscription = source$.subscribe((value) => {
-      if (comparer(currentValueRef.current, value)) return;
+  const subscription = useMemo(
+    () =>
+      source$.subscribe((value) => {
+        if (comparer(currentValueRef.current, value)) return;
 
-      currentValueRef.current = value;
-      setState(value);
-    });
+        currentValueRef.current = value;
+        setState(value);
+      }),
+    [source$, comparer],
+  );
 
-    return () => {
+  useEffect(
+    () => () => {
       subscription.unsubscribe();
-    };
-  }, [source$, comparer]);
+    },
+    [subscription],
+  );
 
   return state;
 }
