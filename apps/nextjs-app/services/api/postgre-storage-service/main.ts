@@ -6,16 +6,10 @@ import type { Observable } from 'rxjs';
 
 import { Disposable } from '@todo/container';
 import { ETodoListType, ETodoStatus } from '@todo/interface';
-import dayjs from 'dayjs';
-import timeZonePlugin from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
 import { and, desc, eq, gte, isNotNull, isNull, lt, or, sql } from 'drizzle-orm';
-import { concatMap, from, map, toArray } from 'rxjs';
+import { from, map } from 'rxjs';
 
 import { todoTable } from '../schema';
-
-dayjs.extend(utc);
-dayjs.extend(timeZonePlugin);
 
 class PostgreSQLDataStorageService
   extends Disposable
@@ -67,10 +61,12 @@ class PostgreSQLDataStorageService
   }
 
   update(item: IDBTodoItem): Observable<IDBTodoItem> {
+    const { createdAt: _at, createdBy: _by, ...rest } = item;
+
     const res = this.db.instance
       .update(todoTable)
       .set({
-        ...item,
+        ...rest,
         description: item.description ?? null,
         overdueAt: item.overdueAt ?? null,
         updatedAt: sql`EXTRACT(EPOCH FROM NOW()) * 1000`,
@@ -88,25 +84,7 @@ class PostgreSQLDataStorageService
   }
 
   private convertToDomain(waitList: Promise<(typeof todoTable.$inferSelect)[]>): Observable<IDBTodoItem[]> {
-    return from(waitList).pipe(
-      concatMap((list) =>
-        from(list).pipe(
-          map(
-            (item) =>
-              ({
-                createdAt: item.createdAt ?? undefined,
-                id: item.id,
-                status: item.status ?? undefined,
-                title: item.title,
-                updatedAt: item.updatedAt ?? undefined,
-                description: item.description ?? undefined,
-                overdueAt: item.overdueAt ?? undefined,
-              }) as IDBTodoItem,
-          ),
-          toArray(),
-        ),
-      ),
-    );
+    return from(waitList).pipe(map((list) => list as IDBTodoItem[]));
   }
 }
 

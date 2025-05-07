@@ -5,7 +5,7 @@ import type { Observable } from 'rxjs';
 import { Disposable } from '@todo/container';
 import { sql } from 'drizzle-orm';
 import { and, eq } from 'drizzle-orm';
-import { concatMap, from, map, toArray } from 'rxjs';
+import { from, map } from 'rxjs';
 
 import { systemDictionaryTable } from '../schema';
 
@@ -39,9 +39,11 @@ export class SystemDictionaryService extends Disposable implements ISystemDictio
   }
 
   update(item: ISystemDictionaryItem): Observable<ISystemDictionaryItem> {
+    const { createdAt: _at, createdBy: _by, ...rest } = item;
+
     const res = this.db.instance
       .update(systemDictionaryTable)
-      .set({ ...item, updatedAt: sql`EXTRACT(EPOCH FROM NOW()) * 1000` })
+      .set({ ...rest, updatedAt: sql`EXTRACT(EPOCH FROM NOW()) * 1000` })
       .where(eq(systemDictionaryTable.id, item.id))
       .returning();
 
@@ -57,21 +59,7 @@ export class SystemDictionaryService extends Disposable implements ISystemDictio
   private convertToDomain(
     waitList: Promise<(typeof systemDictionaryTable.$inferSelect)[]>,
   ): Observable<ISystemDictionaryItem[]> {
-    return from(waitList).pipe(
-      concatMap((list) =>
-        from(list).pipe(
-          map(
-            (v) =>
-              ({
-                id: v.id,
-                key: v.key,
-                value: v.value,
-              }) as ISystemDictionaryItem,
-          ),
-          toArray(),
-        ),
-      ),
-    );
+    return from(waitList).pipe(map((list) => list as ISystemDictionaryItem[]));
   }
 }
 // export { SystemDictionaryService };
