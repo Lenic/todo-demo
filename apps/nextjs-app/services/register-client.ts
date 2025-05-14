@@ -3,7 +3,8 @@
 import { register } from '@todo/container';
 import { IThemeService } from '@todo/interface';
 
-import { DataService, IDBDataService, ThemeService } from './resources';
+import { ContactService, DataService, IContactService, IDBDataService, ThemeService } from './resources';
 
 register(IDBDataService, DataService);
 register(IThemeService, ThemeService);
+register(IContactService, ContactService);

@@ -1,4 +1,4 @@
-import type { ISystemDictionaryItem } from '@/services/api';
+import type { IContactItem, ISystemDictionaryItem } from '@/services/api';
 import type { IDBTodoItem } from '@/services/api';
 
 export interface ITodoItemAddedEvent {
@@ -18,12 +18,29 @@ export interface ITodoItemDeletedEvent {
 
 export type TTodoItemChangedEvent = ITodoItemAddedEvent | ITodoItemUpdatedEvent | ITodoItemDeletedEvent;
 
+export interface IContactItemAddedEvent {
+  type: 'add-contact';
+  item: IContactItem;
+}
+
+export interface IContactItemUpdatedEvent {
+  type: 'update-contact';
+  item: IContactItem;
+}
+
+export interface IContactItemDeletedEvent {
+  type: 'delete-contact';
+  id: string;
+}
+
+export type TContactItemChangedEvent = IContactItemAddedEvent | IContactItemUpdatedEvent | IContactItemDeletedEvent;
+
 export interface ISystemDictionaryUpdatedEvent {
   type: 'set-system-dictionary-item';
   item: ISystemDictionaryItem;
 }
 
-export type TItemChangedEvent = TTodoItemChangedEvent | ISystemDictionaryUpdatedEvent;
+export type TItemChangedEvent = TTodoItemChangedEvent | ISystemDictionaryUpdatedEvent | TContactItemChangedEvent;
 
 export interface IChangedItemInfo {
   clientId: string;

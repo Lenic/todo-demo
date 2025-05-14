@@ -16,6 +16,13 @@ import {
 
 export const todoStatusEnum = pgEnum('TodoStatus', ['PENDING', 'DONE']);
 
+const basicItem = {
+  createdBy: uuid().notNull(),
+  createdAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
+  updatedBy: uuid().notNull(),
+  updatedAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
+};
+
 export const todoTable = pgTable(
   'todo-list',
   {
@@ -23,11 +30,8 @@ export const todoTable = pgTable(
     overdueAt: bigint({ mode: 'number' }),
     id: uuid().defaultRandom().primaryKey().unique(),
     description: text(),
-    createdAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
     status: todoStatusEnum().default('PENDING'),
-    updatedAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
-    createdBy: uuid().notNull(),
-    updatedBy: uuid().notNull(),
+    ...basicItem,
   },
   (table) => [index('createdAt_idx').on(table.createdAt), index('updatedAt_idx').on(table.updatedAt)],
 );
@@ -37,10 +41,18 @@ export const systemDictionaryTable = pgTable('system-dictionary', {
   key: varchar({ length: 255 }).notNull(),
   value: text().notNull(),
   userId: uuid().notNull(),
-  createdBy: uuid().notNull(),
-  createdAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
-  updatedBy: uuid().notNull(),
-  updatedAt: bigint({ mode: 'number' }).default(sql`EXTRACT(EPOCH FROM NOW()) * 1000`),
+  ...basicItem,
+});
+
+export const contactTable = pgTable('contact-list', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  alias: varchar('alias', { length: 255 }),
+  name: varchar('name', { length: 255 }).notNull(),
+  email: varchar('name', { length: 255 }).notNull(),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => usersTable.id, { onDelete: 'cascade' }),
+  ...basicItem,
 });
 
 export const usersTable = pgTable(
