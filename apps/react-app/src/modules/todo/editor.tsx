@@ -8,6 +8,7 @@ import { useCallback, useEffect, useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { EMPTY, firstValueFrom } from 'rxjs';
 import { catchError, concatMap, filter, finalize, map, take } from 'rxjs/operators';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -17,7 +18,6 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/hooks/use-toast';
 import { useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
@@ -90,11 +90,11 @@ export const TodoItemEditor: FC<ITodoItemEditorProps> = ({ id, open, onOpenChang
             })
             .pipe(
               finalize(() => {
-                toast({ title: t('update-success'), duration: 1_000 });
+                toast(t('update-success'), { duration: 1_000 });
                 onOpenChange(false);
               }),
               catchError(() => {
-                toast({ title: t('update-failure'), duration: 0 });
+                toast(t('update-failure'), { duration: 0 });
                 return EMPTY;
               }),
             ),
