@@ -35,7 +35,7 @@
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-resources-to-backend": "^1.2.1",
     "immer": "catalog:",
-    "lucide-react": "^0.446.0",
+    "lucide-react": "^0.535.0",
     "nanoid": "catalog:",
     "next-themes": "^0.4.6",
     "react": "^19.1.1",
