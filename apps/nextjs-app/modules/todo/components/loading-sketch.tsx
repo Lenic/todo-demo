@@ -5,10 +5,10 @@ import type { FC } from 'react';
 
 import { ServiceLocator } from '@todo/container';
 import { areArraysEqual } from '@todo/interface';
-import { memo, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import ContentLoader from 'react-content-loader';
-import { of } from 'rxjs';
-import { delay, distinctUntilChanged, map, pairwise, startWith, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
+import { delay, distinctUntilChanged, filter, map, pairwise, startWith, switchMap } from 'rxjs/operators';
 
 import { useMounted, useObservableState } from '@/hooks';
 import { getElementResize$ } from '@/lib/utils';
@@ -22,18 +22,30 @@ const defaultRowWidth = [364, 300, 332] as [number, number, number];
 
 const LoadingSketchCore: FC<ILoadingSketchProps> = ({ type }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [containerSubject] = useState(() => new BehaviorSubject<HTMLDivElement | null>(containerRef.current));
+  useEffect(() => {
+    containerSubject.next(containerRef.current);
+  });
+
   const [dataService] = useState(() => ServiceLocator.default.get(IDBDataService));
 
   const rowWidth = useObservableState(
     useMemo(
       () =>
-        dataService.ends$.pipe(
-          map((ends) => ends[type]),
-          distinctUntilChanged(),
-          switchMap((isEnd) =>
-            isEnd || !containerRef.current
+        combineLatest([
+          dataService.ends$.pipe(
+            map((ends) => ends[type]),
+            distinctUntilChanged(),
+          ),
+          containerSubject.pipe(
+            distinctUntilChanged(),
+            filter((v) => !!v),
+          ),
+        ]).pipe(
+          switchMap(([isEnd, container]) =>
+            isEnd
               ? of(defaultRowWidth)
-              : getElementResize$(containerRef.current, (v) => [v.clientWidth, v.clientHeight] as const).pipe(
+              : getElementResize$(container, (v) => [v.clientWidth, v.clientHeight] as const).pipe(
                   distinctUntilChanged((prev, curr) => prev[0] === curr[0] && prev[1] === curr[1]),
                   startWith([0, 0] as const),
                   pairwise(),
@@ -51,14 +63,14 @@ const LoadingSketchCore: FC<ILoadingSketchProps> = ({ type }) => {
                 ),
           ),
         ),
-      [type, dataService],
+      [type, dataService, containerSubject],
     ),
     defaultRowWidth,
     areArraysEqual,
   );
 
   const isMounted = useMounted();
-  if (!isMounted) return <div ref={containerRef}>Todo Item Loading Sketch</div>;
+  if (!isMounted) return <div ref={containerRef} />;
 
   return (
     <div ref={containerRef}>
