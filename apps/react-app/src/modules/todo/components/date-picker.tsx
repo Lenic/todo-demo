@@ -35,7 +35,7 @@ export const DatePicker: FC<IDatePickerProps> = ({ value, className, disabled, o
           variant="outline"
           disabled={disabled}
           className={cn(
-            'w-[8.75rem] justify-start text-left font-normal',
+            'w-35 justify-start text-left font-normal',
             !value && 'text-muted-foreground',
             className,
           )}

@@ -7,13 +7,13 @@ import { Loader2 } from 'lucide-react';
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { asyncScheduler, observeOn, tap } from 'rxjs';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useLoading } from '@/hooks';
-import { toast } from '@/hooks/use-toast';
 import { language$, useIntl } from '@/i18n';
 
 import { DatePicker } from './components/date-picker';
@@ -52,7 +52,7 @@ const CreateNewTaskCore: FC = () => {
       })
       .pipe(
         tap(() => {
-          toast({ title: t('create-success'), duration: 1_000 });
+          toast(t('create-success'), { duration: 1_000 });
           reset();
         }),
         observeOn(asyncScheduler),
@@ -64,10 +64,7 @@ const CreateNewTaskCore: FC = () => {
 
   return (
     <Form {...form}>
-      <form
-        className="h-[4.25rem] relative flex flex-row space-x-2"
-        onSubmit={(e) => void handleSubmit(handleEvent)(e)}
-      >
+      <form className="h-17 relative flex flex-row space-x-2" onSubmit={(e) => void handleSubmit(handleEvent)(e)}>
         <FormField
           control={form.control}
           name="title"

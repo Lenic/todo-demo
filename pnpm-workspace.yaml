@@ -12,4 +12,9 @@ catalog:
   typescript-eslint: ^8.18.2
   vite: ^5.4.11
 onlyBuiltDependencies:
+  - '@swc/core'
+  - '@tailwindcss/oxide'
+  - esbuild
+  - sharp
   - unrs-resolver
+  - vue-demi
