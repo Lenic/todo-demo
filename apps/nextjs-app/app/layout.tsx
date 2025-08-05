@@ -3,6 +3,7 @@ import '@/services/register-server';
 import type { Metadata } from 'next';
 
 import { Geist, Geist_Mono } from 'next/font/google';
+import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 
@@ -30,14 +31,12 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const locale = await getLocale();
-  const color = await getThemeColor();
-  const session = await auth();
+  const [locale, color, session] = await Promise.all([getLocale(), getThemeColor(), auth()]);
 
   return (
     <html lang={locale} className={`theme-${color}`} suppressHydrationWarning>
       <head>
-        <script type="text/javascript" src="/theme.js" />
+        <Script type="text/javascript" src="/theme.js" strategy="beforeInteractive" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider>
