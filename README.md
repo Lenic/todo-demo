@@ -1,67 +1,67 @@
-# Todo Demo 项目集合
+# Todo Demo Project Collection
 
-这是一个包含多个前端框架实现的 Todo 应用演示项目集合，展示了不同技术栈在相同业务场景下的实现方式。
+A comprehensive collection of Todo applications built with different frontend frameworks, demonstrating how various technology stacks implement the same business requirements.
 
-## 项目概述
+## Project Overview
 
-本工作区包含以下四个主要项目，它们都实现了相同的 Todo 应用功能，但使用了不同的前端框架和技术栈：
+This workspace contains four main projects, each implementing identical Todo application functionality using different frontend frameworks and technology stacks:
 
-- **Next.js App** - 基于 Next.js 15 的 React 应用
-- **React App** - 基于 Vite 的 React 应用
-- **Solid App** - 基于 Solid.js 的应用
-- **Vue App** - 基于 Vue 3 的应用
+- **Next.js App**: React application built with Next.js 15
+- **React App**: React application built with Vite
+- **Solid App**: Application built with Solid.js
+- **Vue App**: Application built with Vue 3
 
-## 共同特性
+## Common Features
 
-所有项目都实现了以下核心功能：
+All projects implement the following core functionality:
 
-### 🎯 核心功能
+### 🎯 Core Features
 
-- Todo 项目的增删改查操作
-- 任务分类和状态管理
-- 截止日期管理
-- 国际化
-- 深色/浅色主题 + 多主题色
-- 基于 RxJS 的主动推送状态管理
+- Todo item CRUD operations
+- Task categorization and state management
+- Deadline management
+- Internationalization
+- Light/Dark theme + multiple theme colors
+- RxJS-based reactive state management with push notifications
 
-### 🎨 用户界面
+### 🎨 User Interface
 
-- 响应式设计，支持移动端和桌面端
-- 深色/浅色/跟随系统
-- 多语言支持
-- 现代化的 UI 组件库
-- 一致的用户体验
+- Responsive design supporting mobile and desktop
+- Light/Dark/Match system
+- Multi-language support
+- Modern UI component library
+- Consistent user experience
 
-### 🛠 技术特性
+### 🛠 Technical Features
 
-- TypeScript 支持
-- 组件化架构
-- 状态管理
-- 路由管理
-- 样式系统（Tailwind CSS）
-- 代码规范和 ESLint 配置
+- TypeScript support
+- Component-based architecture
+- State management
+- Routing
+- Styling system (Tailwind CSS)
+- Code standards and ESLint configuration
 
-## 项目详情
+## Project Details
 
-- `apps/nextjs-app/`: 基于 Next.js 15 的全栈应用，包含服务端渲染、API 路由、认证系统等企业级特性。
-- `apps/react-app/`: 使用 Vite 构建的现代 React 应用，专注于客户端渲染和快速开发体验。
-- `apps/solid-app/`: 基于 Solid.js 框架的应用，展示了响应式编程模型和虚拟化列表的性能优势。
-- `apps/vue-app/`: 使用 Vue 3 Composition API 构建的应用，展示了 Vue 生态系统的现代开发方式。
+- `apps/nextjs-app/`: Full-stack application built with Next.js 15, featuring server-side rendering, API routes, authentication system, and enterprise-level capabilities.
+- `apps/react-app/`: Modern React application built with Vite, focusing on client-side rendering and rapid development experience.
+- `apps/solid-app/`: Application built with Solid.js framework, showcasing reactive programming models and virtualized list performance advantages.
+- `apps/vue-app/`: Application built with Vue 3 Composition API, demonstrating modern development approaches within the Vue ecosystem.
 
-## 开发环境
+## Development Environment
 
-### 前置要求
+### Prerequisites
 
 - Node.js 22+
 - pnpm 10+
 
-### 安装依赖
+### Install Dependencies
 
 ```bash
 pnpm install
 ```
 
-### 启动开发服务器
+### Start Development Servers
 
 ```bash
 pnpm run dev:nextjs
@@ -70,7 +70,7 @@ pnpm run dev:solid
 pnpm run dev:vue
 ```
 
-### 构建项目
+### Build Projects
 
 ```bash
 pnpm run build:nextjs
@@ -78,45 +78,45 @@ pnpm run build:react
 pnpm run build:solid
 pnpm run build:vue
 
-# 预览必须在构建之后
+# Preview must be run after building
 pnpm run preview:nextjs
 pnpm run preview:react
 pnpm run preview:solid
 pnpm run preview:vue
 ```
 
-## 项目结构
+## Project Structure
 
 ```
 todo-demo/
-├── apps/                   # 应用项目
-│   ├── nextjs-app/         # Next.js应用
-│   ├── react-app/          # React应用
-│   ├── solid-app/          # Solid.js应用
-│   └── vue-app/            # Vue应用
-├── packages/               # 共享包
-│   ├── container/          # 依赖注入容器
-│   ├── controllers/        # 控制器层
-│   ├── indexed-db/         # IndexedDB服务
-│   └── interface/          # 接口定义
-└── README.md               # 项目说明文档
+├── apps/                   # Application projects
+│   ├── nextjs-app/         # Next.js application
+│   ├── react-app/          # React application
+│   ├── solid-app/          # Solid.js application
+│   └── vue-app/            # Vue application
+├── packages/               # Shared packages
+│   ├── container/          # Dependency injection container
+│   ├── controllers/        # Controller layer
+│   ├── indexed-db/         # IndexedDB service
+│   └── interface/          # Interface definitions
+└── README.md               # Project documentation
 ```
 
-## 技术栈对比
+## Technology Stack Comparison
 
-| 特性     | Next.js            | React              | Solid.js       | Vue                    |
-| -------- | ------------------ | ------------------ | -------------- | ---------------------- |
-| 框架     | Next.js 15         | React 19           | Solid.js 1.9   | Vue 3                  |
-| 构建工具 | Turbopack          | Vite               | Vite           | Vite                   |
-| 状态管理 | React Hooks + RxJS | React Hooks + RxJS | Signals + RxJS | Composition API + RxJS |
-| 样式     | Tailwind CSS       | Tailwind CSS       | Tailwind CSS   | Tailwind CSS           |
-| 类型检查 | TypeScript         | TypeScript         | TypeScript     | TypeScript             |
-| 路由     | Next.js Router     | React Router       | Solid Router   | Vue Router             |
+| Feature    | Next.js            | React              | Solid.js       | Vue                    |
+| ---------- | ------------------ | ------------------ | -------------- | ---------------------- |
+| Framework  | Next.js 15         | React 19           | Solid.js 1.9   | Vue 3                  |
+| Build Tool | Turbopack          | Vite               | Vite           | Vite                   |
+| State Mgmt | React Hooks + RxJS | React Hooks + RxJS | Signals + RxJS | Composition API + RxJS |
+| Styling    | Tailwind CSS       | Tailwind CSS       | Tailwind CSS   | Tailwind CSS           |
+| Type Check | TypeScript         | TypeScript         | TypeScript     | TypeScript             |
+| Routing    | Next.js Router     | React Router       | Solid Router   | Vue Router             |
 
-## 贡献指南
+## Contributing
 
-欢迎提交 Issue 和 Pull Request 来改进这个项目集合。
+We welcome Issues and Pull Requests to improve this project collection.
 
-## 许可证
+## License
 
-本项目采用 MIT 许可证。
+This project is licensed under the MIT License.

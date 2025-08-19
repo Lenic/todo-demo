@@ -1,275 +1,275 @@
-# Vue 3 Todo 应用
+# Vue 3 Todo Application
 
-使用 Vue 3 Composition API 构建的现代 Todo 应用，展示了 Vue 生态系统的现代开发方式。
+A modern Todo application built with Vue 3 Composition API, demonstrating modern development approaches within the Vue ecosystem.
 
-## 🚀 特性
+## 🚀 Features
 
-### 核心功能
+### Core Functionality
 
-- **完整的 Todo 管理**: 创建、编辑、删除、完成/取消完成任务
-- **任务分类和状态管理**: 支持截止日期设置和实时切换过期状态
-- **本地存储**: 使用IndexedDB进行数据持久化
-- **虚拟化列表**: 高性能的长列表渲染
+- **Complete Todo Management**: Create, edit, delete, complete/uncomplete tasks
+- **Task Categorization and State Management**: Support deadline settings and real-time expired status switching
+- **Local Storage**: Use IndexedDB for data persistence
+- **Virtualized Lists**: High-performance rendering for long lists
 
-### 技术特性
+### Technical Features
 
-- **Vue 3**: 最新的 Vue 框架，支持 Composition API
-- **TypeScript**: 完整的类型安全支持
-- **Vite**: 快速的构建工具和开发服务器
-- **Tailwind CSS**: 现代化的样式系统
-- **Composition API**: 更好的逻辑复用和类型推导
+- **Vue 3**: Latest Vue framework supporting Composition API
+- **TypeScript**: Complete type safety support
+- **Vite**: Fast build tool and development server
+- **Tailwind CSS**: Modern styling system
+- **Composition API**: Better logic reuse and type inference
 
-### 用户体验
+### User Experience
 
-- **响应式设计**: 支持移动端和桌面端
-- **主题切换**: 深色/浅色主题支持
-- **国际化**: 多语言支持（中文/英文/日文）
-- **流畅动画**: 基于 Vue Transition 的平滑过渡
+- **Responsive Design**: Support mobile and desktop
+- **Theme Switching**: Light/dark theme support
+- **Internationalization**: Multi-language support (Chinese/English/Japanese)
+- **Smooth Animations**: Smooth transitions based on Vue Transition
 
-## 🛠 技术栈
+## 🛠 Technology Stack
 
-- **框架**: Vue 3
-- **语言**: TypeScript
-- **构建工具**: Vite
-- **样式**: Tailwind CSS
-- **状态管理**: Vue 3 Composition API + RxJS
-- **路由**: Vue Router 4
-- **国际化**: Vue I18n
-- **代码规范**: ESLint + Prettier
-- **存储**: IndexedDB
-- **UI 组件**: shadcn/ui (Vue 版本)
+- **Framework**: Vue 3
+- **Language**: TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **State Management**: Vue 3 Composition API + RxJS
+- **Routing**: Vue Router 4
+- **Internationalization**: Vue I18n
+- **Code Standards**: ESLint + Prettier
+- **Storage**: IndexedDB
+- **UI Components**: shadcn/ui (Vue version)
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 vue-app/
-├── src/                     # 源代码
-│   ├── assets/              # 静态资源
-│   │   └── index.css        # 全局样式
-│   ├── components/          # 可复用组件
-│   │   └── ui/              # UI 基础组件
-│   ├── hooks/               # 自定义组合式函数
-│   ├── i18n/                # 国际化配置
-│   ├── lib/                 # 工具函数
-│   ├── modules/             # 功能模块
-│   │   ├── setting/         # 设置模块
-│   │   └── todo/            # Todo 模块
-│   ├── App.tsx              # 主应用组件
-│   └── main.ts              # 应用入口
-├── public/                  # 静态资源
-└── package.json             # 项目配置
+├── src/                     # Source code
+│   ├── assets/              # Static assets
+│   │   └── index.css        # Global styles
+│   ├── components/          # Reusable components
+│   │   └── ui/              # UI base components
+│   ├── hooks/               # Custom composable functions
+│   ├── i18n/                # Internationalization config
+│   ├── lib/                 # Utility functions
+│   ├── modules/             # Feature modules
+│   │   ├── setting/         # Settings module
+│   │   └── todo/            # Todo module
+│   ├── App.tsx              # Main application component
+│   └── main.ts              # Application entry
+├── public/                  # Static assets
+└── package.json             # Project configuration
 ```
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 环境要求
+### Requirements
 
 - Node.js 22+
 - pnpm 10+
 
-### 安装依赖
+### Install Dependencies
 
 ```bash
 pnpm install
 ```
 
-### 启动开发服务器
+### Start Development Server
 
 ```bash
 pnpm dev
 ```
 
-访问 [http://localhost:5173](http://localhost:5173) 查看应用。
+Visit [http://localhost:5173](http://localhost:5173) to view the application.
 
-### 构建生产版本
+### Build Production Version
 
 ```bash
 pnpm build
 ```
 
-### 预览构建结果
+### Preview Build Results
 
 ```bash
 pnpm preview
 ```
 
-## 📚 主要模块
+## 📚 Main Modules
 
-### Todo 模块 (`src/modules/todo/`)
+### Todo Module (`src/modules/todo/`)
 
-- **create-new.tsx**: 创建新任务组件
-- **editor.tsx**: 任务编辑组件
-- **index.tsx**: 主Todo页面
-- **components/**: Todo相关子组件
-  - **auto-tooltip.tsx**: 自动提示组件
-  - **date-picker.tsx**: 日期选择器
-  - **loading-sketch.tsx**: 加载骨架屏
+- **create-new.tsx**: Create new task component
+- **editor.tsx**: Task editor component
+- **index.tsx**: Main Todo page
+- **components/**: Todo-related sub-components
+  - **auto-tooltip.tsx**: Auto-tooltip component
+  - **date-picker.tsx**: Date picker component
+  - **loading-sketch.tsx**: Loading skeleton component
 
-### 设置模块 (`src/modules/setting/`)
+### Settings Module (`src/modules/setting/`)
 
-- **language-toggle.tsx**: 语言切换组件
-- **theme-toggle.tsx**: 主题切换组件
-- **theme-color-toggle.tsx**: 主题色切换组件
+- **language-toggle.tsx**: Language switching component
+- **theme-toggle.tsx**: Theme switching component
+- **theme-color-toggle.tsx**: Theme color switching component
 
-### UI组件库 (`src/components/ui/`)
+### UI Component Library (`src/components/ui/`)
 
-- **alert-dialog/**: 警告对话框组件
-- **button/**: 按钮组件
-- **calendar/**: 日历组件
-- **checkbox/**: 复选框组件
-- **dialog/**: 对话框组件
-- **dropdown-menu/**: 下拉菜单组件
-- **form/**: 表单组件
-- **input/**: 输入框组件
-- **label/**: 标签组件
-- **popover/**: 弹出框组件
-- **tabs/**: 标签页组件
-- **textarea/**: 文本域组件
-- **toast/**: 提示组件
-- **tooltip/**: 工具提示组件
+- **alert-dialog/**: Alert dialog components
+- **button/**: Button components
+- **calendar/**: Calendar components
+- **checkbox/**: Checkbox components
+- **dialog/**: Dialog components
+- **dropdown-menu/**: Dropdown menu components
+- **form/**: Form components
+- **input/**: Input components
+- **label/**: Label components
+- **popover/**: Popover components
+- **tabs/**: Tab components
+- **textarea/**: Textarea components
+- **toast/**: Toast components
+- **tooltip/**: Tooltip components
 
-## 🔧 开发指南
+## 🔧 Development Guide
 
-### Vue 3 特性
+### Vue 3 Features
 
-- **Composition API**: 更好的逻辑复用和类型推导
-- **响应式系统**: 基于 Proxy 的响应式数据
-- **组合式函数**: 可复用的逻辑封装
-- **Teleport**: 组件渲染到指定位置
-- **Suspense**: 异步组件加载
+- **Composition API**: Better logic reuse and type inference
+- **Reactive System**: Proxy-based reactive data
+- **Composable Functions**: Reusable logic encapsulation
+- **Teleport**: Render components to specified locations
+- **Suspense**: Async component loading
 
-### 代码规范
+### Code Standards
 
-- 使用 ESLint 进行代码检查
-- 遵循 TypeScript 最佳实践
-- 使用 Composition API 和组合式函数
-- 遵循 Vue 3 官方风格指南
+- Use ESLint for code checking
+- Follow TypeScript best practices
+- Use Composition API and composable functions
+- Follow Vue 3 official style guide
 
-### 状态管理
+### State Management
 
-- 使用 Vue 3 的响应式系统，配合 RxJS 避免代理复杂对象
-- 组合式函数进行状态封装
-- 支持响应式数据更新
-- 自动依赖追踪
+- Use Vue 3 reactive system, combined with RxJS to avoid proxy complexity for complex objects
+- Composable functions for state encapsulation
+- Support reactive data updates
+- Automatic dependency tracking
 
-### 组件开发
+### Component Development
 
-- 使用 shadcn/ui 组件库
-- 支持深色/浅色主题
-- 响应式设计，支持移动端
-- 组件化架构，易于维护
-- 基于 Vue Transition 的动画效果
+- Use shadcn/ui component library
+- Support light/dark themes
+- Responsive design supporting mobile devices
+- Component-based architecture, easy to maintain
+- Smooth animations based on Vue Transition
 
-## 🌐 国际化
+## 🌐 Internationalization
 
-应用支持多语言，当前支持：
+The application supports multiple languages, currently supporting:
 
-- 中文 (zh-CN)
-- 英文 (en-US)
-- 日文 (ja-JP)
+- Chinese (zh-CN)
+- English (en-US)
+- Japanese (ja-JP)
 
-语言文件位于 `src/i18n/locales/` 目录下。
+Language files are located in the `src/i18n/locales/` directory.
 
-## 🎨 主题系统
+## 🎨 Theme System
 
-### 主题模式
+### Theme Modes
 
-- **浅色主题**: 明亮清晰的界面
-- **深色主题**: 护眼的暗色界面
+- **Light Theme**: Bright and clear interface
+- **Dark Theme**: Eye-friendly dark interface
 
-### 主题色
+### Theme Colors
 
-支持多种主题色选择，包括：
+Support multiple theme color choices, including:
 
-- 蓝色
-- 绿色
-- 灰色 (默认)
-- 黄色
+- Blue
+- Green
+- Gray (default)
+- Yellow
 
-## 📱 响应式设计
+## 📱 Responsive Design
 
-应用采用移动优先的响应式设计：
+The application adopts a mobile-first responsive design:
 
-- **移动端**: 320px - 768px
-- **桌面端**: 768px+
+- **Mobile**: 320px - 768px
+- **Desktop**: 768px+
 
-## 🚀 性能优化
+## 🚀 Performance Optimization
 
-### Vue 3 优势
+### Vue 3 Advantages
 
-- **响应式系统**: 基于 Proxy，性能更优
-- **编译时优化**: 模板编译优化
-- **Tree-shaking**: 更好的代码分割
-- **组合式API**: 更好的逻辑复用
+- **Reactive System**: Proxy-based, better performance
+- **Compile-time Optimization**: Template compilation optimization
+- **Tree-shaking**: Better code splitting
+- **Composition API**: Better logic reuse
 
-### 应用级优化
+### Application-level Optimization
 
-- **懒加载**: 组件和路由的懒加载
-- **代码分割**: 路由级别的代码分割
-- **缓存策略**: 合理的缓存配置
-- **虚拟滚动**: 长列表的性能优化
+- **Lazy Loading**: Component and route lazy loading
+- **Code Splitting**: Route-level code splitting
+- **Caching Strategy**: Reasonable caching configuration
+- **Virtual Scrolling**: Performance optimization for long lists
 
-## 📦 构建和部署
+## 📦 Build and Deployment
 
-### 开发环境
+### Development Environment
 
 ```bash
 pnpm dev
 ```
 
-### 生产构建
+### Production Build
 
 ```bash
 pnpm build
 ```
 
-### 预览构建结果
+### Preview Build Results
 
 ```bash
 pnpm preview
 ```
 
-### 部署
+### Deployment
 
-构建后的文件位于 `dist/` 目录，可以部署到任何静态文件服务器。
+Built files are located in the `dist/` directory and can be deployed to any static file server.
 
-## 🔍 开发工具
+## 🔍 Development Tools
 
-- **Vite**: 快速的开发服务器和构建工具
-- **ESLint**: 代码质量检查
-- **TypeScript**: 类型检查和智能提示
-- **Tailwind CSS**: 原子化 CSS 框架
-- **Vue DevTools**: Vue开发调试工具
+- **Vite**: Fast development server and build tool
+- **ESLint**: Code quality checking
+- **TypeScript**: Type checking and intelligent suggestions
+- **Tailwind CSS**: Atomic CSS framework
+- **Vue DevTools**: Vue development debugging tools
 
-## 🆚 与其他框架对比
+## 🆚 Comparison with Other Frameworks
 
 ### Vue 3 vs React
 
-- **学习曲线**: Vue 3 更易学习
-- **模板语法**: Vue 3 的模板更直观
-- **响应式**: Vue 3 的响应式系统更简单
-- **生态**: React 生态更丰富
+- **Learning Curve**: Vue 3 easier to learn
+- **Template Syntax**: Vue 3 templates more intuitive
+- **Reactivity**: Vue 3 reactive system simpler
+- **Ecosystem**: React has richer ecosystem
 
 ### Vue 3 vs Solid.js
 
-- **性能**: Solid.js 性能更优
-- **响应式**: Solid.js 编译时响应式
-- **学习曲线**: Vue 3 更易上手
-- **生态**: Vue 生态更成熟
+- **Performance**: Solid.js better performance
+- **Reactivity**: Solid.js compile-time reactivity
+- **Learning Curve**: Vue 3 easier to get started
+- **Ecosystem**: Vue more mature ecosystem
 
-## 🎭 动画和过渡
+## 🎭 Animations and Transitions
 
-应用使用 Vue 3 的 Transition 系统：
+The application uses Vue 3's Transition system:
 
-- **页面切换**: 平滑的页面过渡
-- **组件动画**: 组件的进入/离开动画
-- **状态变化**: 数据变化的过渡效果
-- **CSS 动画**: 基于 CSS 的动画效果
+- **Page Transitions**: Smooth page transitions
+- **Component Animations**: Component enter/leave animations
+- **State Changes**: Data change transition effects
+- **CSS Animations**: CSS-based animation effects
 
-## 🤝 贡献
+## 🤝 Contributing
 
-欢迎提交 Issue 和 Pull Request 来改进这个项目。
+We welcome Issues and Pull Requests to improve this project.
 
-## 📄 许可证
+## 📄 License
 
-本项目采用 MIT 许可证。
+This project is licensed under the MIT License.
