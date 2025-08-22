@@ -2,6 +2,7 @@ import type { ELocaleType } from '@/i18n';
 
 import { Languages } from 'lucide-vue-next';
 import { defineComponent } from 'vue';
+import { trpc } from '~~/server/trpc/client';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -11,17 +12,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useObservableRef } from '@/hooks';
-import { LANGUAGE_LIST, language$, localeTrigger, useIntl, intl } from '@/i18n';
+import { LANGUAGE_LIST, language$, useIntl, intl, setLocale } from '@/i18n';
 
 export const LanguageToggle = defineComponent({
   name: 'LanguageToggle',
   setup() {
     const { t } = useIntl('settings.language');
 
-    const handleChangeLanguage = (e: MouseEvent) => {
+    const handleChangeLanguage = async (e: MouseEvent) => {
       const { lang } = (e.target as HTMLDivElement).dataset;
       if (lang) {
-        localeTrigger.next(lang as ELocaleType);
+        await setLocale(lang as ELocaleType);
+
+        await trpc.locale.updateLocale.mutate({ locale: lang as ELocaleType });
       }
     };
 

@@ -6,9 +6,12 @@ import {
   firstValueFrom,
   from,
   map,
+  mergeMap,
   of,
   share,
   shareReplay,
+  startWith,
+  switchMap,
   take,
 } from 'rxjs';
 import { createI18n } from 'vue-i18n';
@@ -33,7 +36,7 @@ export const intl = createI18n({
  *
  * - it will be used to trigger the i18n instance to update the locale
  */
-export const localeTrigger = new BehaviorSubject<ELocaleType | null>(null);
+const localeTrigger = new BehaviorSubject<ELocaleType | null>(null);
 
 /**
  * set the locale
@@ -99,11 +102,14 @@ const changeableIntl$ = localeTrigger.pipe(
  * - it won't be updated forever
  */
 export const intl$ = changeableIntl$.pipe(distinctUntilChanged(), shareReplay(1));
+intl$.subscribe();
 
 /**
  * the user language changed notification
  */
 export const language$ = changeableIntl$.pipe(
-  map((v) => v.global.locale.value),
+  startWith(null),
+  map((v) => v ?? intl),
+  map((v) => v.global.locale.value as ELocaleType),
   shareReplay({ bufferSize: 1, refCount: true }),
 );
