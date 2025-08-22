@@ -6,15 +6,15 @@ const localeSet = new Set(localeList);
 const shortLocaleSet = new Set(localeList.map((locale) => locale.split('-')[0]));
 
 /**
- * get the locale from the accept-language header
+ * Parse the locale from a string.
  *
- * @param acceptLanguage - the accept-language header
+ * @param pattern - string to be analyzed
  */
-export const getLocale = (acceptLanguage: string | null) => {
-  if (!acceptLanguage) return ELocaleType.EN_US;
+export const parseLocale = (pattern: string | null) => {
+  if (!pattern) return ELocaleType.EN_US;
 
   // en-US,en;q=0.9,ja;q=0.8,zh;q=0.7
-  const locales = acceptLanguage
+  const locales = pattern
     .split(',')
     .map((lang) => {
       const [code, qValue] = lang.trim().split(';q=');
@@ -42,5 +42,5 @@ export const getClientLocale = () => {
     throw new Error('getClientLocale is only available on the client side');
   }
 
-  return getLocale(localStorage.getItem(CURRENT_LANGUAGE_KEY) ?? navigator.language);
+  return parseLocale(localStorage.getItem(CURRENT_LANGUAGE_KEY) ?? navigator.language);
 };

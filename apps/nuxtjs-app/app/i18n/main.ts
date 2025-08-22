@@ -36,12 +36,11 @@ const intl$ = localeTrigger.pipe(
 );
 
 /**
- * set the locale
+ * get the i18n instance
  *
- * @param locale the locale to set
- * @returns the promise of the i18n instance that is updated
+ * @param locale - the target locale which is the same as the result's locale
  */
-export const setLocale = async (locale: ELocaleType) => {
+export const getI18nInstance = async (locale: ELocaleType) => {
   const wait = firstValueFrom(intl$.pipe(filter((v) => v.global.locale.value === locale)));
   localeTrigger.next(locale);
 
