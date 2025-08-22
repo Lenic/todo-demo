@@ -1,9 +1,20 @@
-import { BehaviorSubject, concatMap, distinctUntilChanged, filter, from, map, of, shareReplay } from 'rxjs';
+import {
+  BehaviorSubject,
+  concatMap,
+  distinctUntilChanged,
+  filter,
+  firstValueFrom,
+  from,
+  map,
+  of,
+  share,
+  shareReplay,
+  take,
+} from 'rxjs';
 import { createI18n } from 'vue-i18n';
 
 import { ELocaleType } from './types';
-
-const CURRENT_LANGUAGE_KEY = 'CURRENT_LANGUAGE_KEY';
+import { CURRENT_LANGUAGE_KEY } from './constants';
 
 /**
  * get default locale from localStorage or navigator.language
@@ -23,8 +34,8 @@ if (typeof window !== 'undefined') {
  */
 export const intl = createI18n({
   legacy: false,
-  locale: defaultLocale,
-  fallbackLocale: defaultLocale,
+  locale: ELocaleType.EN_US,
+  fallbackLocale: ELocaleType.EN_US,
   messages: {},
 });
 
@@ -33,21 +44,33 @@ export const intl = createI18n({
  *
  * - it will be used to trigger the i18n instance to update the locale
  */
-export const localeTrigger = new BehaviorSubject<ELocaleType | null>(
-  typeof window === 'undefined' ? null : defaultLocale
-);
+export const localeTrigger = new BehaviorSubject<ELocaleType | null>(null);
+
+/**
+ * set the locale
+ *
+ * @param locale the locale to set
+ * @returns the promise of the i18n instance that is updated
+ */
+export const setLocale = async (locale: ELocaleType) => {
+  if (localeTrigger.getValue() === locale) return intl;
+
+  const wait = firstValueFrom(changeableIntl$.pipe(take(1)));
+  localeTrigger.next(locale);
+
+  return await wait;
+};
 
 /**
  * the language cache
  */
 const languageCache: Partial<Record<ELocaleType, Record<string, string>>> = {};
 /**
- * the i18n instance
+ * the changeable i18n instance
  *
- * - it won't be updated forever
- * - it will be used to get the i18n instance
+ * - it wouldn't push any value if the locale is not set after subscribing this variable
  */
-export const intl$ = localeTrigger.pipe(
+const changeableIntl$ = localeTrigger.pipe(
   filter((locale) => locale !== null),
   distinctUntilChanged(),
   concatMap((locale) => {
@@ -80,10 +103,16 @@ export const intl$ = localeTrigger.pipe(
       })
     );
   }),
-  distinctUntilChanged(),
-  shareReplay(1)
+  share()
 );
-intl$.subscribe();
+
+/**
+ * the i18n instance
+ *
+ * - it won't be updated forever
+ * - it will be used to get the i18n instance
+ */
+export const intl$ = changeableIntl$.pipe(distinctUntilChanged(), shareReplay(1));
 
 /**
  * the user language changed notification

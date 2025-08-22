@@ -10,6 +10,11 @@ const shortLocaleSet = new Set(localeList.map((locale) => locale.split('-')[0]))
 const COOKIE_NAME = 'NUXT_LOCALE';
 
 /**
+ * the current language key
+ */
+const CURRENT_LANGUAGE_KEY = 'CURRENT_LANGUAGE_KEY';
+
+/**
  * get the locale from the accept-language header
  *
  * @param acceptLanguage the accept-language header
@@ -40,14 +45,11 @@ const getLocale = (acceptLanguage: string | null) => {
 };
 
 export default defineNuxtPlugin(async (nuxtApp) => {
-  console.log('i18n.server.plugin');
-  const event = useRequestEvent();
-  if (!event) return;
-
   const locale = useCookie(COOKIE_NAME, {
-    default: () => getLocale(event.headers.get('accept-language')),
-    secure: true,
+    default: () => getLocale(localStorage.getItem(CURRENT_LANGUAGE_KEY) ?? navigator.language),
+    httpOnly: true,
     sameSite: 'lax',
+    secure: true,
   });
 
   const intl = await setLocale(locale.value);

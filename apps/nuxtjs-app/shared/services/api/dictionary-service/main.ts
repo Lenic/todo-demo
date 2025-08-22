@@ -35,7 +35,7 @@ export class SystemDictionaryService extends Disposable implements ISystemDictio
       })
       .returning();
 
-    return this.convertToDomain(res).pipe(map((list) => list[0]));
+    return this.convertToDomain(res).pipe(map((list) => list[0]!));
   }
 
   update(item: ISystemDictionaryItem): Observable<ISystemDictionaryItem> {
@@ -47,7 +47,7 @@ export class SystemDictionaryService extends Disposable implements ISystemDictio
       .where(eq(systemDictionaryTable.id, item.id))
       .returning();
 
-    return this.convertToDomain(res).pipe(map((list) => list[0]));
+    return this.convertToDomain(res).pipe(map((list) => list[0]!));
   }
 
   delete(id: string): Observable<void> {
@@ -57,9 +57,8 @@ export class SystemDictionaryService extends Disposable implements ISystemDictio
   }
 
   private convertToDomain(
-    waitList: Promise<(typeof systemDictionaryTable.$inferSelect)[]>,
+    waitList: Promise<(typeof systemDictionaryTable.$inferSelect)[]>
   ): Observable<ISystemDictionaryItem[]> {
     return from(waitList).pipe(map((list) => list as ISystemDictionaryItem[]));
   }
 }
-// export { SystemDictionaryService };

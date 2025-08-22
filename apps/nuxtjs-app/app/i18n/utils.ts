@@ -1,13 +1,8 @@
-import { ELocaleType, setLocale } from '@/i18n';
+import { ELocaleType } from './types';
 
 const localeList: string[] = Object.values(ELocaleType);
 const localeSet = new Set(localeList);
 const shortLocaleSet = new Set(localeList.map((locale) => locale.split('-')[0]));
-
-/**
- * the locale cookie name
- */
-const COOKIE_NAME = 'NUXT_LOCALE';
 
 /**
  * get the locale from the accept-language header
@@ -15,7 +10,7 @@ const COOKIE_NAME = 'NUXT_LOCALE';
  * @param acceptLanguage the accept-language header
  * @returns the locale
  */
-const getLocale = (acceptLanguage: string | null) => {
+export const getLocale = (acceptLanguage: string | null) => {
   if (!acceptLanguage) return ELocaleType.EN_US;
 
   // en-US,en;q=0.9,ja;q=0.8,zh;q=0.7
@@ -39,17 +34,10 @@ const getLocale = (acceptLanguage: string | null) => {
   return ELocaleType.EN_US;
 };
 
-export default defineNuxtPlugin(async (nuxtApp) => {
-  console.log('i18n.server.plugin');
-  const event = useRequestEvent();
-  if (!event) return;
+export const getClientLocale = () => {
+  if (typeof window === 'undefined') {
+    throw new Error('getClientLocale is only available on the client side');
+  }
 
-  const locale = useCookie(COOKIE_NAME, {
-    default: () => getLocale(event.headers.get('accept-language')),
-    secure: true,
-    sameSite: 'lax',
-  });
-
-  const intl = await setLocale(locale.value);
-  nuxtApp.vueApp.use(intl);
-});
+  return getLocale(localStorage.getItem(CURRENT_LANGUAGE_KEY) ?? navigator.language);
+};
