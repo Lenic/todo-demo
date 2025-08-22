@@ -113,7 +113,6 @@ const refreshConfig = (singleLanguageConfig: LangConfig, partialMixedConfig: Mix
 
 export const languageFilesIntegrationPlugin = {
   name: 'language-files-integration',
-  apply: 'serve',
   buildStart() {
     const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
     const rootPath = path.resolve(__dirname, 'locales');
