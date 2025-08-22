@@ -25,7 +25,7 @@ import { CURRENT_LANGUAGE_KEY } from './constants';
  */
 const intl = createI18n({
   legacy: false,
-  locale: ELocaleType.EN_US,
+  locale: '',
   fallbackLocale: ELocaleType.EN_US,
   messages: {},
 });
