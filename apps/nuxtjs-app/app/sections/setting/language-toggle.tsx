@@ -8,17 +8,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LANGUAGE_LIST, useIntl, getI18nInstance, ELocaleType, COOKIE_NAME } from '@/i18n';
+import { LANGUAGE_LIST, useIntl, ELocaleType, COOKIE_NAME, loadI18nMessages } from '@/i18n';
 
 export const LanguageToggle = defineComponent({
   name: 'LanguageToggle',
   setup() {
-    const { t, locale } = useIntl('settings.language');
+    const { t, locale, setLocaleMessage } = useIntl('settings.language');
 
     const handleChangeLanguage = async (e: MouseEvent) => {
       const { lang } = (e.target as HTMLDivElement).dataset;
       if (lang) {
-        await getI18nInstance(lang as ELocaleType);
+        const messages = await loadI18nMessages(lang as ELocaleType);
+        setLocaleMessage(locale.value, messages);
 
         document.cookie = `${COOKIE_NAME}=${lang}; Path=/; Secure; SameSite=Lax`;
       }

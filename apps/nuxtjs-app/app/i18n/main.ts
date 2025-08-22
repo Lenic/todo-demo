@@ -1,19 +1,20 @@
 import type { DefaultLocaleMessageSchema, I18n } from 'vue-i18n';
 
-import { concatMap, filter, firstValueFrom, from, of, share, Subject } from 'rxjs';
+import { concatMap, filter, firstValueFrom, from, map, of, share, Subject } from 'rxjs';
 import { createI18n } from 'vue-i18n';
 
 import { CURRENT_LANGUAGE_KEY } from './constants';
 import { ELocaleType } from './types';
 
 const localeTrigger = new Subject<ELocaleType>();
+const messagesStore: Partial<Record<ELocaleType, Record<string, DefaultLocaleMessageSchema>>> = {};
 const intlStore: Partial<
   Record<ELocaleType, I18n<Record<string, DefaultLocaleMessageSchema>, {}, {}, ELocaleType, false>>
 > = {};
-const intl$ = localeTrigger.pipe(
+const message$ = localeTrigger.pipe(
   concatMap((locale) => {
-    const intl = intlStore[locale];
-    if (intl) return of(intl);
+    const message = messagesStore[locale];
+    if (message) return of([locale, message] as const);
 
     return from(import(`./dist/${locale}.json`)).pipe(
       concatMap((val: { default: Record<string, DefaultLocaleMessageSchema> }) => {
@@ -21,16 +22,27 @@ const intl$ = localeTrigger.pipe(
           localStorage.setItem(CURRENT_LANGUAGE_KEY, locale);
         }
 
-        const intl = createI18n({
-          legacy: false,
-          locale,
-          fallbackLocale: ELocaleType.EN_US,
-          messages: val.default,
-        });
-        intlStore[locale] = intl;
-        return of(intl);
+        messagesStore[locale] = val.default;
+        return of([locale, val.default] as const);
       }),
     );
+  }),
+  share(),
+);
+
+const intl$ = message$.pipe(
+  map(([locale, message]) => {
+    let intl = intlStore[locale];
+    if (intl) return intl;
+
+    intl = createI18n({
+      legacy: false,
+      locale,
+      fallbackLocale: ELocaleType.EN_US,
+      messages: { [locale]: message },
+    });
+    intlStore[locale] = intl;
+    return intl;
   }),
   share(),
 );
@@ -40,9 +52,26 @@ const intl$ = localeTrigger.pipe(
  *
  * @param locale - the target locale which is the same as the result's locale
  */
-export const getI18nInstance = async (locale: ELocaleType) => {
+export const getI18nInstance = (locale: ELocaleType) => {
   const wait = firstValueFrom(intl$.pipe(filter((v) => v.global.locale.value === locale)));
   localeTrigger.next(locale);
 
-  return await wait;
+  return wait;
+};
+
+/**
+ * get the message of the locale
+ *
+ * @param locale - the target locale
+ */
+export const loadI18nMessages = async (locale: ELocaleType) => {
+  const wait = firstValueFrom(
+    message$.pipe(
+      filter((v) => v[0] === locale),
+      map((v) => v[1]),
+    ),
+  );
+  localeTrigger.next(locale);
+
+  return wait;
 };
