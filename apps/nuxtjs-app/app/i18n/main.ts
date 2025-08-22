@@ -17,17 +17,6 @@ import { ELocaleType } from './types';
 import { CURRENT_LANGUAGE_KEY } from './constants';
 
 /**
- * get default locale from localStorage or navigator.language
- *
- * - if localStorage is not set, use navigator.language
- * - if navigator.language is not set, use ELocaleType.EN_US
- */
-let defaultLocale = ELocaleType.EN_US;
-if (typeof window !== 'undefined') {
-  defaultLocale = (localStorage.getItem(CURRENT_LANGUAGE_KEY) ?? navigator.language) as ELocaleType;
-}
-
-/**
  * the i18n instance
  *
  * - it will be initialized with the default locale
@@ -74,20 +63,18 @@ const changeableIntl$ = localeTrigger.pipe(
   filter((locale) => locale !== null),
   distinctUntilChanged(),
   concatMap((locale) => {
-    const cachedMessages = languageCache[locale];
-
     const setLocale = (messages: Record<string, string>) => {
-      intl.global.setLocaleMessage(locale, messages);
-
       if (typeof window !== 'undefined') {
         localStorage.setItem(CURRENT_LANGUAGE_KEY, locale);
       }
 
       if (intl.global.locale.value !== locale) {
         intl.global.locale.value = locale;
+        intl.global.setLocaleMessage(locale, messages);
       }
     };
 
+    const cachedMessages = languageCache[locale];
     if (cachedMessages) {
       setLocale(cachedMessages);
 
@@ -100,26 +87,23 @@ const changeableIntl$ = localeTrigger.pipe(
         setLocale(val.default);
 
         return intl;
-      })
+      }),
     );
   }),
-  share()
+  share(),
 );
 
 /**
  * the i18n instance
  *
  * - it won't be updated forever
- * - it will be used to get the i18n instance
  */
 export const intl$ = changeableIntl$.pipe(distinctUntilChanged(), shareReplay(1));
 
 /**
  * the user language changed notification
- *
- * - it will be used to get the user language
  */
-export const language$ = intl$.pipe(
+export const language$ = changeableIntl$.pipe(
   map((v) => v.global.locale.value),
-  shareReplay(1)
+  shareReplay({ bufferSize: 1, refCount: true }),
 );

@@ -1,3 +1,4 @@
+import { CURRENT_LANGUAGE_KEY } from './constants';
 import { ELocaleType } from './types';
 
 const localeList: string[] = Object.values(ELocaleType);
@@ -7,8 +8,7 @@ const shortLocaleSet = new Set(localeList.map((locale) => locale.split('-')[0]))
 /**
  * get the locale from the accept-language header
  *
- * @param acceptLanguage the accept-language header
- * @returns the locale
+ * @param acceptLanguage - the accept-language header
  */
 export const getLocale = (acceptLanguage: string | null) => {
   if (!acceptLanguage) return ELocaleType.EN_US;
@@ -34,6 +34,9 @@ export const getLocale = (acceptLanguage: string | null) => {
   return ELocaleType.EN_US;
 };
 
+/**
+ * get the local from the client side.
+ */
 export const getClientLocale = () => {
   if (typeof window === 'undefined') {
     throw new Error('getClientLocale is only available on the client side');
