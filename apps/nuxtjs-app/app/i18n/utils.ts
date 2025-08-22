@@ -1,4 +1,3 @@
-import { CURRENT_LANGUAGE_KEY } from './constants';
 import { ELocaleType } from './types';
 
 const localeList: string[] = Object.values(ELocaleType);
@@ -32,15 +31,4 @@ export const parseLocale = (pattern: string | null) => {
   }
 
   return ELocaleType.EN_US;
-};
-
-/**
- * get the local from the client side.
- */
-export const getClientLocale = () => {
-  if (typeof window === 'undefined') {
-    throw new Error('getClientLocale is only available on the client side');
-  }
-
-  return parseLocale(localStorage.getItem(CURRENT_LANGUAGE_KEY) ?? navigator.language);
 };
