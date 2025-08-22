@@ -9,7 +9,7 @@ const shortLocaleSet = new Set(localeList.map((locale) => locale.split('-')[0]))
  *
  * @param pattern - string to be analyzed
  */
-export const parseLocale = (pattern: string | null) => {
+export const parseLocale = (pattern?: string | null) => {
   if (!pattern) return ELocaleType.EN_US;
 
   // en-US,en;q=0.9,ja;q=0.8,zh;q=0.7
