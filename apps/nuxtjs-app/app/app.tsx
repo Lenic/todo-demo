@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue';
-import { Button } from './components/ui/button';
+import { Button } from '~~/components/ui/button';
 
 export default defineComponent({
   name: 'App',
