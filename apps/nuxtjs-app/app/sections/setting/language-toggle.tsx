@@ -2,7 +2,7 @@ import type { ELocaleType } from '@/i18n';
 
 import { Languages } from 'lucide-vue-next';
 import { defineComponent } from 'vue';
-import { trpc } from '~~/server/trpc/client';
+import { trpc } from '#shared/trpc/client';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -25,6 +25,8 @@ export const LanguageToggle = defineComponent({
         await setLocale(lang as ELocaleType);
 
         await trpc.locale.updateLocale.mutate({ locale: lang as ELocaleType });
+
+        // document.cookie = `${COOKIE_NAME}=${lang}; Path=/; Secure; SameSite=Lax`;
       }
     };
 
