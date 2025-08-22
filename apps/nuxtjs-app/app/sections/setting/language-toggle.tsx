@@ -1,5 +1,6 @@
 import { Languages } from 'lucide-vue-next';
 import { defineComponent } from 'vue';
+import { LoaderPinwheel } from 'lucide-vue-next';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,8 +24,10 @@ export const LanguageToggle = defineComponent({
       [ELocaleType.ZH_CN]: false,
     });
 
-    const [handleChangeLanguage] = useAsyncEvent(async (e: MouseEvent) => {
-      const { lang } = (e.target as HTMLDivElement).dataset;
+    const [handleChangeLanguage] = useAsyncEvent(async (e: CustomEvent) => {
+      e.preventDefault();
+
+      const { lang } = (document.activeElement as HTMLDivElement).dataset;
       if (lang) {
         await loading(
           async () => {
@@ -53,10 +56,10 @@ export const LanguageToggle = defineComponent({
               key={lang}
               data-lang={lang}
               disabled={locale.value === lang}
-              onClick={handleChangeLanguage}
+              onSelect={handleChangeLanguage}
             >
-              {pendingRef.value[lang] ? 'loading' : ''}
               {t(`menu.${lang}`)}
+              {pendingRef.value[lang] ? <LoaderPinwheel class="animate-spin duration-500" /> : null}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
