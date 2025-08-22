@@ -1,8 +1,5 @@
-import type { ELocaleType } from '@/i18n';
-
 import { Languages } from 'lucide-vue-next';
 import { defineComponent } from 'vue';
-import { trpc } from '#shared/trpc/client';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useObservableRef } from '@/hooks';
-import { LANGUAGE_LIST, language$, useIntl, intl, setLocale } from '@/i18n';
+import { LANGUAGE_LIST, language$, useIntl, setLocale, ELocaleType, COOKIE_NAME } from '@/i18n';
 
 export const LanguageToggle = defineComponent({
   name: 'LanguageToggle',
@@ -24,13 +21,11 @@ export const LanguageToggle = defineComponent({
       if (lang) {
         await setLocale(lang as ELocaleType);
 
-        await trpc.locale.updateLocale.mutate({ locale: lang as ELocaleType });
-
-        // document.cookie = `${COOKIE_NAME}=${lang}; Path=/; Secure; SameSite=Lax`;
+        document.cookie = `${COOKIE_NAME}=${lang}; Path=/; Secure; SameSite=Lax`;
       }
     };
 
-    const languageRef = useObservableRef(language$, intl.global.locale.value);
+    const languageRef = useObservableRef(language$, ELocaleType.EN_US);
     return () => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

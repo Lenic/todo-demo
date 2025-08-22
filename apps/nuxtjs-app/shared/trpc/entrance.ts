@@ -1,8 +1,5 @@
 import { router } from './core';
-import locale from './locale';
 
-export const appRouter = router({
-  locale,
-});
+export const appRouter = router({});
 
 export type AppRouter = typeof appRouter;

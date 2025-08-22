@@ -6,7 +6,6 @@ import {
   firstValueFrom,
   from,
   map,
-  mergeMap,
   of,
   share,
   shareReplay,
@@ -24,7 +23,7 @@ import { CURRENT_LANGUAGE_KEY } from './constants';
  *
  * - it will be initialized with the default locale
  */
-export const intl = createI18n({
+const intl = createI18n({
   legacy: false,
   locale: ELocaleType.EN_US,
   fallbackLocale: ELocaleType.EN_US,
@@ -101,7 +100,7 @@ const changeableIntl$ = localeTrigger.pipe(
  *
  * - it won't be updated forever
  */
-export const intl$ = changeableIntl$.pipe(distinctUntilChanged(), shareReplay(1));
+const intl$ = changeableIntl$.pipe(distinctUntilChanged(), shareReplay(1));
 intl$.subscribe();
 
 /**
@@ -109,7 +108,7 @@ intl$.subscribe();
  */
 export const language$ = changeableIntl$.pipe(
   startWith(null),
-  map((v) => v ?? intl),
+  switchMap((v) => (v ? of(v) : intl$)),
   map((v) => v.global.locale.value as ELocaleType),
   shareReplay({ bufferSize: 1, refCount: true }),
 );
