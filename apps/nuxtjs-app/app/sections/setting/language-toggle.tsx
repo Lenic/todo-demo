@@ -9,21 +9,35 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { LANGUAGE_LIST, useIntl, ELocaleType, COOKIE_NAME, loadI18nMessages } from '@/i18n';
+import { loading } from '~/lib/loading';
+import { useAsyncEvent } from '~/hooks';
 
 export const LanguageToggle = defineComponent({
   name: 'LanguageToggle',
   setup() {
     const { t, locale, setLocaleMessage } = useIntl('settings.language');
 
-    const handleChangeLanguage = async (e: MouseEvent) => {
+    const pendingRef = ref({
+      [ELocaleType.EN_US]: false,
+      [ELocaleType.JA_JP]: false,
+      [ELocaleType.ZH_CN]: false,
+    });
+
+    const [handleChangeLanguage] = useAsyncEvent(async (e: MouseEvent) => {
       const { lang } = (e.target as HTMLDivElement).dataset;
       if (lang) {
-        const messages = await loadI18nMessages(lang as ELocaleType);
-        setLocaleMessage(locale.value, messages);
+        await loading(
+          async () => {
+            const messages = await loadI18nMessages(lang as ELocaleType);
+            locale.value = lang;
+            setLocaleMessage(locale.value, messages);
+          },
+          (processing) => void (pendingRef.value[lang as ELocaleType] = processing),
+        );
 
         document.cookie = `${COOKIE_NAME}=${lang}; Path=/; Secure; SameSite=Lax`;
       }
-    };
+    });
 
     return () => (
       <DropdownMenu>
@@ -35,7 +49,13 @@ export const LanguageToggle = defineComponent({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {LANGUAGE_LIST.map((lang) => (
-            <DropdownMenuItem key={lang} data-lang={lang} onClick={handleChangeLanguage}>
+            <DropdownMenuItem
+              key={lang}
+              data-lang={lang}
+              disabled={locale.value === lang}
+              onClick={handleChangeLanguage}
+            >
+              {pendingRef.value[lang] ? 'loading' : ''}
               {t(`menu.${lang}`)}
             </DropdownMenuItem>
           ))}

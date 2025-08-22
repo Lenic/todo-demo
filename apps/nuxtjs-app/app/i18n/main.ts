@@ -1,6 +1,6 @@
 import type { DefaultLocaleMessageSchema, I18n } from 'vue-i18n';
 
-import { concatMap, filter, firstValueFrom, from, map, of, share, Subject } from 'rxjs';
+import { concatMap, delay, filter, firstValueFrom, from, map, of, share, Subject } from 'rxjs';
 import { createI18n } from 'vue-i18n';
 
 import { CURRENT_LANGUAGE_KEY } from './constants';
@@ -69,6 +69,7 @@ export const loadI18nMessages = async (locale: ELocaleType) => {
     message$.pipe(
       filter((v) => v[0] === locale),
       map((v) => v[1]),
+      delay(3000),
     ),
   );
   localeTrigger.next(locale);

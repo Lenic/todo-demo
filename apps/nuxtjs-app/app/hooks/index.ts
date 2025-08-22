@@ -1,5 +1,5 @@
 export * from './event';
-export * from './loading';
+export * from './async-event';
 export * from './observable-effect';
 export * from './observable-ref';
 export * from './observable-shallow-ref';
