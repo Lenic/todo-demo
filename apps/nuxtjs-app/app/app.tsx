@@ -13,7 +13,14 @@ export default defineComponent({
   name: 'App',
   setup() {
     ServiceLocator.default.get(IThemeService).initialize();
-    const { t } = useIntl('todo.panel');
+    const { t, locale } = useIntl('todo.panel');
+
+    useHead({
+      htmlAttrs: {
+        lang: locale.value,
+        // class: `theme-abc`,
+      },
+    });
 
     return () => (
       <div class="container fixed inset-0 mx-auto">
