@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { LANGUAGE_LIST, useIntl, ELocaleType, COOKIE_NAME, loadI18nMessages } from '@/i18n';
-import { loading } from '~/lib/loading';
 import { useAsyncEvent } from '~/hooks';
 
 export const LanguageToggle = defineComponent({
@@ -18,29 +17,34 @@ export const LanguageToggle = defineComponent({
   setup() {
     const { t, locale, setLocaleMessage } = useIntl('settings.language');
 
-    const pendingRef = ref({
+    const detailPendingRef = ref({
       [ELocaleType.EN_US]: false,
       [ELocaleType.JA_JP]: false,
       [ELocaleType.ZH_CN]: false,
     });
 
-    const [handleChangeLanguage] = useAsyncEvent(async (e: CustomEvent) => {
-      e.preventDefault();
+    const [handleChangeLanguage, pendingRef] = useAsyncEvent(
+      async (e: CustomEvent, context) => {
+        e.preventDefault();
 
-      const { lang } = (document.activeElement as HTMLDivElement).dataset;
-      if (lang) {
-        await loading(
-          async () => {
-            const messages = await loadI18nMessages(lang as ELocaleType);
-            locale.value = lang;
-            setLocaleMessage(locale.value, messages);
-          },
-          (processing) => void (pendingRef.value[lang as ELocaleType] = processing),
-        );
+        const { lang } = (document.activeElement as HTMLDivElement).dataset;
+        if (lang) {
+          context.lang = lang;
 
-        document.cookie = `${COOKIE_NAME}=${lang}; Path=/; Secure; SameSite=Lax`;
-      }
-    });
+          const messages = await loadI18nMessages(lang as ELocaleType);
+          locale.value = lang;
+          setLocaleMessage(locale.value, messages);
+
+          document.cookie = `${COOKIE_NAME}=${lang}; Path=/; Secure; SameSite=Lax`;
+        }
+      },
+      (processing, context) => {
+        const lang = context.lang as ELocaleType;
+        if (lang) {
+          detailPendingRef.value[lang] = processing;
+        }
+      },
+    );
 
     return () => (
       <DropdownMenu>
@@ -55,11 +59,11 @@ export const LanguageToggle = defineComponent({
             <DropdownMenuItem
               key={lang}
               data-lang={lang}
-              disabled={locale.value === lang}
+              disabled={pendingRef.value || locale.value === lang}
               onSelect={handleChangeLanguage}
             >
               {t(`menu.${lang}`)}
-              {pendingRef.value[lang] ? <LoaderPinwheel class="animate-spin duration-500" /> : null}
+              {detailPendingRef.value[lang] ? <LoaderPinwheel class="animate-spin duration-500" /> : null}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>

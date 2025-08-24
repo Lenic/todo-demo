@@ -1,20 +1,13 @@
-import {
-  catchError,
-  filter,
-  firstValueFrom,
-  from,
-  map,
-  merge,
-  Observable,
-  of,
-  race,
-  share,
-  take,
-  tap,
-  timer,
-  zip,
-} from 'rxjs';
+import { catchError, filter, from, map, merge, Observable, of, race, share, take, tap, timer, zip } from 'rxjs';
 
+/**
+ * add processing state to a async action.
+ *
+ * @param fn - the async action.
+ * @param processingCallback - the callback occurs when the processing state is changed.
+ * @param delay - The delay period applied after the processing state changes for the first time.
+ * If the processing state changes again within this delay period, the `processingCallback` wouldn't be triggered.
+ */
 export const loading = <T>(
   fn: () => Promise<T> | Observable<T>,
   processingCallback: (processing: boolean) => void,
@@ -35,5 +28,5 @@ export const loading = <T>(
     take(1),
   );
 
-  return firstValueFrom(zip([waiter$, loading$]).pipe(map((v) => v[0])));
+  return zip([waiter$, loading$]).pipe(map((v) => v[0]));
 };
