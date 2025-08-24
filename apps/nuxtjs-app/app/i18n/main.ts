@@ -54,7 +54,7 @@ const intl$ = message$.pipe(
  * @param locale - the target locale which is the same as the result's locale
  */
 export const getI18nInstance = (locale: ELocaleType) => {
-  const wait = firstValueFrom(intl$.pipe(filter((v) => v.global.locale.value === locale)));
+  const wait = firstValueFrom(intl$.pipe(filter((v) => v.global.locale.value === (locale as string))));
   localeTrigger.next(locale);
 
   return wait;

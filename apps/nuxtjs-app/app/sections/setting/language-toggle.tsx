@@ -5,7 +5,8 @@ import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
 import { useAsyncEvent } from '~/hooks';
@@ -38,7 +39,7 @@ export const LanguageToggle = defineComponent({
         }
       },
       (processing, context) => {
-        const lang = context.lang as ELocaleType;
+        const lang = context.lang as ELocaleType | undefined;
         if (lang) {
           detailPendingRef.value[lang] = processing;
         }
@@ -54,17 +55,20 @@ export const LanguageToggle = defineComponent({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {LANGUAGE_LIST.map((lang) => (
-            <DropdownMenuItem
-              key={lang}
-              data-lang={lang}
-              disabled={pendingRef.value || locale.value === lang}
-              onSelect={handleChangeLanguage}
-            >
-              {t(`menu.${lang}`)}
-              {detailPendingRef.value[lang] ? <LoaderPinwheel class="animate-spin duration-500" /> : null}
-            </DropdownMenuItem>
-          ))}
+          <DropdownMenuRadioGroup modelValue={locale.value}>
+            {LANGUAGE_LIST.map((lang) => (
+              <DropdownMenuRadioItem
+                key={lang}
+                value={lang}
+                data-lang={lang}
+                disabled={pendingRef.value || locale.value === (lang as string)}
+                onSelect={handleChangeLanguage}
+              >
+                {t(`menu.${lang}`)}
+                {detailPendingRef.value[lang] ? <LoaderPinwheel class="animate-spin duration-500" /> : null}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
     );
