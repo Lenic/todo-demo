@@ -34,5 +34,13 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     databaseUrl: '',
+
+    pusherId: '',
+    pusherSecret: '',
+
+    public: {
+      pusherKey: '',
+      pusherCluster: '',
+    },
   },
 });

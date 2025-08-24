@@ -10,12 +10,13 @@ import {
   THEME_COLOR_LIST,
   THEME_STORAGE_KEY,
 } from '@todo/interface';
-import { filter, ReplaySubject } from 'rxjs';
-// import { toast } from 'vue-sonner';
+import { filter, ReplaySubject, takeWhile, withLatestFrom } from 'rxjs';
+import { toast } from 'vue-sonner';
 
-// import { setThemeColor } from '~/app/server/theme-color';
-// import { message$, t$ } from '~/components/monitor';
-// import { THEME_COLOR_KEY } from '~/constants';
+import { message$, t$ } from '~/components/monitor';
+
+import { THEME_COLOR_KEY } from '../../constants';
+import { trpc } from '../../trpc/client';
 
 class ThemeService extends Disposable implements IThemeService {
   private subscription: Subscription | null = null;
@@ -46,24 +47,29 @@ class ThemeService extends Disposable implements IThemeService {
       }),
     );
 
-    // this.disposeWithMe(
-    //   this.color$.pipe(withLatestFrom(t$)).subscribe(([color, t]) => {
-    //     // setThemeColor(color).catch(() => {
-    //     //   toast(t('settings.theme-color.switch-error'));
-    //     // });
-    //   })
-    // );
+    this.disposeWithMe(
+      this.color$
+        .pipe(
+          takeWhile(() => typeof window !== 'undefined'),
+          withLatestFrom(t$),
+        )
+        .subscribe(([color, t]) => {
+          trpc.theme.setThemeColor.mutate({ color }).catch(() => {
+            toast(t('settings.theme-color.switch-error'));
+          });
+        }),
+    );
 
-    // this.disposeWithMe(
-    //   message$
-    //     .pipe(
-    //       filter((v) => v.type === 'set-system-dictionary-item'),
-    //       filter((v) => v.item.key === THEME_COLOR_KEY)
-    //     )
-    //     .subscribe(({ item }) => {
-    //       this.setColorCore(item.value as EThemeColor);
-    //     })
-    // );
+    this.disposeWithMe(
+      message$
+        .pipe(
+          filter((v) => v.type === 'set-system-dictionary-item'),
+          filter((v) => v.item.key === THEME_COLOR_KEY),
+        )
+        .subscribe(({ item }) => {
+          this.setColorCore(item.value as EThemeColor);
+        }),
+    );
 
     this.initialize();
   }
@@ -117,9 +123,9 @@ class ThemeService extends Disposable implements IThemeService {
   };
 
   setColor = (theme: EThemeColor) => {
-    if (typeof window === 'undefined') return;
-
-    this.setColorCore(theme);
+    if (typeof window !== 'undefined') {
+      this.setColorCore(theme);
+    }
     this.colorTrigger.next(theme);
   };
 

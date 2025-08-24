@@ -1,11 +1,16 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
+import { registerClientService } from '#shared/services/register-client';
+import { registerService } from '#shared/services/register-server';
 import { appRouter, createContext } from '#shared/trpc';
 
 export default defineEventHandler(async (event) => {
   const req = event.node.req;
   const url = getRequestURL(event);
   const body = await readRawBody(event);
+
+  registerService();
+  registerClientService();
 
   const headers = Object.entries(req.headers).reduce<[string, string][]>((acc, [key, value]) => {
     if (!value) return acc;
