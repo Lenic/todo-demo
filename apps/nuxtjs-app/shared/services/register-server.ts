@@ -1,19 +1,13 @@
-// import { register } from '@todo/container';
+import { register } from '@todo/container';
 
-// import {
-//   DrizzleAdapter,
-//   IDBDataStorageService,
-//   INextAuthAdapter,
-//   IPostgreSQLConnectionService,
-//   ISystemDictionaryService,
-//   PostgreSQLConnectionService,
-//   PostgreSQLDataStorageService,
-//   SystemDictionaryService,
-// } from './api';
+import {
+  IPostgreSQLConnectionService,
+  ISystemDictionaryService,
+  PostgreSQLConnectionService,
+  SystemDictionaryService,
+} from './api';
 
 export const registerService = () => {
-  // register(IPostgreSQLConnectionService, PostgreSQLConnectionService);
-  // register(INextAuthAdapter, DrizzleAdapter, [IPostgreSQLConnectionService]);
-  // register(ISystemDictionaryService, SystemDictionaryService, [IPostgreSQLConnectionService]);
-  // register(IDBDataStorageService, PostgreSQLDataStorageService, [IPostgreSQLConnectionService]);
+  register(IPostgreSQLConnectionService, PostgreSQLConnectionService);
+  register(ISystemDictionaryService, SystemDictionaryService, [IPostgreSQLConnectionService]);
 };

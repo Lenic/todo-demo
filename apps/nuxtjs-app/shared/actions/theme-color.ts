@@ -4,8 +4,8 @@ import { ServiceLocator } from '@todo/container';
 import { EThemeColor } from '@todo/interface';
 import { concatMap, firstValueFrom, map, of } from 'rxjs';
 
-import { THEME_COLOR_KEY } from '@/constants';
-import { ISystemDictionaryService } from '@/services/api';
+import { THEME_COLOR_KEY } from '../constants';
+import { ISystemDictionaryService } from '../services/api';
 
 import { publish } from './notifications';
 
