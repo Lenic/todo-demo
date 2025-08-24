@@ -2,13 +2,12 @@ import { ServiceLocator } from '@todo/container';
 import { IThemeService } from '@todo/interface';
 import { defineComponent } from 'vue';
 
-import { Toaster } from '@/components/ui/sonner'
-import 'vue-sonner/style.css'
-import { LanguageToggle } from '@/sections/setting/language-toggle';
+import { Toaster } from '~/components/ui/sonner';
+import { LanguageToggle } from '~/sections/setting/language-toggle';
+
 import { useIntl } from './i18n';
-// import { ThemeColorToggle } from '@/modules/setting/theme-color-toggle';
-// import { ThemeToggle } from '@/modules/setting/theme-toggle';
-// import { CreateNewTask, TodoPanel } from '@/modules/todo';
+
+import 'vue-sonner/style.css';
 
 export default defineComponent({
   name: 'App',

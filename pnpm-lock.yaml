@@ -6,21 +6,9 @@ settings:
 
 catalogs:
   default:
-    dayjs:
-      specifier: ^1.11.13
-      version: 1.11.13
     globals:
-      specifier: ^15.14.0
+      specifier: 15.15.0
       version: 15.15.0
-    immer:
-      specifier: ^10.1.1
-      version: 10.1.1
-    nanoid:
-      specifier: ^5.0.9
-      version: 5.1.5
-    prettier:
-      specifier: ^3.3.3
-      version: 3.6.2
     rxjs:
       specifier: 7.8.2
       version: 7.8.2
@@ -28,11 +16,8 @@ catalogs:
       specifier: 5.9.2
       version: 5.9.2
     typescript-eslint:
-      specifier: ^8.18.2
+      specifier: 8.40.0
       version: 8.40.0
-    vite:
-      specifier: ^5.4.11
-      version: 5.4.19
 
 importers:
 
@@ -353,18 +338,30 @@ importers:
       '@neondatabase/serverless':
         specifier: ^1.0.1
         version: 1.0.1
+      '@vue/eslint-config-prettier':
+        specifier: ^10.2.0
+        version: 10.2.0(eslint@9.33.0(jiti@2.5.1))(prettier@3.6.2)
       drizzle-kit:
         specifier: ^0.30.6
         version: 0.30.6
       drizzle-orm:
         specifier: ^0.41.0
         version: 0.41.0(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)(gel@2.1.1)(pg@8.16.3)(postgres@3.4.7)
+      eslint-plugin-vue:
+        specifier: ^9.33.0
+        version: 9.33.0(eslint@9.33.0(jiti@2.5.1))
+      globals:
+        specifier: 'catalog:'
+        version: 15.15.0
       tsx:
         specifier: ^4.20.3
         version: 4.20.4
       typescript:
         specifier: 'catalog:'
         version: 5.9.2
+      typescript-eslint:
+        specifier: 'catalog:'
+        version: 8.40.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2)
 
   apps/react-app:
     dependencies:

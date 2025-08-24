@@ -1,4 +1,4 @@
-import { COOKIE_NAME, parseLocale, getI18nInstance } from '@/i18n';
+import { COOKIE_NAME, getI18nInstance, parseLocale } from '~/i18n';
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   const event = useRequestEvent();

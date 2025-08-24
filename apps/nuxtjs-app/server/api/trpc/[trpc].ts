@@ -1,4 +1,5 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
+
 import { appRouter, createContext } from '#shared/trpc';
 
 export default defineEventHandler(async (event) => {
@@ -6,18 +7,15 @@ export default defineEventHandler(async (event) => {
   const url = getRequestURL(event);
   const body = await readRawBody(event);
 
-  const headers = Object.entries(req.headers).reduce(
-    (acc, [key, value]) => {
-      if (!value) return acc;
-      else if (typeof value === 'string') {
-        acc.push([key, value]);
-      } else {
-        value.forEach((item) => acc.push([key, item]));
-      }
-      return acc;
-    },
-    [] as [string, string][],
-  );
+  const headers = Object.entries(req.headers).reduce<[string, string][]>((acc, [key, value]) => {
+    if (!value) return acc;
+    else if (typeof value === 'string') {
+      acc.push([key, value]);
+    } else {
+      value.forEach((item) => acc.push([key, item]));
+    }
+    return acc;
+  }, []);
 
   return fetchRequestHandler({
     endpoint: '/api/trpc',

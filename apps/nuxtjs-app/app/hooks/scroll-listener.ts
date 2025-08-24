@@ -18,6 +18,7 @@ export function useScrollListener(immediate = true) {
     if (!entries.length) return;
 
     previousEntries = entries;
+    // @ts-expect-error 2345 -- it has values certainly.
     entryTrigger.next(entries[0]);
   };
 

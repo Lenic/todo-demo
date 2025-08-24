@@ -1,4 +1,6 @@
-import { catchError, filter, from, map, merge, Observable, of, race, share, take, tap, timer, zip } from 'rxjs';
+import type { Observable } from 'rxjs';
+
+import { catchError, filter, from, map, merge, of, race, share, take, tap, timer, zip } from 'rxjs';
 
 /**
  * add processing state to a async action.

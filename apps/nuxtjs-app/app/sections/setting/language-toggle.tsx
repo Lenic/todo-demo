@@ -1,16 +1,15 @@
-import { Languages } from 'lucide-vue-next';
+import { Languages, LoaderPinwheel } from 'lucide-vue-next';
 import { defineComponent } from 'vue';
-import { LoaderPinwheel } from 'lucide-vue-next';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { LANGUAGE_LIST, useIntl, ELocaleType, COOKIE_NAME, loadI18nMessages } from '@/i18n';
+} from '~/components/ui/dropdown-menu';
 import { useAsyncEvent } from '~/hooks';
+import { COOKIE_NAME, ELocaleType, LANGUAGE_LIST, loadI18nMessages, useIntl } from '~/i18n';
 
 export const LanguageToggle = defineComponent({
   name: 'LanguageToggle',

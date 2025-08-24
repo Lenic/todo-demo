@@ -37,7 +37,7 @@ export function useAsyncEvent<T>(fn: any, processingCallbackOrDelay?: any, delay
     eventTrigger.next(args);
   };
 
-  let loadingRef = ref(false);
+  const loadingRef = ref(false);
   const context: Record<string, unknown> = {};
   useObservableEffect(
     eventTrigger.pipe(

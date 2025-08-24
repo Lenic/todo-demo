@@ -11,6 +11,7 @@ const messagesStore: Partial<Record<ELocaleType, Record<string, DefaultLocaleMes
 const intlStore: Partial<
   Record<ELocaleType, I18n<Record<string, DefaultLocaleMessageSchema>, {}, {}, ELocaleType, false>>
 > = {};
+
 const message$ = localeTrigger.pipe(
   concatMap((locale) => {
     const message = messagesStore[locale];

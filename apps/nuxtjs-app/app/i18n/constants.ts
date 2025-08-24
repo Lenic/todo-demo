@@ -1,4 +1,5 @@
 import { ELocaleType } from './types';
+
 /**
  * the list of supported language names
  */

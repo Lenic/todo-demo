@@ -1,4 +1,5 @@
 import tailwindcss from '@tailwindcss/vite';
+
 import { languageFilesIntegrationPlugin } from './app/i18n/core';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config

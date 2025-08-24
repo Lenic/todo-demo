@@ -10,12 +10,12 @@ import {
   THEME_COLOR_LIST,
   THEME_STORAGE_KEY,
 } from '@todo/interface';
-import { filter, ReplaySubject, withLatestFrom } from 'rxjs';
+import { filter, ReplaySubject } from 'rxjs';
 // import { toast } from 'vue-sonner';
 
-// import { setThemeColor } from '@/app/server/theme-color';
-// import { message$, t$ } from '@/components/monitor';
-// import { THEME_COLOR_KEY } from '@/constants';
+// import { setThemeColor } from '~/app/server/theme-color';
+// import { message$, t$ } from '~/components/monitor';
+// import { THEME_COLOR_KEY } from '~/constants';
 
 class ThemeService extends Disposable implements IThemeService {
   private subscription: Subscription | null = null;
@@ -36,14 +36,14 @@ class ThemeService extends Disposable implements IThemeService {
       this.theme$.pipe(filter((theme) => this.theme !== theme)).subscribe((theme) => {
         this.theme = theme;
         localStorage.setItem(THEME_STORAGE_KEY, theme);
-      })
+      }),
     );
     this.disposeWithMe(() => this.subscription?.unsubscribe());
 
     this.disposeWithMe(
       this.color$.pipe(filter((color) => this.color !== color)).subscribe((color) => {
         this.color = color;
-      })
+      }),
     );
 
     // this.disposeWithMe(

@@ -29,8 +29,8 @@ import {
   tap,
 } from 'rxjs/operators';
 
-import { addTodoItem, deleteTodoItem, queryTodoList, updateTodoItem } from '@/app/server/todo';
-import { message$ } from '@/components/monitor';
+import { addTodoItem, deleteTodoItem, queryTodoList, updateTodoItem } from '~/app/server/todo';
+import { message$ } from '~/components/monitor';
 
 class DataService extends Disposable implements IDataService<IDBTodoItem> {
   private appendSubject = new Subject<IDBTodoItem[]>();

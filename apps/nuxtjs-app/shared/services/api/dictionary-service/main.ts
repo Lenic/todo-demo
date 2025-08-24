@@ -57,7 +57,7 @@ export class SystemDictionaryService extends Disposable implements ISystemDictio
   }
 
   private convertToDomain(
-    waitList: Promise<(typeof systemDictionaryTable.$inferSelect)[]>
+    waitList: Promise<(typeof systemDictionaryTable.$inferSelect)[]>,
   ): Observable<ISystemDictionaryItem[]> {
     return from(waitList).pipe(map((list) => list as ISystemDictionaryItem[]));
   }
