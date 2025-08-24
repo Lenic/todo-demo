@@ -11,7 +11,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxtjs/i18n": "10.0.6",
     "@tailwindcss/vite": "^4.1.11",
     "@todo/container": "workspace:^",
     "@todo/interface": "workspace:^",
@@ -22,7 +21,6 @@
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.469.0",
     "nuxt": "^4.0.3",
-    "nuxt-auth-utils": "0.5.23",
     "reka-ui": "^2.4.1",
     "rxjs": "catalog:",
     "shadcn-nuxt": "2.2.0",

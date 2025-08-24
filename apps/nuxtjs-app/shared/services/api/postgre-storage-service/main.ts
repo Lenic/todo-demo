@@ -7,7 +7,7 @@ import type { Observable } from 'rxjs';
 import { Disposable } from '@todo/container';
 import { ETodoListType, ETodoStatus } from '@todo/interface';
 import { and, desc, eq, gte, isNotNull, isNull, lt, or, sql } from 'drizzle-orm';
-import { from, map } from 'rxjs';
+import { filter, from, map } from 'rxjs';
 
 import { todoTable } from '../schema';
 
@@ -57,7 +57,10 @@ class PostgreSQLDataStorageService
       })
       .returning();
 
-    return this.convertToDomain(res).pipe(map((list) => list[0]));
+    return this.convertToDomain(res).pipe(
+      map((list) => list[0]),
+      filter((v) => !!v),
+    );
   }
 
   update(item: IDBTodoItem): Observable<IDBTodoItem> {
@@ -74,7 +77,10 @@ class PostgreSQLDataStorageService
       .where(eq(todoTable.id, item.id))
       .returning();
 
-    return this.convertToDomain(res).pipe(map((list) => list[0]));
+    return this.convertToDomain(res).pipe(
+      map((list) => list[0]),
+      filter((v) => !!v),
+    );
   }
 
   delete(id: string): Observable<void> {

@@ -1,5 +1,3 @@
-'use server';
-
 import { ServiceLocator } from '@todo/container';
 import { EThemeColor } from '@todo/interface';
 import { concatMap, firstValueFrom, map, of } from 'rxjs';
@@ -15,8 +13,8 @@ export async function getThemeColor() {
   const service = getService();
 
   const color$ = publish().pipe(
-    concatMap(({ userId }) =>
-      service.get(THEME_COLOR_KEY, userId).pipe(
+    concatMap(({ userId }) => {
+      return service.get(THEME_COLOR_KEY, userId).pipe(
         concatMap((item) => {
           if (item) return of(item);
 
@@ -29,8 +27,8 @@ export async function getThemeColor() {
           });
         }),
         map((item) => item.value as EThemeColor),
-      ),
-    ),
+      );
+    }),
   );
 
   return firstValueFrom(color$);
@@ -41,7 +39,7 @@ export async function setThemeColor(theme: EThemeColor) {
 
   return firstValueFrom(
     publish().pipe(
-      concatMap(({ userId, sync }) =>
+      concatMap(({ userId }) =>
         service.get(THEME_COLOR_KEY, userId).pipe(
           concatMap((item) => {
             if (item) {
@@ -58,9 +56,9 @@ export async function setThemeColor(theme: EThemeColor) {
               updatedBy: userId,
             });
           }),
-          concatMap((item) =>
-            typeof item === 'number' ? of(void 0) : sync({ type: 'set-system-dictionary-item', item }, void 0),
-          ),
+          // concatMap((item) =>
+          //   typeof item === 'number' ? of(void 0) : sync({ type: 'set-system-dictionary-item', item }, void 0),
+          // ),
         ),
       ),
     ),

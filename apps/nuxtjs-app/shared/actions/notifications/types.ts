@@ -1,4 +1,4 @@
-import type { IDBTodoItem, ISystemDictionaryItem } from '@/services/api';
+import type { IDBTodoItem, ISystemDictionaryItem } from '../../services/api';
 
 export interface ITodoItemAddedEvent {
   type: 'add-todo';
