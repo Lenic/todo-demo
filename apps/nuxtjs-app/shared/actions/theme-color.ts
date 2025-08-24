@@ -39,7 +39,7 @@ export async function setThemeColor(theme: EThemeColor) {
 
   return firstValueFrom(
     publish().pipe(
-      concatMap(({ userId }) =>
+      concatMap(({ userId, sync }) =>
         service.get(THEME_COLOR_KEY, userId).pipe(
           concatMap((item) => {
             if (item) {
@@ -56,9 +56,9 @@ export async function setThemeColor(theme: EThemeColor) {
               updatedBy: userId,
             });
           }),
-          // concatMap((item) =>
-          //   typeof item === 'number' ? of(void 0) : sync({ type: 'set-system-dictionary-item', item }, void 0),
-          // ),
+          concatMap((item) =>
+            typeof item === 'number' ? of(void 0) : sync({ type: 'set-system-dictionary-item', item }, void 0),
+          ),
         ),
       ),
     ),

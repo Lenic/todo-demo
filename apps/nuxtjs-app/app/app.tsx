@@ -14,9 +14,7 @@ export default defineComponent({
     ServiceLocator.default.get(IThemeService).initialize();
 
     const { locale } = useI18n();
-    const { data: themeColor } = useAsyncData('theme-color', getThemeColor, {
-      default: () => EThemeColor.NEUTRAL,
-    });
+    const { data: themeColor } = useAsyncData('theme-color', getThemeColor, { default: () => EThemeColor.NEUTRAL });
 
     useHead({
       htmlAttrs: { lang: locale, class: computed(() => `theme-${themeColor.value}`) },

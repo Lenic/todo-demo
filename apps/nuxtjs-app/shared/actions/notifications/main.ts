@@ -1,8 +1,11 @@
 import type { IChangedItemInfo, TItemChangedEvent } from './types';
 
+import { useRequestHeaders } from 'nuxt/app';
 // import { headers } from 'next/headers';
 // import Pusher from 'pusher';
-import { combineLatest, map, of } from 'rxjs';
+import { map, of, zip } from 'rxjs';
+
+import { SOCKET_ID_HEADER_KEY } from '../../constants';
 
 // const pusher = new Pusher({
 //   appId: process.env.PUSHER_ID,
@@ -12,16 +15,18 @@ import { combineLatest, map, of } from 'rxjs';
 //   useTLS: true,
 // });
 
-export const publish = () =>
-  combineLatest([
-    // from(getSession()).pipe(
-    //   map((session) => session?.user?.id ?? ''),
-    //   filter((v) => !!v),
-    // ),
-    of('7224a0ad-af31-4c71-81ed-7d3ef0a9423d'),
-    // from(headers()).pipe(map((store) => store.get(SOCKET_ID_HEADER_KEY) ?? '')),
+export const publish = () => {
+  const headers = useRequestHeaders();
+  return zip([
+    of(headers).pipe(
+      map((headers) => {
+        console.log('headers length', Object.keys(headers).length);
+        return '7224a0ad-af31-4c71-81ed-7d3ef0a9423d';
+      }),
+    ),
+    of(headers).pipe(map((store) => store[SOCKET_ID_HEADER_KEY] ?? '')),
   ]).pipe(
-    map(([userId, clientId = '']) => ({
+    map(([userId, clientId]) => ({
       userId,
       sync: <T>(data: TItemChangedEvent, result: T) => {
         if (!clientId) {
@@ -35,6 +40,9 @@ export const publish = () =>
         // });
         //
         // return from(waiter).pipe(map(() => result));
+
+        return of(result);
       },
     })),
   );
+};
