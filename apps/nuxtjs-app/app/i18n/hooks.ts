@@ -1,7 +1,7 @@
 import { useI18n } from 'vue-i18n';
 
 export const useIntl = (prefix: string) => {
-  const { t } = useI18n();
+  const { t, locale, setLocaleMessage } = useI18n();
 
   const handleTranslate = (key: string, literal: Record<string, unknown> = {}) => t(`${prefix}.${key}`, literal);
 
@@ -10,5 +10,5 @@ export const useIntl = (prefix: string) => {
    */
   const handleTransform = (key: string) => `#${prefix}.${key}#`;
 
-  return { t: handleTranslate, n: handleTransform };
+  return { t: handleTranslate, n: handleTransform, locale, setLocaleMessage };
 };

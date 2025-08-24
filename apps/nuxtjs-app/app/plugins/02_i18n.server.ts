@@ -1,17 +1,15 @@
-import { ELocaleType, intl$, localeTrigger } from '@/i18n';
-import { firstValueFrom } from 'rxjs';
+import { COOKIE_NAME, parseLocale, getI18nInstance } from '@/i18n';
 
-export default defineNuxtPlugin({
-  name: 'i18n-plugin',
-  async setup(nuxtApp) {
-    const headers = useRequestHeaders();
+export default defineNuxtPlugin(async (nuxtApp) => {
+  const event = useRequestEvent();
+  if (!event) return;
 
-    const locale = (headers['accept-language']?.split(',')[0] as ELocaleType) ?? ELocaleType.EN_US;
-    if (!localeTrigger.getValue()) {
-      localeTrigger.next(locale);
-    }
+  const locale = useCookie(COOKIE_NAME, {
+    default: () => parseLocale(event.headers.get('accept-language')),
+    secure: true,
+    sameSite: 'lax',
+  });
 
-    const intl = await firstValueFrom(intl$);
-    nuxtApp.vueApp.use(intl);
-  },
+  const intl = await getI18nInstance(locale.value);
+  nuxtApp.vueApp.use(intl);
 });
