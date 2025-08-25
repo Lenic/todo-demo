@@ -5,6 +5,11 @@
     "system": ["System", "跟随系统", "システムに従う"]
   },
   "theme-color": {
+    "switch-error": [
+      "The synchronization of the theme color failed. It does not affect the current usage, but the previous theme color will be used after the page is refreshed.",
+      "同步主题颜色失败，当前不影响使用，但页面刷新后将使用上一次的主题颜色。",
+      "テーマカラーの同期に失敗しました。現在は使用に影響はありませんが、ページをリフレッシュすると前回のテーマカラーが使用されます 。"
+    ],
     "colors": {
       "neutral": "rgb(64, 64, 64)",
       "blue": "rgb(29, 78, 216)",
