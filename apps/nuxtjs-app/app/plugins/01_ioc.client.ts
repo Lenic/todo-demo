@@ -1,10 +1,10 @@
 import { ServiceLocator } from '@todo/container';
 import { IThemeService } from '@todo/interface';
 
-import { registerClientService } from '#shared/services/register-client';
+import { registerClientServices } from '~/services/register-client';
 
-export default defineNuxtPlugin(async () => {
-  registerClientService();
+export default defineNuxtPlugin(() => {
+  registerClientServices();
 
   ServiceLocator.default.get(IThemeService).initialize();
 });

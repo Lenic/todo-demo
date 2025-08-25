@@ -7,8 +7,9 @@ class PostgreSQLConnectionService implements IPostgreSQLConnectionService {
   instance: ReturnType<typeof drizzle>;
 
   constructor() {
+    const runtimeConfig = useRuntimeConfig();
     const pool = new Pool({
-      connectionString: '',
+      connectionString: runtimeConfig.databaseUrl,
     });
     this.instance = drizzle({ client: pool });
   }

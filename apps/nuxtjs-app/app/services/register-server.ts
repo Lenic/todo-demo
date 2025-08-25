@@ -7,7 +7,7 @@ import {
   SystemDictionaryService,
 } from './api';
 
-export const registerService = () => {
+export const registerServerServices = () => {
   register(IPostgreSQLConnectionService, PostgreSQLConnectionService);
   register(ISystemDictionaryService, SystemDictionaryService, [IPostgreSQLConnectionService]);
 };

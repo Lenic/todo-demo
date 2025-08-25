@@ -4,7 +4,7 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ClientOnly, NuxtLayout, NuxtPage } from '#components';
-import { getThemeColor } from '#shared/actions';
+import { getThemeColor } from '~/actions';
 
 import { GlobalMonitor } from './components/monitor';
 
