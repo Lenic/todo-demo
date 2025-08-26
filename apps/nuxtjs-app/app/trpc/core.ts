@@ -3,7 +3,7 @@ import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 
-export const createContext = async (opts: FetchCreateContextFnOptions) => {
+export const createContext = (opts: FetchCreateContextFnOptions) => {
   return opts;
 };
 

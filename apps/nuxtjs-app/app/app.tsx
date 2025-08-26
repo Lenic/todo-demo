@@ -1,10 +1,7 @@
-import { ServiceLocator } from '@todo/container';
-import { EThemeColor, IThemeService } from '@todo/interface';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ClientOnly, NuxtLayout, NuxtPage } from '#components';
-import { getThemeColor } from '~/actions';
 
 import { GlobalMonitor } from './components/monitor';
 
@@ -14,18 +11,10 @@ export default defineComponent({
   name: 'App',
   setup() {
     const { locale } = useI18n();
-    const { data: themeColor } = useAsyncData(
-      'theme-color',
-      async () => {
-        const color = await getThemeColor();
-        ServiceLocator.default.get(IThemeService).setColor(color);
-        return color;
-      },
-      { default: () => EThemeColor.NEUTRAL },
-    );
+    const { $themeColor } = useNuxtApp();
 
     useHead({
-      htmlAttrs: { lang: locale, class: computed(() => `theme-${themeColor.value}`) },
+      htmlAttrs: { lang: locale, class: computed(() => `theme-${$themeColor}`) },
     });
 
     return () => (

@@ -1,18 +1,18 @@
-/**
- * This is the client-side code that uses the inferred types from the server
- */
-import { createTRPCClient, httpBatchLink } from '@trpc/client';
-/**
- * We only import the `AppRouter` type from the server - this is not available at runtime
- */
 import type { AppRouter } from './entrance';
+
+import { createTRPCClient, httpBatchLink } from '@trpc/client';
+import { firstValueFrom, map } from 'rxjs';
 import superjson from 'superjson';
+
+import { socketIdSubject } from '~/components/monitor';
+import { SOCKET_ID_HEADER_KEY } from '~/constants';
 
 export const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: 'http://localhost:3000/api/trpc',
+      url: '/api/trpc',
       transformer: superjson,
+      headers: () => firstValueFrom(socketIdSubject.pipe(map((id) => ({ [SOCKET_ID_HEADER_KEY]: id })))),
     }),
   ],
 });

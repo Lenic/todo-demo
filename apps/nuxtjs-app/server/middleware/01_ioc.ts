@@ -3,6 +3,5 @@ import { registerServerServices } from '~/services/register-server';
 
 export default defineEventHandler(() => {
   registerServerServices();
-
   registerClientServices();
 });

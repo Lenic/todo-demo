@@ -1,6 +1,6 @@
 import type { IChangedItemInfo, TItemChangedEvent } from '~/actions/notifications';
-import type Pusher from 'pusher-js';
 
+import Pusher from 'pusher-js';
 import { combineLatest, EMPTY, Observable, shareReplay, switchMap } from 'rxjs';
 
 import { PUSHER_EVENT } from '~/constants';
@@ -10,12 +10,12 @@ import { channelIdSubject, socketIdSubject } from './constants';
 // Pusher.logToConsole = true;
 export const message$ = combineLatest([
   channelIdSubject,
-  new Observable<Pusher>((_observer) => {
-    // if (typeof window === 'undefined') return;
-    //
-    // const runtimeConfig = useRuntimeConfig();
-    // observer.next(new Pusher(runtimeConfig.public.pusherKey, { cluster: runtimeConfig.public.pusherCluster }));
-    // observer.complete();
+  new Observable<Pusher>((observer) => {
+    if (typeof window === 'undefined') return;
+
+    const runtimeConfig = useRuntimeConfig();
+    observer.next(new Pusher(runtimeConfig.public.pusherKey, { cluster: runtimeConfig.public.pusherCluster }));
+    observer.complete();
   }),
 ]).pipe(
   switchMap(([channelId, pusher]) => {
@@ -47,5 +47,5 @@ export const message$ = combineLatest([
       };
     });
   }),
-  shareReplay(1)
+  shareReplay(1),
 );

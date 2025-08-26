@@ -63,7 +63,7 @@ class ThemeService extends Disposable implements IThemeService {
     this.disposeWithMe(
       message$
         .pipe(
-          filter((v) => v.type === 'set-system-dictionary-item'),
+          // filter((v) => v.type === 'set-system-dictionary-item'),
           filter((v) => v.item.key === THEME_COLOR_KEY),
         )
         .subscribe(({ item }) => {

@@ -8,6 +8,10 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   css: ['~/assets/css/tailwind.css'],
 
+  experimental: {
+    asyncContext: true,
+  },
+
   vite: {
     plugins: [tailwindcss(), languageFilesIntegrationPlugin],
   },
