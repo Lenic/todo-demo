@@ -11,7 +11,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxtjs/i18n": "10.0.6",
     "@tailwindcss/vite": "^4.1.11",
     "@todo/container": "workspace:^",
     "@todo/interface": "workspace:^",
@@ -22,7 +21,7 @@
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.469.0",
     "nuxt": "^4.0.3",
-    "nuxt-auth-utils": "0.5.23",
+    "pusher-js": "^8.4.0",
     "reka-ui": "^2.4.1",
     "rxjs": "catalog:",
     "shadcn-nuxt": "2.2.0",
@@ -39,10 +38,12 @@
   "devDependencies": {
     "@neondatabase/serverless": "^1.0.1",
     "@vue/eslint-config-prettier": "^10.2.0",
+    "dotenv": "^16.6.1",
     "drizzle-kit": "^0.30.6",
     "drizzle-orm": "^0.41.0",
     "eslint-plugin-vue": "^9.33.0",
     "globals": "catalog:",
+    "pusher": "^5.2.0",
     "tsx": "^4.20.3",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:"

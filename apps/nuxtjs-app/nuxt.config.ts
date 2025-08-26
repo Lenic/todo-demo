@@ -8,11 +8,15 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   css: ['~/assets/css/tailwind.css'],
 
+  experimental: {
+    asyncContext: true,
+  },
+
   vite: {
     plugins: [tailwindcss(), languageFilesIntegrationPlugin],
   },
 
-  modules: ['shadcn-nuxt', 'nuxt-auth-utils'],
+  modules: ['shadcn-nuxt'],
   shadcn: {
     /**
      * Prefix for all the imported component
@@ -31,4 +35,16 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
+
+  runtimeConfig: {
+    databaseUrl: '',
+
+    pusherId: '',
+    pusherSecret: '',
+
+    public: {
+      pusherKey: '',
+      pusherCluster: '',
+    },
+  },
 });

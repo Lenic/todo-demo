@@ -1,6 +1,6 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
-import { appRouter, createContext } from '#shared/trpc';
+import { appRouter, createContext } from '~/trpc';
 
 export default defineEventHandler(async (event) => {
   const req = event.node.req;
