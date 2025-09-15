@@ -1,9 +1,9 @@
 import { defineComponent } from 'vue';
 
-import { Toaster } from '~/components/ui/sonner';
 import { useIntl } from '~/i18n';
 import { LanguageToggle } from '~/sections/setting/language-toggle';
 import { ThemeColorToggle } from '~/sections/setting/theme-color-toggle';
+import { Toaster } from '~/ui/sonner';
 
 import 'vue-sonner/style.css';
 

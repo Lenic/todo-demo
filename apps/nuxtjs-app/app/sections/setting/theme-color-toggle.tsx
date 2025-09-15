@@ -5,16 +5,16 @@ import { IThemeService, THEME_COLOR_LIST } from '@todo/interface';
 import { Palette } from 'lucide-vue-next';
 import { defineComponent } from 'vue';
 
-import { Button } from '@/components/ui/button';
+import { useIntl } from '@/i18n';
+import { useObservableRef } from '~/hooks';
+import { Button } from '~/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useIntl } from '@/i18n';
-import { useObservableRef } from '~/hooks';
+} from '~/ui/dropdown-menu';
 
 export const ThemeColorToggle = defineComponent({
   name: 'ThemeColorToggle',
