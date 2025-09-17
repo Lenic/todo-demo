@@ -24,7 +24,7 @@ export const authOptions: AuthConfig = {
   pages: {
     signIn: '/auth/signin',
     // error: '/auth/error',
-    // signOut: '/auth/signout' // 登出页面
+    // signOut: '/auth/signout'
   },
 };
 
