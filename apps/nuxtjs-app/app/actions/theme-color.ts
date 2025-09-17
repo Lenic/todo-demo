@@ -9,10 +9,10 @@ import { publish } from './notifications';
 
 const getService = () => ServiceLocator.default.get(ISystemDictionaryService);
 
-export async function getThemeColor(headers: Record<string, string>) {
+export async function getThemeColor() {
   const service = getService();
 
-  const color$ = publish(headers).pipe(
+  const color$ = publish().pipe(
     concatMap(({ userId }) => {
       return service.get(THEME_COLOR_KEY, userId).pipe(
         concatMap((item) => {
@@ -34,11 +34,11 @@ export async function getThemeColor(headers: Record<string, string>) {
   return firstValueFrom(color$);
 }
 
-export async function setThemeColor(headers: Record<string, string>, theme: EThemeColor) {
+export async function setThemeColor(theme: EThemeColor) {
   const service = getService();
 
   return firstValueFrom(
-    publish(headers).pipe(
+    publish().pipe(
       concatMap(({ userId, sync }) =>
         service.get(THEME_COLOR_KEY, userId).pipe(
           concatMap((item) => {

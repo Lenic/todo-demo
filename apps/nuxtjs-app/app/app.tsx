@@ -15,9 +15,8 @@ export default defineComponent({
   setup() {
     const { locale } = useI18n();
 
-    const headers = useRequestHeaders();
     const { data: themeColor } = useAsyncData('themeColor', async () => {
-      const color = await getThemeColor(headers);
+      const color = await getThemeColor();
       ServiceLocator.default.get(IThemeService).setColor(color);
       return color;
     });

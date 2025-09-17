@@ -2,31 +2,12 @@ import type { Session } from '@auth/core/types';
 
 import { computed } from 'vue';
 
-import { useState } from '#imports';
-
 type AuthStatus = 'authenticated' | 'unauthenticated' | 'loading';
 
 export const useAuth = () => {
   const session = useState<Session | null>('session', () => null);
   const status = useState<AuthStatus>('status', () => 'loading');
   const isAuthenticated = computed(() => status.value === 'authenticated');
-
-  const fetchSession = async () => {
-    try {
-      const data = await $fetch<Session>('/api/auth/session');
-      session.value = data;
-      if (Object.keys(data).length > 0) {
-        status.value = 'authenticated';
-      } else {
-        session.value = null;
-        status.value = 'unauthenticated';
-      }
-    } catch (error) {
-      console.error('Failed to fetch session:', error);
-      session.value = null;
-      status.value = 'unauthenticated';
-    }
-  };
 
   const signIn = async (provider: string) => {
     const { csrfToken } = await $fetch<{ csrfToken: string }>('/api/auth/csrf');
@@ -81,7 +62,6 @@ export const useAuth = () => {
     session,
     status,
     isAuthenticated,
-    fetchSession,
     signIn,
     signOut,
   };

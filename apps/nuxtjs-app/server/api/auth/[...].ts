@@ -26,6 +26,17 @@ export const authOptions: AuthConfig = {
     // error: '/auth/error',
     // signOut: '/auth/signout'
   },
+  callbacks: {
+    session: (params) => ({
+      expires: params.session.expires,
+      user: {
+        id: params.user.id,
+        name: params.user.name,
+        email: params.user.email,
+        image: params.user.image,
+      },
+    }),
+  },
 };
 
 export default defineEventHandler(async (event) => {
