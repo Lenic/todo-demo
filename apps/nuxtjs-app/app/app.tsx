@@ -7,6 +7,7 @@ import { getThemeColor } from '~/actions';
 import { ClientOnly, NuxtLayout, NuxtPage } from '#components';
 
 import { GlobalMonitor } from './components/monitor';
+import { useAuth } from './hooks';
 
 import 'vue-sonner/style.css';
 
@@ -15,8 +16,10 @@ export default defineComponent({
   setup() {
     const { locale } = useI18n();
 
+    const { session } = useAuth();
+    const headers = useRequestHeaders();
     const { data: themeColor } = useAsyncData('themeColor', async () => {
-      const color = await getThemeColor();
+      const color = await getThemeColor(headers, session.value)();
       ServiceLocator.default.get(IThemeService).setColor(color);
       return color;
     });

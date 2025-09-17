@@ -1,4 +1,5 @@
 export * from './async-event';
+export * from './auth';
 export * from './event';
 export * from './observable-effect';
 export * from './observable-ref';

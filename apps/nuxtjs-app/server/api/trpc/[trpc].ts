@@ -1,21 +1,27 @@
+import type { Session } from '@auth/core/types';
+
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
-import { appRouter, createContext } from '~/trpc';
+import { appRouter } from '~/trpc';
 
 export default defineEventHandler(async (event) => {
   const req = event.node.req;
   const url = getRequestURL(event);
   const body = await readRawBody(event);
 
-  const headers = Object.entries(req.headers).reduce<[string, string][]>((acc, [key, value]) => {
+  const headers = Object.entries(req.headers).reduce((acc, [key, value]) => {
     if (!value) return acc;
     else if (typeof value === 'string') {
-      acc.push([key, value]);
+      acc.set(key, value);
     } else {
-      value.forEach((item) => acc.push([key, item]));
+      value.forEach((item) => {
+        acc.set(key, item);
+      });
     }
     return acc;
-  }, []);
+  }, new Headers());
+
+  const session = await $fetch<Session | null>('/api/auth/session', { headers });
 
   return fetchRequestHandler({
     endpoint: '/api/trpc',
@@ -25,6 +31,6 @@ export default defineEventHandler(async (event) => {
       method: req.method,
     }),
     router: appRouter,
-    createContext,
+    createContext: (opts) => ({ ...opts, session, headers }),
   });
 });

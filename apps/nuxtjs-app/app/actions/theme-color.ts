@@ -5,14 +5,14 @@ import { concatMap, firstValueFrom, map, of } from 'rxjs';
 import { THEME_COLOR_KEY } from '../constants';
 import { ISystemDictionaryService } from '../services/api';
 
-import { publish } from './notifications';
+import { defineMethod } from './notifications';
 
 const getService = () => ServiceLocator.default.get(ISystemDictionaryService);
 
-export async function getThemeColor() {
+export const getThemeColor = defineMethod((tool$) => {
   const service = getService();
 
-  const color$ = publish().pipe(
+  const color$ = tool$.pipe(
     concatMap(({ userId }) => {
       return service.get(THEME_COLOR_KEY, userId).pipe(
         concatMap((item) => {
@@ -32,15 +32,15 @@ export async function getThemeColor() {
   );
 
   return firstValueFrom(color$);
-}
+});
 
-export async function setThemeColor(theme: EThemeColor) {
+export const setThemeColor = defineMethod((tool$, theme: EThemeColor) => {
   const service = getService();
 
   return firstValueFrom(
-    publish().pipe(
-      concatMap(({ userId, sync }) =>
-        service.get(THEME_COLOR_KEY, userId).pipe(
+    tool$.pipe(
+      concatMap(({ userId, sync }) => {
+        return service.get(THEME_COLOR_KEY, userId).pipe(
           concatMap((item) => {
             if (item) {
               return item.value === (theme as string)
@@ -59,8 +59,8 @@ export async function setThemeColor(theme: EThemeColor) {
           concatMap((item) =>
             typeof item === 'number' ? of(void 0) : sync({ type: 'set-system-dictionary-item', item }, void 0),
           ),
-        ),
-      ),
+        );
+      }),
     ),
   );
-}
+});

@@ -1,15 +1,9 @@
-import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
+import type { ITRPCContext } from './types';
 
 import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 
-export const createContext = (opts: FetchCreateContextFnOptions) => {
-  return opts;
-};
-
-export type TContext = Awaited<ReturnType<typeof createContext>>;
-
-const t = initTRPC.context<TContext>().create({
+const t = initTRPC.context<ITRPCContext>().create({
   transformer: superjson,
 });
 
