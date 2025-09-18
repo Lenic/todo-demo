@@ -32,7 +32,7 @@ export default defineComponent({
       <NuxtLayout>
         <NuxtPage />
         <ClientOnly>
-          <GlobalMonitor channelId="7224a0ad-af31-4c71-81ed-7d3ef0a9423d" />
+          <GlobalMonitor channelId={session.value?.user?.id ?? ''} />
         </ClientOnly>
       </NuxtLayout>
     );

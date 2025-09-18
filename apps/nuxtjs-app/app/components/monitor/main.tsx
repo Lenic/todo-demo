@@ -15,7 +15,9 @@ export const GlobalMonitor = defineComponent({
     translationFormattingSubject.next(t);
 
     onMounted(() => {
-      channelIdSubject.next(props.channelId);
+      if (props.channelId) {
+        channelIdSubject.next(props.channelId);
+      }
     });
 
     return () => null;
