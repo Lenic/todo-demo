@@ -18,14 +18,14 @@ export function useAsyncEvent<T>(
   delay?: number,
 ): [(args: T) => void, Ref<boolean>];
 
-export function useAsyncEvent<T>(fn: any, processingCallbackOrDelay?: any, delay?: number): any {
+export function useAsyncEvent<T>(fn: unknown, processingCallbackOrDelay?: unknown, delay?: number): unknown {
   let delayTime = 300;
   let callback: ((processing: boolean, context: Record<string, unknown>) => void) | null = null;
 
   if (typeof processingCallbackOrDelay === 'number') {
     delayTime = processingCallbackOrDelay;
   } else if (processingCallbackOrDelay) {
-    callback = processingCallbackOrDelay;
+    callback = processingCallbackOrDelay as (processing: boolean, context: Record<string, unknown>) => void;
   }
 
   if (typeof delay !== 'undefined') {
@@ -45,7 +45,7 @@ export function useAsyncEvent<T>(fn: any, processingCallbackOrDelay?: any, delay
         loading(
           () =>
             typeof processingCallbackOrDelay === 'function'
-              ? (fn as (event: T, context: Record<string, any>) => Promise<unknown> | Observable<unknown>)(
+              ? (fn as (event: T, context: Record<string, unknown>) => Promise<unknown> | Observable<unknown>)(
                   eventArgs,
                   context,
                 )

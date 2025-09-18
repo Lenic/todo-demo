@@ -1,6 +1,7 @@
+import type { Observable } from 'rxjs';
 import type { ShallowRef } from 'vue';
 
-import { BehaviorSubject, type Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { onBeforeUnmount, shallowRef } from 'vue';
 
 export function useObservableShallowRef<T>(observable: BehaviorSubject<T>): ShallowRef<T>;

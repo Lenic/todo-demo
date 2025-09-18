@@ -14,7 +14,7 @@ const pusher = new Pusher({
   useTLS: true,
 });
 
-export const publish = (headers: Headers | Readonly<Record<string, string>>, session: Session | null) => {
+const publish = (headers: Headers | Readonly<Record<string, string>>, session: Session | null) => {
   const userId = session?.user?.id;
   if (!userId) {
     throw new Error('[Request Auth]: can not find the user id.');
@@ -45,7 +45,7 @@ export const publish = (headers: Headers | Readonly<Record<string, string>>, ses
 };
 
 export const defineMethod =
-  <T extends any[] = [], R = any>(fn: (tool$: ReturnType<typeof publish>, ...args: T) => R) =>
+  <T extends unknown[] = [], R = unknown>(fn: (tool$: ReturnType<typeof publish>, ...args: T) => R) =>
   (headers: Headers | Readonly<Record<string, string>>, session: Session | null) => {
     return (...args: T) => fn(publish(headers, session), ...args);
   };
