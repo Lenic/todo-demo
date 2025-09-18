@@ -11,6 +11,7 @@ import { registerServerServices } from '~/services/register-server';
 registerServerServices();
 
 export const authOptions: AuthConfig = {
+  theme: { logo: '/logo.png' },
   basePath: '/api/auth',
   trustHost: true,
   secret: process.env.NUXT_AUTH_SECRET!,
@@ -21,11 +22,6 @@ export const authOptions: AuthConfig = {
       clientSecret: process.env.NUXT_AUTH_GITHUB_SECRET!,
     }),
   ],
-  pages: {
-    signIn: '/auth/signin',
-    // error: '/auth/error',
-    // signOut: '/auth/signout'
-  },
   callbacks: {
     session: (params) => ({
       expires: params.session.expires,

@@ -4,6 +4,6 @@ export default defineNuxtRouteMiddleware((to) => {
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated.value) {
-    return navigateTo(`/auth/signin?callbackUrl=${encodeURIComponent(to.fullPath)}`);
+    return navigateTo(`/api/auth/signin?callbackUrl=${encodeURIComponent(to.fullPath)}`);
   }
 });

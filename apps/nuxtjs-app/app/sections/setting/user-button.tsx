@@ -26,10 +26,10 @@ export const UserButton = defineComponent({
 
       pendingRef.value = true;
       signOut()
-        .then(() => void navigateTo({ path: '/auth/signin' }))
+        .then(() => void navigateTo('/api/auth/signin', { external: true }))
         .finally(() => void (pendingRef.value = false))
         .catch((err: unknown) => {
-          console.log('[Sign Out]: sign out fail.', err);
+          console.log('[Sign Out]: sign out failed.', err);
         });
     }
 
