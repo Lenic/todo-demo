@@ -11,6 +11,8 @@ import 'vue-sonner/style.css';
 export default defineComponent({
   name: 'Home',
   setup() {
+    definePageMeta({ middleware: 'auth' });
+
     const { t } = useIntl('todo.panel');
     return () => (
       <div class="container fixed inset-0 mx-auto">
