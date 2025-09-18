@@ -1,8 +1,9 @@
 import type { Subscriber } from 'rxjs';
 
 import { Observable } from 'rxjs';
+import { effectScope } from 'vue';
 
-export function getHookValue<T>(action: (observer: Subscriber<T>) => void) {
+export function hook$<T>(action: (observer: Subscriber<T>) => void) {
   return new Observable<T>((observer) => {
     const scope = effectScope(true);
 
@@ -14,11 +15,9 @@ export function getHookValue<T>(action: (observer: Subscriber<T>) => void) {
       };
     });
 
-    function destroy() {
+    return () => {
       scope.stop();
       cleanupFn?.();
-    }
-    observer.add(destroy);
-    return destroy;
+    };
   });
 }

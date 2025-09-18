@@ -1,4 +1,7 @@
 {
+  "user": {
+    "sign-out": ["Sign Out", "注销", "サインアウト"]
+  },
   "theme": {
     "light": ["Light", "明亮", "明るい"],
     "dark": ["Dark", "暗黑", "暗黒の"],

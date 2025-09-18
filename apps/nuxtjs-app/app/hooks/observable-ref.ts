@@ -1,6 +1,7 @@
+import type { Observable } from 'rxjs';
 import type { Ref } from 'vue';
 
-import { BehaviorSubject, type Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { onBeforeUnmount, ref } from 'vue';
 
 export function useObservableRef<T>(observable: BehaviorSubject<T>): Ref<T>;
