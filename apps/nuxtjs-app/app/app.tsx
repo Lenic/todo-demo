@@ -25,7 +25,7 @@ export default defineComponent({
     });
 
     useHead({
-      htmlAttrs: { lang: locale, class: computed(() => `theme-${themeColor.value ?? 'unknown'}`) },
+      htmlAttrs: { lang: locale, class: computed(() => (themeColor.value ? `theme-${themeColor.value}` : '')) },
     });
 
     return () => (
