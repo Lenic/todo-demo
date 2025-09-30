@@ -1,9 +1,7 @@
-import type { ITRPCContext } from './types';
-
 import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 
-const t = initTRPC.context<ITRPCContext>().create({
+const t = initTRPC.create({
   transformer: superjson,
 });
 

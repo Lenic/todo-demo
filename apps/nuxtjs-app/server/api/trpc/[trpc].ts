@@ -8,10 +8,11 @@ export default defineEventHandler(async (event) => {
   const req = toWebRequest(event);
 
   const session = await $fetch<Session | null>('/api/auth/session', { headers: req.headers });
+  event.context.session = session;
+
   return fetchRequestHandler({
     req,
     router: appRouter,
     endpoint: '/api/trpc',
-    createContext: (opts) => ({ ...opts, session, headers: req.headers }),
   });
 });

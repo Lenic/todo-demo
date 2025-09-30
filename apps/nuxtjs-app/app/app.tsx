@@ -1,13 +1,11 @@
-import { ServiceLocator } from '@todo/container';
-import { IThemeService } from '@todo/interface';
+import { EThemeColor } from '@todo/interface';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { getThemeColor } from '~/actions';
 import { ClientOnly, NuxtLayout, NuxtPage } from '#components';
 
 import { GlobalMonitor } from './components/monitor';
-import { useAuth } from './hooks';
+import { useAuth, useThemeColor } from './hooks';
 
 import 'vue-sonner/style.css';
 
@@ -17,15 +15,10 @@ export default defineComponent({
     const { locale } = useI18n();
 
     const { session } = useAuth();
-    const headers = useRequestHeaders();
-    const { data: themeColor } = useAsyncData('themeColor', async () => {
-      const color = await getThemeColor(headers, session.value)();
-      ServiceLocator.default.get(IThemeService).setColor(color);
-      return color;
-    });
+    const themeColor = useThemeColor();
 
     useHead({
-      htmlAttrs: { lang: locale, class: computed(() => (themeColor.value ? `theme-${themeColor.value}` : '')) },
+      htmlAttrs: { lang: locale, class: `theme-${themeColor.value ?? EThemeColor.NEUTRAL}` },
     });
 
     return () => (

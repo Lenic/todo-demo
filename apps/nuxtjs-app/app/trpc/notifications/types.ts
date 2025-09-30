@@ -1,4 +1,4 @@
-import type { ISystemDictionaryItem } from '../../services/api';
+import type { ISystemDictionaryItem } from '~/services/api';
 
 export interface ISystemDictionaryUpdatedEvent {
   type: 'set-system-dictionary-item';

@@ -1,23 +1,22 @@
 import type { Session } from '@auth/core/types';
 
 import { useAuth } from '~/hooks/auth';
-import { defineNuxtPlugin, useRequestHeaders } from '#imports';
+import { defineNuxtPlugin, useRequestEvent } from '#imports';
 
-export default defineNuxtPlugin({
-  name: 'session-loader',
-  enforce: 'pre',
-  async setup() {
-    const { session, status } = useAuth();
+export default defineNuxtPlugin(async () => {
+  const { session, status } = useAuth();
 
-    const headers = useRequestHeaders();
-    const data = await $fetch<Session | null>('/api/auth/session', { headers });
+  const event = useRequestEvent();
+  if (!event) return;
 
-    if (data && Object.keys(data).length > 0) {
-      session.value = data;
-      status.value = 'authenticated';
-    } else {
-      session.value = null;
-      status.value = 'unauthenticated';
-    }
-  },
+  const data = await $fetch<Session | null>('/api/auth/session', { headers: event.headers });
+  event.context.session = data;
+
+  if (data && Object.keys(data).length > 0) {
+    session.value = data;
+    status.value = 'authenticated';
+  } else {
+    session.value = null;
+    status.value = 'unauthenticated';
+  }
 });
