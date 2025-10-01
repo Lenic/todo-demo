@@ -9,10 +9,11 @@ import { THEME_COLOR_KEY } from '~/constants';
 import { message$, t$ } from '~/sections/monitor';
 import { trpc } from '~/trpc/client';
 
-import { ThemeService } from './resources/theme-service';
+import { DataService, IDBDataService, ThemeService } from './resources';
 
 export const registerClientServices = () => {
   register(IThemeService, ThemeService);
+  register(IDBDataService, DataService);
 
   const themeService = ServiceLocator.default.get(IThemeService);
   themeService.initialize();
@@ -31,7 +32,7 @@ export const registerClientServices = () => {
   ServiceLocator.default.disposeWithMe(
     message$
       .pipe(
-        // filter((v) => v.type === 'set-system-dictionary-item'),
+        filter((v) => v.type === 'set-system-dictionary-item'),
         filter((v) => v.item.key === THEME_COLOR_KEY),
       )
       .subscribe(({ item }) => {
