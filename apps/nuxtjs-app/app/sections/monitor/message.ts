@@ -1,4 +1,4 @@
-import type { IChangedItemInfo, TItemChangedEvent } from '~/actions/notifications';
+import type { IChangedItemInfo, TItemChangedEvent } from '~/trpc/notifications';
 
 import Pusher from 'pusher-js';
 import { combineLatest, EMPTY, Observable, shareReplay, switchMap } from 'rxjs';

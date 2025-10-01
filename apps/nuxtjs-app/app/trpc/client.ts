@@ -4,8 +4,8 @@ import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { firstValueFrom, map } from 'rxjs';
 import superjson from 'superjson';
 
-import { socketIdSubject } from '~/components/monitor';
 import { SOCKET_ID_HEADER_KEY } from '~/constants';
+import { socketIdSubject } from '~/sections/monitor';
 
 export const trpc = createTRPCClient<AppRouter>({
   links: [

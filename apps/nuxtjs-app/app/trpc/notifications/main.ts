@@ -17,6 +17,7 @@ const pusher = new Pusher({
 export function publish() {
   return of(null).pipe(
     map(() => useRequestEvent()),
+    catchError(() => of(useEvent())),
     catchError(() => throwError(() => new Error('[Request Event]: can not find the event.'))),
     map((event) => {
       if (!event) {

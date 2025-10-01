@@ -1,9 +1,10 @@
-import type { IContainerIdentifier, IRegistration, TConstructor } from './types';
+import type { IContainerIdentifier, IRegistration, SubscriptionLike, TConstructor } from './types';
 
 export class Container {
   private registrations = new Map<string | symbol, IRegistration>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
   private instances = new Map<string | symbol, any>();
+  private disposableList = new Set<(() => void) | SubscriptionLike>();
 
   /**
    * register a new container item. it'll be ignored if there is a same registration.
@@ -60,11 +61,29 @@ export class Container {
   }
 
   /**
+   * add a disposable subscription to current container.
+   * @param subscription - the disposable subscription
+   */
+  disposeWithMe(subscription: (() => void) | SubscriptionLike) {
+    this.disposableList.add(subscription);
+    return this;
+  }
+
+  /**
    * remove all of registrations from the current container.
    */
   clear() {
     this.instances.forEach((item) => item?.dispose());
     this.instances.clear();
+
+    this.disposableList.forEach((item) => {
+      if (typeof item === 'function') {
+        item();
+      } else {
+        item.unsubscribe();
+      }
+    });
+    this.disposableList.clear();
   }
 
   /**

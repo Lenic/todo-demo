@@ -6,8 +6,6 @@ import { ThemeColorToggle } from '~/sections/setting/theme-color-toggle';
 import { UserButton } from '~/sections/setting/user-button';
 import { Toaster } from '~/ui/sonner';
 
-import 'vue-sonner/style.css';
-
 export default defineComponent({
   name: 'Home',
   setup() {

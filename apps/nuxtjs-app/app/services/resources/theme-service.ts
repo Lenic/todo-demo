@@ -10,15 +10,9 @@ import {
   THEME_COLOR_LIST,
   THEME_STORAGE_KEY,
 } from '@todo/interface';
-import { filter, ReplaySubject, takeWhile, withLatestFrom } from 'rxjs';
-import { toast } from 'vue-sonner';
+import { filter, ReplaySubject } from 'rxjs';
 
-import { message$, t$ } from '~/components/monitor';
-
-import { THEME_COLOR_KEY } from '../../constants';
-import { trpc } from '../../trpc/client';
-
-class ThemeService extends Disposable implements IThemeService {
+export class ThemeService extends Disposable implements IThemeService {
   private subscription: Subscription | null = null;
   private themeSubject = new ReplaySubject<ETheme>(1);
 
@@ -45,30 +39,6 @@ class ThemeService extends Disposable implements IThemeService {
       this.color$.pipe(filter((color) => this.color !== color)).subscribe((color) => {
         this.color = color;
       }),
-    );
-
-    this.disposeWithMe(
-      this.color$
-        .pipe(
-          takeWhile(() => typeof window !== 'undefined'),
-          withLatestFrom(t$),
-        )
-        .subscribe(([color, t]) => {
-          trpc.theme.setThemeColor.mutate({ color }).catch(() => {
-            toast(t('settings.theme-color.switch-error'));
-          });
-        }),
-    );
-
-    this.disposeWithMe(
-      message$
-        .pipe(
-          // filter((v) => v.type === 'set-system-dictionary-item'),
-          filter((v) => v.item.key === THEME_COLOR_KEY),
-        )
-        .subscribe(({ item }) => {
-          this.setColorCore(item.value as EThemeColor);
-        }),
     );
 
     this.initialize();
@@ -124,22 +94,16 @@ class ThemeService extends Disposable implements IThemeService {
 
   setColor = (theme: EThemeColor) => {
     if (typeof window !== 'undefined') {
-      this.setColorCore(theme);
+      const className = `theme-${theme}`;
+      const root = window.document.documentElement;
+      if (root.classList.contains(className)) return;
+
+      THEME_COLOR_LIST.forEach((color) => {
+        root.classList.remove(`theme-${color}`);
+      });
+
+      root.classList.add(className);
     }
     this.colorTrigger.next(theme);
   };
-
-  private setColorCore = (theme: EThemeColor) => {
-    const className = `theme-${theme}`;
-    const root = window.document.documentElement;
-    if (root.classList.contains(className)) return;
-
-    THEME_COLOR_LIST.forEach((color) => {
-      root.classList.remove(`theme-${color}`);
-    });
-
-    root.classList.add(className);
-  };
 }
-
-export { ThemeService };

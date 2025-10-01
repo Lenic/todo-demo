@@ -6,7 +6,7 @@ import { languageFilesIntegrationPlugin } from './app/i18n/core';
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: false },
-  css: ['~/assets/css/tailwind.css'],
+  css: ['~/tailwind.css'],
 
   experimental: {
     asyncContext: true,

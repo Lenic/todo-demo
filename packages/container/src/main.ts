@@ -1,4 +1,4 @@
-import type { IContainerIdentifier, TConstructor } from './types';
+import type { IContainerIdentifier, SubscriptionLike, TConstructor } from './types';
 
 import { CONTAINER_IDENTIFIER_KEY } from './constants';
 import { Container } from './container';
@@ -32,6 +32,10 @@ export class ServiceLocator {
 
   get<T>(identifier: IContainerIdentifier<T>) {
     return container.get<T>(identifier);
+  }
+
+  disposeWithMe(subscription: (() => void) | SubscriptionLike) {
+    container.disposeWithMe(subscription);
   }
 
   clear() {
