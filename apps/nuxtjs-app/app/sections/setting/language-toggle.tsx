@@ -1,7 +1,6 @@
 import { Languages, LoaderPinwheel } from 'lucide-vue-next';
 import { defineComponent } from 'vue';
 
-import { useAsyncEvent } from '~/hooks';
 import { COOKIE_NAME, ELocaleType, LANGUAGE_LIST, loadI18nMessages, useIntl } from '~/i18n';
 import { Button } from '~/ui/button';
 import {

@@ -1,7 +1,6 @@
 import { Loader2 } from 'lucide-vue-next';
 
 import { useIntl } from '@/i18n';
-import { useAuth } from '~/hooks';
 import { Avatar, AvatarImage } from '~/ui/avatar';
 import { Button } from '~/ui/button';
 import {

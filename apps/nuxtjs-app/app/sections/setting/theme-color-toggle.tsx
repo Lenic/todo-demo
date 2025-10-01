@@ -6,7 +6,6 @@ import { Palette } from 'lucide-vue-next';
 import { defineComponent } from 'vue';
 
 import { useIntl } from '@/i18n';
-import { useObservableRef } from '~/hooks';
 import { Button } from '~/ui/button';
 import {
   DropdownMenu,

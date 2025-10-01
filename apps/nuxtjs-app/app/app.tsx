@@ -5,7 +5,6 @@ import { useI18n } from 'vue-i18n';
 import { ClientOnly, NuxtLayout, NuxtPage } from '#components';
 
 import { GlobalMonitor } from './sections/monitor';
-import { useAuth, useThemeColor } from './hooks';
 
 import 'vue-sonner/style.css';
 

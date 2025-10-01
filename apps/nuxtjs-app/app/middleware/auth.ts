@@ -1,5 +1,3 @@
-import { useAuth } from '~/hooks';
-
 export default defineNuxtRouteMiddleware((to) => {
   const { isAuthenticated } = useAuth();
 

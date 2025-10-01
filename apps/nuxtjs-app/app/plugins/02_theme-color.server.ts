@@ -1,7 +1,6 @@
 import { ServiceLocator } from '@todo/container';
 import { IThemeService } from '@todo/interface';
 
-import { useAuth, useThemeColor } from '~/hooks';
 import { appRouter } from '~/trpc';
 
 const caller = appRouter.createCaller({});

@@ -1,8 +1,5 @@
 import type { Session } from '@auth/core/types';
 
-import { useAuth } from '~/hooks/auth';
-import { defineNuxtPlugin, useRequestEvent } from '#imports';
-
 export default defineNuxtPlugin(async () => {
   const { session, status } = useAuth();
 
