@@ -24,7 +24,7 @@ export const LanguageToggle = defineComponent({
     });
 
     const [handleChangeLanguage, pendingRef] = useAsyncEvent(
-      async (e: CustomEvent, context) => {
+      async (e: Event, context) => {
         e.preventDefault();
 
         const { lang } = (document.activeElement as HTMLDivElement).dataset;

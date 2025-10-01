@@ -12,8 +12,16 @@ export default defineNuxtConfig({
     asyncContext: true,
   },
 
+  typescript: {
+    typeCheck: false,
+  },
+
   vite: {
     plugins: [tailwindcss(), languageFilesIntegrationPlugin],
+    esbuild: {
+      jsx: 'automatic',
+      jsxImportSource: 'vue',
+    },
   },
 
   runtimeConfig: {
