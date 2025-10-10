@@ -14,7 +14,7 @@ import {
 } from './api';
 
 export const registerServerServices = () => {
-  register(IPostgreSQLConnectionService, PostgreSQLConnectionService);
+  register(IPostgreSQLConnectionService, PostgreSQLConnectionService, []);
   register(IAuthAdapter, DrizzleAdapter, [IPostgreSQLConnectionService]);
   register(ISystemDictionaryService, SystemDictionaryService, [IPostgreSQLConnectionService]);
   register(IDBDataStorageService, PostgreSQLDataStorageService, [IPostgreSQLConnectionService]);

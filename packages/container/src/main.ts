@@ -1,15 +1,14 @@
-import type { IContainerIdentifier, SubscriptionLike, TConstructor } from './types';
+import type { ContainerizedConstructorParameters, IContainerIdentifier, SubscriptionLike, TConstructor } from './types';
 
 import { CONTAINER_IDENTIFIER_KEY } from './constants';
 import { Container } from './container';
 
 const container = new Container();
 
-export function register<TInterface, TClass extends TInterface>(
+export function register<TInterface, TClass extends TInterface & (abstract new (...args: any) => any)>(
   identifier: IContainerIdentifier<TInterface>,
   target: TConstructor<TClass>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
-  dependencies: IContainerIdentifier<any>[] = [],
+  dependencies: ContainerizedConstructorParameters<TClass>,
 ) {
   container.add(identifier, target, dependencies);
 }

@@ -1,55 +1,36 @@
-import type { IContainerIdentifier, IRegistration, SubscriptionLike, TConstructor } from './types';
+import type { IContainerRegistration, IContainerIdentifier, IRegistration, ISubscription, TConstructor, IInstanceStore } from './types';
 
-export class Container {
+export class Container implements IContainerRegistration {
   private registrations = new Map<string | symbol, IRegistration>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
-  private instances = new Map<string | symbol, any>();
-  private disposableList = new Set<(() => void) | SubscriptionLike>();
+  private stores = new Map<string | symbol, IInstanceStore>();
+  private disposableList = new Set<(() => void) | ISubscription>();
 
-  /**
-   * register a new container item. it'll be ignored if there is a same registration.
-   * @param identifier {string|symbol} - the registration identifier
-   * @param constructor {TConstructor<T>} - the constructor of the class
-   * @param dependencies {IContainerIdentifier<any>[]} - the dependencies of the constructor
-   * @return the current container instance
-   */
-  add<TInterface, TClass extends TInterface>(
+  trySet<TInterface, TClass extends TInterface & TConstructor>(
     identifier: IContainerIdentifier<TInterface>,
-    constructor: TConstructor<TClass>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
-    dependencies: IContainerIdentifier<any>[] = [],
-  ) {
+    registration: IRegistration<TClass>,
+    store?: IInstanceStore<TClass>
+  ): boolean {
     const key = identifier.getIdentifier();
-    if (this.registrations.has(key)) return;
+    if (this.registrations.has(key)) return false;
 
-    this.registrations.set(key, { constructor, dependencies });
+    this.registrations.set(key, registration);
+    this.stores.set(key, store);
 
     return this;
   }
 
-  /**
-   * register a new container item or update a existed container item.
-   * @param identifier {string|symbol} - the registration identifier
-   * @param constructor {TConstructor<T>} - the constructor of the class
-   * @param dependencies {IContainerIdentifier<any>[]} - the dependencies of the constructor
-   * @return the current container instance
-   */
   set<TInterface, TClass extends TInterface>(
     identifier: IContainerIdentifier<TInterface>,
     constructor: TConstructor<TClass>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
     dependencies: IContainerIdentifier<any>[] = [],
-  ) {
+  ): IContainer {
     this.remove(identifier);
     this.registrations.set(identifier.getIdentifier(), { constructor, dependencies });
 
     return this;
   }
 
-  /**
-   * remove the registration from the current container.
-   * @param identifier {string|symbol} - the registration identifier
-   */
   remove<TInterface>(identifier: IContainerIdentifier<TInterface>) {
     const key = identifier.getIdentifier();
     if (this.instances.has(key)) {
@@ -60,18 +41,11 @@ export class Container {
     }
   }
 
-  /**
-   * add a disposable subscription to current container.
-   * @param subscription - the disposable subscription
-   */
-  disposeWithMe(subscription: (() => void) | SubscriptionLike) {
+  disposeWithMe(subscription: (() => void) | ISubscription): IContainer {
     this.disposableList.add(subscription);
     return this;
   }
 
-  /**
-   * remove all of registrations from the current container.
-   */
   clear() {
     this.instances.forEach((item) => item?.dispose());
     this.instances.clear();
@@ -86,11 +60,6 @@ export class Container {
     this.disposableList.clear();
   }
 
-  /**
-   * get the container item.
-   * @param identifier {string|symbol} - the registration identifier
-   * @returns the container item.
-   */
   get<TInterface>(identifier: IContainerIdentifier<TInterface>): TInterface {
     const key = identifier.getIdentifier();
     if (this.instances.has(key)) {
@@ -102,7 +71,8 @@ export class Container {
       throw new Error(`[Registration Error]: not find the registration of the ${key.toString()}`);
     }
 
-    const params = registration.dependencies.map((depToken) => this.get(depToken));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
+    const params = registration.dependencies.map((depToken: IContainerIdentifier<any>) => this.get(depToken));
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- this is the core code.
     const instance = new registration.constructor(...params);
     this.instances.set(key, instance);
