@@ -64,6 +64,7 @@ export interface IContainer<TLifetimeType extends TContainerLifetimeTypes = TCon
     identifier: IContainerIdentifier<TInterface>,
     registration: IRegistration<TInstance, TArgs>,
     lifetimeType?: TLifetimeType,
+    force?: boolean,
   ): boolean;
 
   delete<TInterface>(identifier?: IContainerIdentifier<TInterface>): void;

@@ -1,11 +1,15 @@
 import type { IContainerStore } from '../types';
 
+import { ContainerLifetimeTypes } from '../constants';
+
 const TransactionStoreKey = Symbol('TransactionStoreKey');
 
 export const transactionStore: IContainerStore = {
   order: 0,
   desc: 'TransactionStore',
   executor: (next, args) => {
+    if (args.lifetimeType !== ContainerLifetimeTypes.Transaction) return next();
+
     let store = args[TransactionStoreKey] as Map<string | symbol, unknown> | undefined;
     if (!store) {
       store = new Map<string | symbol, unknown>();

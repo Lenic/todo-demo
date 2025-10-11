@@ -44,9 +44,14 @@ export class Container<TLifetimeType extends TContainerLifetimeTypes = TContaine
     }, this.storeList);
   }
 
-  set(identifier: IContainerIdentifier, registration: IRegistration, lifetimeType?: TLifetimeType) {
+  set(identifier: IContainerIdentifier, registration: IRegistration, lifetimeType?: TLifetimeType, force?: boolean) {
     const key = identifier.getIdentifier();
-    if (this.registrations.has(key)) return false;
+    const existed = this.registrations.has(key);
+    if (!force && existed) return false;
+
+    if (existed && force) {
+      this.delete(identifier);
+    }
 
     this.registrations.set(key, [lifetimeType ?? this.defaultLifetimeType, registration]);
     return true;
