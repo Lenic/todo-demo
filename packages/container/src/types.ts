@@ -1,5 +1,5 @@
-import type { CONTAINER_IDENTIFIER_KEY } from './constants';
-import type { ComposePlugin } from '@lenic/compose';
+import type { CONTAINER_IDENTIFIER_KEY, ContainerLifetimeTypes } from './constants';
+import type { ComposePluginFullConfig } from '@lenic/compose';
 
 export interface IContainerIdentifier<_T = unknown> {
   [CONTAINER_IDENTIFIER_KEY]: string | symbol;
@@ -16,42 +16,55 @@ export interface ISubscription {
   unsubscribe(): void;
 }
 
-export interface IContainer {
-  get<TInterface>(identifier: IContainerIdentifier<TInterface>): TInterface;
-  delete<TInterface>(identifier?: IContainerIdentifier<TInterface>): void;
-}
-
-export type TConstructor<TInstance = unknown, TArgs extends unknown[] = unknown[]> = new (...args: TArgs) => TInstance;
-
-export type TConstructorParameters<T extends TConstructor> =
-  ConstructorParameters<T> extends [...infer P] ? { [K in keyof P]: IContainerIdentifier<P[K]> } : [];
-
-export interface IInstanceContext {
-  container: IContainer;
-  identifier: IContainerIdentifier;
-  context: Record<string | symbol, unknown>;
-}
-
-export interface IInstanceStore {
-  plugin: ComposePlugin<unknown, IInstanceContext>;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TConstructor<TInstance, TArgs extends any[]> = new (...args: TArgs) => TInstance;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface IRegistration<TClass extends TConstructor = any> {
-  creator: TConstructor<TClass>;
-  dependencies: IContainerIdentifier<TClass>[];
+export type TConstructorParameters<TInstance, TArgs extends any[]> =
+  ConstructorParameters<TConstructor<TInstance, TArgs>> extends [...infer P]
+    ? { [K in keyof P]: IContainerIdentifier<P[K]> }
+    : [];
+
+export interface IContainerStore<TLifetimeType extends TContainerLifetimeTypes = TContainerLifetimeTypes>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  extends ComposePluginFullConfig<any, IInstanceContext<TLifetimeType>> {
+  delete(identifier?: string | symbol): void;
 }
 
-export interface IContainerRegistration extends IContainer {
-  trySet<TInterface, TClass extends TInterface & TConstructor>(
+export interface IRegistration<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TInstance = any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TArgs extends any[] = any[],
+> {
+  readonly creator: TConstructor<TInstance, TArgs>;
+  readonly dependencies: TConstructorParameters<TInstance, TArgs>;
+}
+
+export type TContainerLifetimeTypes = (typeof ContainerLifetimeTypes)[keyof typeof ContainerLifetimeTypes];
+
+export interface IInstanceContext<TLifetimeType extends TContainerLifetimeTypes = TContainerLifetimeTypes>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  extends Record<string | symbol, any> {
+  lifetimeType: TLifetimeType;
+  identifier: IContainerIdentifier;
+  registration: IRegistration;
+}
+
+export interface IContainer<TLifetimeType extends TContainerLifetimeTypes = TContainerLifetimeTypes>
+  extends IDisposable {
+  get<TInterface>(identifier: IContainerIdentifier<TInterface>): TInterface;
+
+  set<
+    TInterface,
+    TInstance extends TInterface,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    TArgs extends any[],
+  >(
     identifier: IContainerIdentifier<TInterface>,
-    registration: IRegistration<TClass>,
-    store?: IInstanceStore<TClass>,
+    registration: IRegistration<TInstance, TArgs>,
+    lifetimeType?: TLifetimeType,
   ): boolean;
 
-  set<TInterface, TClass extends TInterface & TConstructor>(
-    identifier: IContainerIdentifier<TInterface>,
-    registration: IRegistration<TClass>,
-    store?: IInstanceStore<TClass>,
-  ): IContainerRegistration;
+  delete<TInterface>(identifier?: IContainerIdentifier<TInterface>): void;
 }

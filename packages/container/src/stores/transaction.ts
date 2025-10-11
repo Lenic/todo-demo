@@ -1,38 +1,28 @@
-import type { IDisposable, IInstanceContext, IInstanceStore } from '../types';
-import type { ComposePlugin } from '@lenic/compose';
+import type { IContainerStore } from '../types';
 
 const TransactionStoreKey = Symbol('TransactionStoreKey');
 
-export class TransactionStore implements IInstanceStore {
-  plugin: ComposePlugin<unknown, IInstanceContext>;
+export const transactionStore: IContainerStore = {
+  order: 0,
+  desc: 'TransactionStore',
+  executor: (next, args) => {
+    let store = args[TransactionStoreKey] as Map<string | symbol, unknown> | undefined;
+    if (!store) {
+      store = new Map<string | symbol, unknown>();
+      return next({ ...args, [TransactionStoreKey]: store });
+    } else {
+      const key = args.identifier.getIdentifier();
 
-  constructor() {
-    this.plugin = {
-      order: 0,
-      desc: 'TransactionStore',
-      executor: (next, args) => {
-        let store = args.context[TransactionStoreKey] as Map<string | symbol, unknown> | undefined;
-        if (!store) {
-          store = new Map<string | symbol, unknown>();
+      let result = store.get(key);
+      if (result) return result;
 
-          const result = next({ ...args, context: { ...args.context, [TransactionStoreKey]: store } });
+      result = next();
+      store.set(key, result);
 
-          Array.from(store.values()).forEach((item) => (item as IDisposable | null)?.dispose());
-          store.clear();
-
-          return result;
-        } else {
-          const key = args.identifier.getIdentifier();
-
-          let result = store.get(key);
-          if (result) return result;
-
-          result = next();
-          store.set(key, result);
-
-          return result;
-        }
-      },
-    };
-  }
-}
+      return result;
+    }
+  },
+  delete() {
+    // nothing to do
+  },
+};

@@ -1,7 +1,7 @@
-import type { IDisposable, SubscriptionLike } from './types';
+import type { IDisposable, ISubscription } from './types';
 
 class Disposable implements IDisposable {
-  private subscriptionList: ((() => void) | SubscriptionLike)[] = [];
+  private subscriptionList: ((() => void) | ISubscription)[] = [];
 
   dispose(): void {
     this.subscriptionList.forEach((action) => {
@@ -13,7 +13,7 @@ class Disposable implements IDisposable {
     });
   }
 
-  protected disposeWithMe(subscription: (() => void) | SubscriptionLike) {
+  protected disposeWithMe(subscription: (() => void) | ISubscription) {
     this.subscriptionList.push(subscription);
   }
 }
