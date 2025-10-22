@@ -1,10 +1,10 @@
 import type {
   IContainer,
   IContainerIdentifier,
-  IContainerStore,
   IInstanceContext,
+  ILifetime,
   IRegistration,
-  TContainerLifetimeTypes,
+  IRegistrationWithLifetime,
 } from './types';
 import type { ComposeInstance } from '@lenic/compose';
 
@@ -12,39 +12,44 @@ import { compose } from '@lenic/compose';
 
 import { ContainerLifetimeTypes } from './constants';
 import { Disposable } from './disposable';
-import { singleStore, transactionStore } from './stores';
+import { singleLifetime, transactionLifetime } from './lifetimes';
 
-export class Container<TLifetimeType extends TContainerLifetimeTypes = TContainerLifetimeTypes>
-  extends Disposable
-  implements IContainer<TLifetimeType>
-{
-  private registrations = new Map<string | symbol, [TLifetimeType, IRegistration]>();
+export class Container extends Disposable implements IContainer {
+  private storeList: ILifetime[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private action: ComposeInstance<any, IInstanceContext<TLifetimeType>>;
-  private defaultLifetimeType: TLifetimeType;
-  private storeList: IContainerStore<TLifetimeType>[];
+  private action: ComposeInstance<any, IInstanceContext>;
+  private registrations = new Map<string | symbol, IRegistrationWithLifetime>();
 
-  constructor(defaultLifetimeType?: TLifetimeType, lifetimes?: IContainerStore<TLifetimeType>[]) {
+  constructor(
+    private defaultLifetimeType: string = ContainerLifetimeTypes.Single,
+    ...extraLifetimes: ILifetime[]
+  ) {
     super();
 
-    this.defaultLifetimeType = defaultLifetimeType ?? (ContainerLifetimeTypes.Single as TLifetimeType);
-    this.storeList = [singleStore, transactionStore, ...(lifetimes ?? [])] as IContainerStore<TLifetimeType>[];
+    this.storeList = [singleLifetime, transactionLifetime, ...extraLifetimes] as ILifetime[];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.action = compose<any, IInstanceContext<TLifetimeType>>((context) => {
-      const { registration } = context;
-
+    this.action = compose<any, IInstanceContext>((context) => {
+      const registration = this.getInfo(context.identifier);
       const params = registration.dependencies.map((identifier) => {
-        const [lifetimeType, registration] = this.getInfo(identifier);
-        return this.action({ ...context, identifier, lifetimeType, registration });
+        const lifetimeName = this.getInfo(identifier).lifetime.name;
+        return this.action({ ...context, identifier, lifetimeName });
       });
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       return new registration.creator(...params);
     }, this.storeList);
+
+    this.disposeWithMe(() => {
+      this.delete();
+    });
   }
 
-  set(identifier: IContainerIdentifier, registration: IRegistration, lifetimeType?: TLifetimeType, force?: boolean) {
+  setDefaultLifetimeName(lifetimeName: string) {
+    this.defaultLifetimeType = lifetimeName;
+  }
+
+  set(identifier: IContainerIdentifier, registration: IRegistration, force?: boolean) {
     const key = identifier.getIdentifier();
     const existed = this.registrations.has(key);
     if (!force && existed) return false;
@@ -53,22 +58,28 @@ export class Container<TLifetimeType extends TContainerLifetimeTypes = TContaine
       this.delete(identifier);
     }
 
-    this.registrations.set(key, [lifetimeType ?? this.defaultLifetimeType, registration]);
+    const lifetimeName = registration.lifetimeName ?? this.defaultLifetimeType;
+    const lifetime = this.storeList.find((v) => v.name === lifetimeName);
+    if (!lifetime) {
+      throw new Error(`[Container]: can't find the lifetime by ${lifetimeName}`);
+    }
+
+    this.registrations.set(key, { ...registration, lifetime });
     return true;
   }
 
-  delete(identifier?: IContainerIdentifier) {
-    Array.from(this.storeList.values()).forEach((item) => {
-      item.delete(identifier?.getIdentifier());
+  delete<TInterface>(...identifiers: IContainerIdentifier<TInterface>[]) {
+    this.storeList.forEach((lifetime) => {
+      lifetime.delete(identifiers);
     });
   }
 
   get(identifier: IContainerIdentifier) {
-    const [lifetimeType, registration] = this.getInfo(identifier);
-    return this.action({ identifier, lifetimeType, registration });
+    const lifetimeName = this.getInfo(identifier).lifetime.name;
+    return this.action({ identifier, lifetimeName });
   }
 
-  private getInfo(identifier: IContainerIdentifier) {
+  protected getInfo(identifier: IContainerIdentifier) {
     const key = identifier.getIdentifier();
 
     const item = this.registrations.get(key);

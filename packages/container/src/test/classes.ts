@@ -1,3 +1,5 @@
+import type { IExternalStorage } from '../lifetimes';
+
 import { Disposable } from '../disposable';
 import { createIdentifier } from '../main';
 
@@ -42,3 +44,21 @@ export class Farm implements IFarm {
     public duck2: IAnimal,
   ) {}
 }
+
+export const weakKey = {
+  key: {},
+  async gc(storage: IExternalStorage) {
+    this.key = {};
+
+    if (global.gc) {
+      for (let i = 0; i < 10; i++) {
+        global.gc();
+        await new Promise((r) => setTimeout(r, 10));
+      }
+    }
+
+    for (let i = 0; storage.tryGetMap() !== undefined; i++) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+  },
+};

@@ -1,4 +1,4 @@
-import type { CONTAINER_IDENTIFIER_KEY, ContainerLifetimeTypes } from './constants';
+import type { CONTAINER_IDENTIFIER_KEY } from './constants';
 import type { ComposePluginFullConfig } from '@lenic/compose';
 
 export interface IContainerIdentifier<_T = unknown> {
@@ -9,6 +9,8 @@ export interface IContainerIdentifier<_T = unknown> {
 }
 
 export interface IDisposable {
+  disposed: boolean;
+
   dispose(): void;
 }
 
@@ -25,10 +27,18 @@ export type TConstructorParameters<TInstance, TArgs extends any[]> =
     ? { [K in keyof P]: IContainerIdentifier<P[K]> }
     : [];
 
-export interface IContainerStore<TLifetimeType extends TContainerLifetimeTypes = TContainerLifetimeTypes>
+export interface IInstanceContext
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  extends ComposePluginFullConfig<any, IInstanceContext<TLifetimeType>> {
-  delete(identifier?: string | symbol): void;
+  extends Record<string | symbol, any> {
+  identifier: IContainerIdentifier;
+  lifetimeName: string;
+}
+
+export interface ILifetime
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  extends Omit<ComposePluginFullConfig<any, IInstanceContext>, 'desc'> {
+  readonly name: string;
+  delete(identifiers: IContainerIdentifier[]): void;
 }
 
 export interface IRegistration<
@@ -39,21 +49,22 @@ export interface IRegistration<
 > {
   readonly creator: TConstructor<TInstance, TArgs>;
   readonly dependencies: TConstructorParameters<TInstance, TArgs>;
+  readonly lifetimeName?: string;
 }
 
-export type TContainerLifetimeTypes = (typeof ContainerLifetimeTypes)[keyof typeof ContainerLifetimeTypes];
-
-export interface IInstanceContext<TLifetimeType extends TContainerLifetimeTypes = TContainerLifetimeTypes>
+export interface IRegistrationWithLifetime<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  extends Record<string | symbol, any> {
-  lifetimeType: TLifetimeType;
-  identifier: IContainerIdentifier;
-  registration: IRegistration;
+  TInstance = any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TArgs extends any[] = any[],
+> extends Omit<IRegistration<TInstance, TArgs>, 'lifetimeName'> {
+  readonly lifetime: ILifetime;
 }
 
-export interface IContainer<TLifetimeType extends TContainerLifetimeTypes = TContainerLifetimeTypes>
-  extends IDisposable {
+export interface IContainer extends IDisposable {
   get<TInterface>(identifier: IContainerIdentifier<TInterface>): TInterface;
+
+  setDefaultLifetimeName(lifetimeName: string): void;
 
   set<
     TInterface,
@@ -63,9 +74,8 @@ export interface IContainer<TLifetimeType extends TContainerLifetimeTypes = TCon
   >(
     identifier: IContainerIdentifier<TInterface>,
     registration: IRegistration<TInstance, TArgs>,
-    lifetimeType?: TLifetimeType,
     force?: boolean,
   ): boolean;
 
-  delete<TInterface>(identifier?: IContainerIdentifier<TInterface>): void;
+  delete<TInterface>(...identifiers: IContainerIdentifier<TInterface>[]): void;
 }
