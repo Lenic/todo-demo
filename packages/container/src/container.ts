@@ -1,111 +1,108 @@
-import type { IContainerIdentifier, IRegistration, SubscriptionLike, TConstructor } from './types';
+import type {
+  IContainer,
+  IContainerIdentifier,
+  IInstanceContext,
+  ILifetime,
+  IRegistration,
+  IRegistrationWithLifetime,
+} from './types';
+import type { ComposeInstance } from '@lenic/compose';
 
-export class Container {
-  private registrations = new Map<string | symbol, IRegistration>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
-  private instances = new Map<string | symbol, any>();
-  private disposableList = new Set<(() => void) | SubscriptionLike>();
+import { compose } from '@lenic/compose';
 
-  /**
-   * register a new container item. it'll be ignored if there is a same registration.
-   * @param identifier {string|symbol} - the registration identifier
-   * @param constructor {TConstructor<T>} - the constructor of the class
-   * @param dependencies {IContainerIdentifier<any>[]} - the dependencies of the constructor
-   * @return the current container instance
-   */
-  add<TInterface, TClass extends TInterface>(
-    identifier: IContainerIdentifier<TInterface>,
-    constructor: TConstructor<TClass>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
-    dependencies: IContainerIdentifier<any>[] = [],
+import { ContainerLifetimeTypes } from './constants';
+import { Disposable } from './disposable';
+import { singleLifetime, transactionLifetime } from './lifetimes';
+
+export class Container extends Disposable implements IContainer {
+  private lifetimeList: ILifetime[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private action: ComposeInstance<any, IInstanceContext>;
+  private registrations = new Map<string | symbol, IRegistrationWithLifetime>();
+
+  constructor(
+    private defaultLifetimeType: string = ContainerLifetimeTypes.Single,
+    ...extraLifetimes: ILifetime[]
   ) {
-    const key = identifier.getIdentifier();
-    if (this.registrations.has(key)) return;
+    super();
 
-    this.registrations.set(key, { constructor, dependencies });
+    this.lifetimeList = [singleLifetime, transactionLifetime, ...extraLifetimes] as ILifetime[];
 
-    return this;
-  }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.action = compose<any, IInstanceContext>((context) => {
+      const registration = this.getInfo(context.identifier);
+      const params = registration.dependencies.map((identifier) => {
+        const lifetimeName = this.getInfo(identifier).lifetime.name;
+        return this.action({ ...context, identifier, lifetimeName });
+      });
 
-  /**
-   * register a new container item or update a existed container item.
-   * @param identifier {string|symbol} - the registration identifier
-   * @param constructor {TConstructor<T>} - the constructor of the class
-   * @param dependencies {IContainerIdentifier<any>[]} - the dependencies of the constructor
-   * @return the current container instance
-   */
-  set<TInterface, TClass extends TInterface>(
-    identifier: IContainerIdentifier<TInterface>,
-    constructor: TConstructor<TClass>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
-    dependencies: IContainerIdentifier<any>[] = [],
-  ) {
-    this.remove(identifier);
-    this.registrations.set(identifier.getIdentifier(), { constructor, dependencies });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      return new registration.creator(...params);
+    }, this.lifetimeList);
 
-    return this;
-  }
-
-  /**
-   * remove the registration from the current container.
-   * @param identifier {string|symbol} - the registration identifier
-   */
-  remove<TInterface>(identifier: IContainerIdentifier<TInterface>) {
-    const key = identifier.getIdentifier();
-    if (this.instances.has(key)) {
-      const item = this.instances.get(key);
-      item?.dispose();
-
-      this.instances.delete(key);
-    }
-  }
-
-  /**
-   * add a disposable subscription to current container.
-   * @param subscription - the disposable subscription
-   */
-  disposeWithMe(subscription: (() => void) | SubscriptionLike) {
-    this.disposableList.add(subscription);
-    return this;
-  }
-
-  /**
-   * remove all of registrations from the current container.
-   */
-  clear() {
-    this.instances.forEach((item) => item?.dispose());
-    this.instances.clear();
-
-    this.disposableList.forEach((item) => {
-      if (typeof item === 'function') {
-        item();
-      } else {
-        item.unsubscribe();
-      }
+    this.disposeWithMe(() => {
+      this.delete();
     });
-    this.disposableList.clear();
   }
 
-  /**
-   * get the container item.
-   * @param identifier {string|symbol} - the registration identifier
-   * @returns the container item.
-   */
-  get<TInterface>(identifier: IContainerIdentifier<TInterface>): TInterface {
-    const key = identifier.getIdentifier();
-    if (this.instances.has(key)) {
-      return this.instances.get(key);
+  setDefaultLifetimeName(lifetimeName: string) {
+    if (!this.lifetimeList.some((v) => v.name === lifetimeName)) {
+      throw new Error(`[Container]: can't find the lifetime name of ${lifetimeName}`);
+    }
+    this.defaultLifetimeType = lifetimeName;
+  }
+
+  appendLifetimes(...lifetimes: ILifetime[]) {
+    const set = new Set(lifetimes.map((v) => v.name));
+    if (set.size !== lifetimes.length) {
+      throw new Error('[Container]: new lifetimes contain duplicated names.');
     }
 
-    const registration = this.registrations.get(key);
-    if (!registration) {
+    this.lifetimeList.forEach((v) => set.add(v.name));
+    if (this.lifetimeList.length + lifetimes.length !== set.size) {
+      throw new Error('[Container]: new lifetimes contain duplicated names from the original lifetimes.');
+    }
+
+    this.lifetimeList = [...this.lifetimeList, ...lifetimes];
+  }
+
+  set(identifier: IContainerIdentifier, registration: IRegistration, force?: boolean) {
+    const key = identifier.getIdentifier();
+    const existed = this.registrations.has(key);
+    if (!force && existed) return false;
+
+    if (existed && force) {
+      this.delete(identifier);
+    }
+
+    const lifetimeName = registration.lifetimeName ?? this.defaultLifetimeType;
+    const lifetime = this.lifetimeList.find((v) => v.name === lifetimeName);
+    if (!lifetime) {
+      throw new Error(`[Container]: can't find the lifetime by ${lifetimeName}`);
+    }
+
+    this.registrations.set(key, { ...registration, lifetime });
+    return true;
+  }
+
+  delete<TInterface>(...identifiers: IContainerIdentifier<TInterface>[]) {
+    this.lifetimeList.forEach((lifetime) => {
+      lifetime.delete(identifiers);
+    });
+  }
+
+  get(identifier: IContainerIdentifier) {
+    const lifetimeName = this.getInfo(identifier).lifetime.name;
+    return this.action({ identifier, lifetimeName });
+  }
+
+  protected getInfo(identifier: IContainerIdentifier) {
+    const key = identifier.getIdentifier();
+
+    const item = this.registrations.get(key);
+    if (!item) {
       throw new Error(`[Registration Error]: not find the registration of the ${key.toString()}`);
     }
-
-    const params = registration.dependencies.map((depToken) => this.get(depToken));
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- this is the core code.
-    const instance = new registration.constructor(...params);
-    this.instances.set(key, instance);
-    return instance;
+    return item;
   }
 }

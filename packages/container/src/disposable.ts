@@ -1,9 +1,22 @@
-import type { IDisposable, SubscriptionLike } from './types';
+import type { IDisposable, ISubscription } from './types';
 
+/**
+ * Disposable class
+ */
 class Disposable implements IDisposable {
-  private subscriptionList: ((() => void) | SubscriptionLike)[] = [];
+  /**
+   * The list of the subscriptions
+   */
+  private subscriptionList: ((() => void) | ISubscription)[] = [];
 
+  disposed = false;
+
+  /**
+   * Dispose the disposable
+   */
   dispose(): void {
+    if (this.disposed) return;
+
     this.subscriptionList.forEach((action) => {
       if (typeof action === 'function') {
         action();
@@ -11,9 +24,14 @@ class Disposable implements IDisposable {
         action.unsubscribe();
       }
     });
+    this.disposed = true;
   }
 
-  protected disposeWithMe(subscription: (() => void) | SubscriptionLike) {
+  /**
+   * Dispose with me
+   * @param subscription - The subscription to dispose
+   */
+  protected disposeWithMe(subscription: (() => void) | ISubscription) {
     this.subscriptionList.push(subscription);
   }
 }

@@ -1,19 +1,13 @@
-import type { IContainerIdentifier, SubscriptionLike, TConstructor } from './types';
+import type { IContainer, IContainerIdentifier } from './types';
 
 import { CONTAINER_IDENTIFIER_KEY } from './constants';
 import { Container } from './container';
 
-const container = new Container();
-
-export function register<TInterface, TClass extends TInterface>(
-  identifier: IContainerIdentifier<TInterface>,
-  target: TConstructor<TClass>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is the core code.
-  dependencies: IContainerIdentifier<any>[] = [],
-) {
-  container.add(identifier, target, dependencies);
-}
-
+/**
+ * Create a identifier for the container
+ * @param key - The key of the identifier
+ * @returns The identifier
+ */
 export function createIdentifier<T>(key: string | symbol) {
   const idendifier: IContainerIdentifier<T> = {
     [CONTAINER_IDENTIFIER_KEY]: key,
@@ -27,18 +21,39 @@ export function createIdentifier<T>(key: string | symbol) {
   return idendifier;
 }
 
+/**
+ * Service locator class
+ */
 export class ServiceLocator {
+  /**
+   * The default service locator
+   */
   static default = new ServiceLocator();
 
+  /**
+   * The container of the service locator
+   */
+  container: IContainer;
+
+  private constructor() {
+    this.container = new Container();
+  }
+
+  /**
+   * Get a instance from the container
+   * @param identifier - The identifier of the instance
+   * @returns The instance
+   */
   get<T>(identifier: IContainerIdentifier<T>) {
-    return container.get<T>(identifier);
+    return this.container.get<T>(identifier);
   }
 
-  disposeWithMe(subscription: (() => void) | SubscriptionLike) {
-    container.disposeWithMe(subscription);
-  }
-
+  /**
+   * Clear the container, delete all identifiers from the container
+   *
+   * - if the identifiers implement the `IDisposable` interface, the instance will be disposed
+   */
   clear() {
-    container.clear();
+    this.container.delete();
   }
 }

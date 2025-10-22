@@ -2,12 +2,22 @@
   "name": "@todo/container",
   "version": "1.0.0",
   "type": "module",
-  "main": "./src/index.ts",
   "author": "",
   "license": "ISC",
   "description": "",
+  "scripts": {
+    "test": "NODE_OPTIONS=--expose-gc jest"
+  },
+  "main": "./src/index.ts",
   "devDependencies": {
+    "@jest/globals": "^30.2.0",
+    "@types/jest": "^30.0.0",
     "globals": "catalog:",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
     "typescript-eslint": "catalog:"
+  },
+  "dependencies": {
+    "@lenic/compose": "^1.1.0"
   }
 }
