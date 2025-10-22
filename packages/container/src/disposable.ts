@@ -1,10 +1,19 @@
 import type { IDisposable, ISubscription } from './types';
 
+/**
+ * Disposable class
+ */
 class Disposable implements IDisposable {
+  /**
+   * The list of the subscriptions
+   */
   private subscriptionList: ((() => void) | ISubscription)[] = [];
 
   disposed = false;
 
+  /**
+   * Dispose the disposable
+   */
   dispose(): void {
     if (this.disposed) return;
 
@@ -18,6 +27,10 @@ class Disposable implements IDisposable {
     this.disposed = true;
   }
 
+  /**
+   * Dispose with me
+   * @param subscription - The subscription to dispose
+   */
   protected disposeWithMe(subscription: (() => void) | ISubscription) {
     this.subscriptionList.push(subscription);
   }

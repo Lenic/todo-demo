@@ -15,7 +15,7 @@ import { Disposable } from './disposable';
 import { singleLifetime, transactionLifetime } from './lifetimes';
 
 export class Container extends Disposable implements IContainer {
-  private storeList: ILifetime[];
+  private lifetimeList: ILifetime[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private action: ComposeInstance<any, IInstanceContext>;
   private registrations = new Map<string | symbol, IRegistrationWithLifetime>();
@@ -26,7 +26,7 @@ export class Container extends Disposable implements IContainer {
   ) {
     super();
 
-    this.storeList = [singleLifetime, transactionLifetime, ...extraLifetimes] as ILifetime[];
+    this.lifetimeList = [singleLifetime, transactionLifetime, ...extraLifetimes] as ILifetime[];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.action = compose<any, IInstanceContext>((context) => {
@@ -38,7 +38,7 @@ export class Container extends Disposable implements IContainer {
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       return new registration.creator(...params);
-    }, this.storeList);
+    }, this.lifetimeList);
 
     this.disposeWithMe(() => {
       this.delete();
@@ -46,7 +46,24 @@ export class Container extends Disposable implements IContainer {
   }
 
   setDefaultLifetimeName(lifetimeName: string) {
+    if (!this.lifetimeList.some((v) => v.name === lifetimeName)) {
+      throw new Error(`[Container]: can't find the lifetime name of ${lifetimeName}`);
+    }
     this.defaultLifetimeType = lifetimeName;
+  }
+
+  appendLifetimes(...lifetimes: ILifetime[]) {
+    const set = new Set(lifetimes.map((v) => v.name));
+    if (set.size !== lifetimes.length) {
+      throw new Error('[Container]: new lifetimes contain duplicated names.');
+    }
+
+    this.lifetimeList.forEach((v) => set.add(v.name));
+    if (this.lifetimeList.length + lifetimes.length !== set.size) {
+      throw new Error('[Container]: new lifetimes contain duplicated names from the original lifetimes.');
+    }
+
+    this.lifetimeList = [...this.lifetimeList, ...lifetimes];
   }
 
   set(identifier: IContainerIdentifier, registration: IRegistration, force?: boolean) {
@@ -59,7 +76,7 @@ export class Container extends Disposable implements IContainer {
     }
 
     const lifetimeName = registration.lifetimeName ?? this.defaultLifetimeType;
-    const lifetime = this.storeList.find((v) => v.name === lifetimeName);
+    const lifetime = this.lifetimeList.find((v) => v.name === lifetimeName);
     if (!lifetime) {
       throw new Error(`[Container]: can't find the lifetime by ${lifetimeName}`);
     }
@@ -69,7 +86,7 @@ export class Container extends Disposable implements IContainer {
   }
 
   delete<TInterface>(...identifiers: IContainerIdentifier<TInterface>[]) {
-    this.storeList.forEach((lifetime) => {
+    this.lifetimeList.forEach((lifetime) => {
       lifetime.delete(identifiers);
     });
   }

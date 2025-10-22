@@ -1,5 +1,8 @@
 import type { IContainerIdentifier, IInstanceContext, ILifetime } from '../types';
 
+/**
+ * External storage interface
+ */
 export interface IExternalStorage {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tryGetMap(): Map<IContainerIdentifier, any> | undefined;
@@ -7,6 +10,9 @@ export interface IExternalStorage {
   getMap(): Map<IContainerIdentifier, any>;
 }
 
+/**
+ * WeakMap external storage class
+ */
 export class WeakExternalStorage implements IExternalStorage {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private cleanupCallback: ((heldValue: Map<IContainerIdentifier, any>) => void) | undefined;
@@ -18,14 +24,26 @@ export class WeakExternalStorage implements IExternalStorage {
     this.cleanupCallback?.(heldValue);
   });
 
+  /**
+   * Constructor of WeakExternalStorage
+   * @param getKey - The function to get the key of the external storage
+   */
   constructor(private getKey: () => object) {
     this.cleanupCallback = undefined;
   }
 
+  /**
+   * Try to get the map of the external storage
+   * @returns The map of the external storage
+   */
   tryGetMap() {
     return this.store.get(this.getKey());
   }
 
+  /**
+   * Get the map of the external storage
+   * @returns The map of the external storage
+   */
   getMap() {
     let map = this.tryGetMap();
     if (!map) {
@@ -39,6 +57,11 @@ export class WeakExternalStorage implements IExternalStorage {
     return map;
   }
 
+  /**
+   * On cleanup callback
+   * @param cleanupCallback - The callback to cleanup the external storage
+   * @returns The function to unsubscribe the cleanup callback
+   */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onCleanup(cleanupCallback: (heldValue: Map<IContainerIdentifier, any>) => void) {
     this.cleanupCallback = cleanupCallback;
@@ -51,7 +74,16 @@ export class WeakExternalStorage implements IExternalStorage {
   }
 }
 
+/**
+ * External lifetime class
+ */
 export class ExternalLifetime implements ILifetime {
+  /**
+   * Constructor of ExternalLifetime
+   * @param storage - The storage of the external lifetime
+   * @param order - The order of the external lifetime
+   * @param name - The name of the external lifetime
+   */
   constructor(
     private storage: IExternalStorage,
     public order = 0,
