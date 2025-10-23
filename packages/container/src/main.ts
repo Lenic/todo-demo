@@ -45,7 +45,7 @@ export class ServiceLocator {
    * @returns The instance
    */
   get<T>(identifier: IContainerIdentifier<T>) {
-    return this.container.get<T>(identifier);
+    return this.container.get(identifier);
   }
 
   /**

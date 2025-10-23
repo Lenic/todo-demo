@@ -45,12 +45,12 @@ export class WeakExternalStorage implements IExternalStorage {
    * @returns The map of the external storage
    */
   getMap() {
-    let map = this.tryGetMap();
+    const key = this.getKey();
+    let map = this.store.get(key);
     if (!map) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       map = new Map<IContainerIdentifier, any>();
 
-      const key = this.getKey();
       this.store.set(key, map);
       this.registry.register(key, map);
     }
@@ -71,6 +71,13 @@ export class WeakExternalStorage implements IExternalStorage {
         this.cleanupCallback = undefined;
       }
     };
+  }
+
+  clear() {
+    const item = this.store.get(this.getKey());
+    if (item && this.cleanupCallback) {
+      this.cleanupCallback(item);
+    }
   }
 }
 

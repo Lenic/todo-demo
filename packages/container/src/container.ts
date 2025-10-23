@@ -27,18 +27,7 @@ export class Container extends Disposable implements IContainer {
     super();
 
     this.lifetimeList = [singleLifetime, transactionLifetime, ...extraLifetimes] as ILifetime[];
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.action = compose<any, IInstanceContext>((context) => {
-      const registration = this.getInfo(context.identifier);
-      const params = registration.dependencies.map((identifier) => {
-        const lifetimeName = this.getInfo(identifier).lifetime.name;
-        return this.action({ ...context, identifier, lifetimeName });
-      });
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      return new registration.creator(...params);
-    }, this.lifetimeList);
+    this.action = this.buildAction();
 
     this.disposeWithMe(() => {
       this.delete();
@@ -64,6 +53,7 @@ export class Container extends Disposable implements IContainer {
     }
 
     this.lifetimeList = [...this.lifetimeList, ...lifetimes];
+    this.action = this.buildAction();
   }
 
   set(identifier: IContainerIdentifier, registration: IRegistration, force?: boolean) {
@@ -104,5 +94,19 @@ export class Container extends Disposable implements IContainer {
       throw new Error(`[Registration Error]: not find the registration of the ${key.toString()}`);
     }
     return item;
+  }
+
+  protected buildAction() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return compose<any, IInstanceContext>((context) => {
+      const registration = this.getInfo(context.identifier);
+      const params = registration.dependencies.map((identifier) => {
+        const lifetimeName = this.getInfo(identifier).lifetime.name;
+        return this.action({ ...context, identifier, lifetimeName });
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      return new registration.creator(...params);
+    }, this.lifetimeList);
   }
 }

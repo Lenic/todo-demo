@@ -21,6 +21,12 @@ export interface IDisposable {
    * Dispose the disposable
    */
   dispose(): void;
+
+  /**
+   * Dispose with me: add a subscription to the instance, when the instance is disposed, the subscription will be disposed
+   * @param subscription - The subscription to dispose
+   */
+  disposeWithMe(subscription: (() => void) | ISubscription): void;
 }
 
 /**
@@ -99,14 +105,14 @@ export interface IContainer extends IDisposable {
   appendLifetimes(...lifetimes: ILifetime[]): void;
 
   /**
-   * Delete identifiers from the container, if the identifiers is empty, delete all identifiers
+   * Delete identifiers from the container: if the identifiers is empty, delete all identifiers
    * @param identifiers - The identifiers to delete
    */
   delete<TInterface>(...identifiers: IContainerIdentifier<TInterface>[]): void;
 
   /**
    * Get a instance from the container
-   * @param identifier - The identifier of the instance, if the identifier is not set, throw an error
+   * @param identifier - The identifier of the instance: if the identifier is not set, throw an error
    * @returns The instance
    */
   get<TInterface>(identifier: IContainerIdentifier<TInterface>): TInterface;
@@ -130,7 +136,7 @@ export interface IContainer extends IDisposable {
   ): boolean;
 
   /**
-   * Set the default lifetime name of the container, if the default lifetime name is not set, throw an error
+   * Set the default lifetime name of the container: if the default lifetime name is not set, throw an error
    * @param lifetimeName - The default lifetime name
    */
   setDefaultLifetimeName(lifetimeName: string): void;
