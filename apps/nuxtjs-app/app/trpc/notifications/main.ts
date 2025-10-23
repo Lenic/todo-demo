@@ -2,9 +2,10 @@ import type { IChangedItemInfo, TItemChangedEvent } from './types';
 import type { Session } from '@auth/core/types';
 
 import Pusher from 'pusher';
-import { catchError, from, map, of, throwError } from 'rxjs';
+import { from, map, of } from 'rxjs';
 
 import { PUSHER_EVENT, SOCKET_ID_HEADER_KEY } from '~/constants';
+import { getEvent } from '~/utils/getEvent';
 
 const pusher = new Pusher({
   appId: process.env.NUXT_PUSHER_ID!,
@@ -16,14 +17,8 @@ const pusher = new Pusher({
 
 export function publish() {
   return of(null).pipe(
-    map(() => useRequestEvent()),
-    catchError(() => of(useEvent())),
-    catchError(() => throwError(() => new Error('[Request Event]: can not find the event.'))),
+    map(() => getEvent()),
     map((event) => {
-      if (!event) {
-        throw new Error('[Request Event]: can not find the event instance.');
-      }
-
       const session = event.context.session as Session | null;
       const userId = session?.user?.id;
       if (!userId) {
