@@ -1,11 +1,7 @@
-import {
-  ContainerLifetimeTypes,
-  ExternalLifetime,
-  type IContainerIdentifier,
-  type IExternalStorage,
-  ServiceLocator,
-} from '@todo/container';
+import { ContainerLifetimeTypes, ExternalLifetime, ServiceLocator } from '@todo/container';
 import { IThemeService } from '@todo/interface';
+
+import { eventStorage } from '~/utils/getEvent';
 
 import { ThemeService } from './resources/theme-service';
 import {
@@ -18,39 +14,6 @@ import {
   PostgreSQLDataStorageService,
   SystemDictionaryService,
 } from './api';
-
-const store = new WeakMap<object, Map<IContainerIdentifier, any>>();
-function clearCachedInstanceFromMap(map: Map<IContainerIdentifier, any>) {
-  for (const item of map.values()) {
-    item?.dispose?.();
-  }
-  map.clear();
-}
-const registry = new FinalizationRegistry(clearCachedInstanceFromMap);
-
-export const eventStorage: IExternalStorage = {
-  getMap() {
-    const event = getEvent();
-    let map = store.get(event);
-    if (!map) {
-      map = new Map<IContainerIdentifier, any>();
-      store.set(event, map);
-      registry.register(event, map);
-      event.node.res.on('close', () => {
-        const map = store.get(event);
-        if (!map) return;
-
-        clearCachedInstanceFromMap(map);
-        store.delete(event);
-      });
-    }
-    return map;
-  },
-  tryGetMap() {
-    const event = getEvent();
-    return store.get(event);
-  },
-};
 
 const weakLifetime = new ExternalLifetime(eventStorage);
 ServiceLocator.default.container.appendLifetimes(weakLifetime);
