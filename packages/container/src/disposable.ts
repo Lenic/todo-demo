@@ -28,10 +28,10 @@ class Disposable implements IDisposable {
   }
 
   /**
-   * Dispose with me
+   * Dispose with me: add a subscription to the container, when the container is disposed, the subscription will be disposed
    * @param subscription - The subscription to dispose
    */
-  protected disposeWithMe(subscription: (() => void) | ISubscription) {
+  disposeWithMe(subscription: (() => void) | ISubscription) {
     this.subscriptionList.push(subscription);
   }
 }
