@@ -14,6 +14,7 @@ import {
   PostgreSQLDataStorageService,
   SystemDictionaryService,
 } from './api';
+import { DataService, IDBDataService } from './resources';
 
 const weakLifetime = new ExternalLifetime(eventStorage);
 ServiceLocator.default.container.appendLifetimes(weakLifetime);
@@ -40,4 +41,5 @@ export const registerServerServices = () => {
   });
 
   ServiceLocator.default.container.set(IThemeService, { creator: ThemeService, dependencies: [] });
+  ServiceLocator.default.container.set(IDBDataService, { creator: DataService, dependencies: [] });
 };

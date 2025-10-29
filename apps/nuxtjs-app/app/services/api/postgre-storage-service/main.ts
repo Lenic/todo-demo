@@ -7,7 +7,7 @@ import type { Observable } from 'rxjs';
 import { Disposable } from '@todo/container';
 import { ETodoListType, ETodoStatus } from '@todo/interface';
 import { and, desc, eq, gte, isNotNull, isNull, lt, or, sql } from 'drizzle-orm';
-import { from, map } from 'rxjs';
+import { from, map, switchMap, toArray } from 'rxjs';
 
 import { todoTable } from '../schema';
 
@@ -84,7 +84,27 @@ class PostgreSQLDataStorageService
   }
 
   private convertToDomain(waitList: Promise<(typeof todoTable.$inferSelect)[]>): Observable<IDBTodoItem[]> {
-    return from(waitList).pipe(map((list) => list as IDBTodoItem[]));
+    return from(waitList).pipe(
+      switchMap((list) =>
+        from(list).pipe(
+          map((v) => {
+            const item: IDBTodoItem = {
+              createdAt: v.createdAt!,
+              createdBy: v.createdBy,
+              id: v.id,
+              status: v.status! as ETodoStatus,
+              title: v.title,
+              updatedAt: v.updatedAt!,
+              updatedBy: v.updatedBy,
+              description: v.description ?? undefined,
+              overdueAt: v.overdueAt ?? undefined,
+            };
+            return item;
+          }),
+          toArray(),
+        ),
+      ),
+    );
   }
 }
 
